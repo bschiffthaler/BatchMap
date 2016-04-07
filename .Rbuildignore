@@ -1,0 +1,7 @@
+todo
+copying
+^\.travis.yml$
+^.*\.Rproj$
+^NEWS\.md$
+
+^\.Rproj\.user$
