@@ -188,8 +188,8 @@ record.parallel<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, tol=
       }
     return(result)
     })
-    count.scores <- mclapply(results.list, mc.cores = cores,function(f){
-      COUNT(X,f)
+    count.scores <- mclapply(results.list, mc.cores = cores, function(f){
+      CCOUNT(X,f - 1)
     })
     min_count <- which.min(unlist(count.scores))
     result.new <- results.list[[min_count]]
