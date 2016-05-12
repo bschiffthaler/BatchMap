@@ -86,6 +86,7 @@
 ##'
 record.parallel<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, tol=10E-5){
   require(parallel)
+  require(RcppArmadillo)
   ## checking for correct object
   if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is
                                               not an object of class 'sequence'")
@@ -104,10 +105,6 @@ record.parallel<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, tol=
   X<-r*get(input.seq$data.name, pos=1)$n.ind ## Obtaining X multiplying the MLE of the recombination
   ## fraction by the number of individuals
 
-  COUNT<-function(X, sequence){ ## See eq. 1 on the paper (Van Os et al., 2005)
-    return(sum(diag(X[sequence[-length(sequence)],sequence[-1]]),na.rm=TRUE))
-  }
-  ## For two markers
   if(n.mrk==2)
     return(map(make.seq(get(input.seq$twopt),input.seq$seq.num[1:2],twopt=input.seq$twopt), tol=10E-5))
 
@@ -136,7 +133,7 @@ record.parallel<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, tol=
         for(j in seq(1,(length(partial)), by = 2)){
           partial.temp<-partial
           partial.temp[j]<-next.mark
-          temp.new<-COUNT(X, partial.temp[is.na(partial.temp)==FALSE])
+          temp.new<-CCOUNT(X, partial.temp[is.na(partial.temp)==FALSE] - 1)
           if(temp.new<temp) {
             result<-partial.temp[is.na(partial.temp)==FALSE]
             temp<-temp.new
@@ -150,7 +147,7 @@ record.parallel<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, tol=
       for(j in seq(1,(length(partial)), by = 2)){
         partial.temp<-partial
         partial.temp[j]<-next.mark
-        temp.new<-COUNT(X, partial.temp[ is.na(partial.temp)==FALSE])
+        temp.new<-CCOUNT(X, partial.temp[ is.na(partial.temp)==FALSE] - 1)
         if(temp.new<temp) {
           result<-partial.temp[ is.na(partial.temp)==FALSE]
           temp<-temp.new
@@ -162,7 +159,7 @@ record.parallel<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, tol=
           if(j==1){
             if(i!=n.mrk-1){
               perm.order<-c(rev(result[1:(1+i)]),result[(i+2):length(result)])
-              COUNT.temp<-COUNT(X,perm.order)
+              COUNT.temp<-CCOUNT(X,perm.order - 1)
               if(COUNT.temp < temp) {
                 result<-perm.order
                 temp<-COUNT.temp
@@ -172,7 +169,7 @@ record.parallel<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, tol=
           else{
             if(j!=(n.mrk-i)){
               perm.order<-c(result[1:(j-1)],rev(result[j:(j+i)]),result[(j+i+1):length(result)])
-              COUNT.temp<-COUNT(X,perm.order)
+              COUNT.temp<-CCOUNT(X,perm.order - 1)
               if(COUNT.temp < temp){
                 result<-perm.order
                 temp<-COUNT.temp
@@ -180,7 +177,7 @@ record.parallel<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, tol=
             }
             else{
               perm.order<-c(result[1:(j-1)],rev(result[j:length(result)]))
-              COUNT.temp<-COUNT(X,perm.order)
+              COUNT.temp<-CCOUNT(X,perm.order - 1)
               if(COUNT.temp < temp){
                 result<-perm.order
                 temp<-COUNT.temp

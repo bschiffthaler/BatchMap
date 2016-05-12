@@ -1,7 +1,9 @@
 useDynLib(onemap)
 
 ## Import all packages listed as Imports or Depends
-import(tcltk, tkrplot, ggplot2)
+import(ggplot2)
+import(RcppArmadillo)
+import(Rcpp)
 importFrom(fields, tim.colors)
 importFrom(fields, splint)
 
