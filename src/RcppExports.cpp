@@ -6,6 +6,24 @@
 
 using namespace Rcpp;
 
+// GET_RF_MAT_NO_LOD
+SEXP GET_RF_MAT_NO_LOD(SEXP seqnum, SEXP nmrk, SEXP CC, SEXP CR, SEXP RC, SEXP RR, SEXP minLOD, SEXP maxRF);
+RcppExport SEXP onemap_GET_RF_MAT_NO_LOD(SEXP seqnumSEXP, SEXP nmrkSEXP, SEXP CCSEXP, SEXP CRSEXP, SEXP RCSEXP, SEXP RRSEXP, SEXP minLODSEXP, SEXP maxRFSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP >::type seqnum(seqnumSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type nmrk(nmrkSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type CC(CCSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type CR(CRSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type RC(RCSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type RR(RRSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type minLOD(minLODSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type maxRF(maxRFSEXP);
+    __result = Rcpp::wrap(GET_RF_MAT_NO_LOD(seqnum, nmrk, CC, CR, RC, RR, minLOD, maxRF));
+    return __result;
+END_RCPP
+}
 // CCOUNT
 SEXP CCOUNT(SEXP X, SEXP sequence);
 RcppExport SEXP onemap_CCOUNT(SEXP XSEXP, SEXP sequenceSEXP) {

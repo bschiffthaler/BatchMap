@@ -26,7 +26,7 @@ get_mat_rf_in<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
         stop("The sequence must have at least 2 markers")
     n.mrk<-length(input.seq$seq.num)
     mrk.names <- colnames(get(input.seq$data.name, pos=1)$geno)[input.seq$seq.num]
-    ## create reconmbination fraction matrix 
+    ## create reconmbination fraction matrix
     r <- matrix(NA,n.mrk,n.mrk)
     dimnames(r)<-list(mrk.names, mrk.names)
     if(LOD)
@@ -71,7 +71,7 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
     {
         j<-sort(c(input.seq$seq.num[i], input.seq$seq.num[i+1]), decreasing=!LOD)
         r[i]<-get(input.seq$twopt)$analysis[j[1], j[2]]
-        pair.names[i]<-paste(mrk.names[i], mrk.names[i+1], sep="-") 
+        pair.names[i]<-paste(mrk.names[i], mrk.names[i+1], sep="-")
     }
     if(acum)
     {
@@ -85,59 +85,65 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
 
 #For a guiven sequence, this function gets the recombination
 #fraction/LOD matrix for outcrossing
- get_mat_rf_out<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
+ get_mat_rf_out<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0, useC = FALSE) {
      if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
      if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
      n.mrk<-length(input.seq$seq.num)
      mrk.names <- colnames(get(input.seq$data.name, pos=1)$geno)[input.seq$seq.num]
-     ## create reconmbination fraction matrix 
-     r <- matrix(NA,n.mrk,n.mrk)
-     dimnames(r)<-list(mrk.names, mrk.names)
-     if(LOD)
-     {
-         for(i in 1:(n.mrk-1)) {
-             for(j in (i+1):n.mrk) {
-                 k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
-                 rfs<-sapply(get(input.seq$twopt)$analysis, function(x,i,j) x[i,j], k[2], k[1]) 
-                 LODs<-sapply(get(input.seq$twopt)$analysis, function(x,i,j) x[i,j], k[1], k[2]) 
-                 ## check if any assignment meets the criteria
-                 phases <- which((LODs >= min.LOD) & rfs <= max.rf)
-                 if(length(phases) == 0)
-                 {
-                     r[i,j] <- NA
-                     r[j,i] <- NA
-                 }
-                 else
-                 {
-                     r.temp<-rfs[phases[which.max(LODs[phases])]]
-                     if(r.temp > 0.5) r.temp<-0.5
-                     r[i,j]<-r.temp
-                     r[j,i]<-max(LODs[phases])
-                 }
-             }
+     ## create reconmbination fraction matrix
+     if(LOD){
+       r <- matrix(NA,n.mrk,n.mrk)
+       dimnames(r)<-list(mrk.names, mrk.names)
+       for(i in 1:(n.mrk-1)) {
+         for(j in (i+1):n.mrk) {
+           k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
+           rfs<-sapply(get(input.seq$twopt)$analysis, function(x,i,j) x[i,j], k[2], k[1])
+           LODs<-sapply(get(input.seq$twopt)$analysis, function(x,i,j) x[i,j], k[1], k[2])
+           ## check if any assignment meets the criteria
+           phases <- which((LODs >= min.LOD) & rfs <= max.rf)
+           if(length(phases) == 0)
+           {
+             r[i,j] <- NA
+             r[j,i] <- NA
+           }
+           else
+           {
+             r.temp<-rfs[phases[which.max(LODs[phases])]]
+             if(r.temp > 0.5) r.temp<-0.5
+             r[i,j]<-r.temp
+             r[j,i]<-max(LODs[phases])
+           }
          }
+       }
      }
      else
      {
+       if(useC){
+         r <- GET_RF_MAT_NO_LOD(input.seq$seq.num, n.mrk, get(input.seq$twopt)$analysis$CC,
+                                get(input.seq$twopt)$analysis$CR, get(input.seq$twopt)$analysis$RC,
+                                get(input.seq$twopt)$analysis$RR, min.LOD, max.rf)
+       } else {
+         r <- matrix(NA,n.mrk,n.mrk)
          for(i in 1:(n.mrk-1)) {
-             for(j in (i+1):n.mrk) {
-                 k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
-                 rfs<-sapply(get(input.seq$twopt)$analysis, function(x,i,j) x[i,j], k[2], k[1]) 
-                 LODs<-sapply(get(input.seq$twopt)$analysis, function(x,i,j) x[i,j], k[1], k[2]) 
-                 ## check if any assignment meets the criteria
-                 phases <- which((LODs >= min.LOD) & rfs <= max.rf)
-                 if(length(phases) == 0)
-                 {
-                     r[j,i] <- r[i,j] <- NA
-                 }
-                 else
-                 {
-                     r.temp<-rfs[phases[which.max(LODs[phases])]]
-                     if(r.temp > 0.5) r.temp<-0.5
-                     r[j,i]<-r[i,j]<-r.temp
-                 }
+           for(j in (i+1):n.mrk) {
+             k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
+             rfs<-sapply(get(input.seq$twopt)$analysis, function(x,i,j) x[i,j], k[2], k[1])
+             LODs<-sapply(get(input.seq$twopt)$analysis, function(x,i,j) x[i,j], k[1], k[2])
+             ## check if any assignment meets the criteria
+             phases <- which((LODs >= min.LOD) & rfs <= max.rf)
+             if(length(phases) == 0)
+             {
+               r[j,i] <- r[i,j] <- NA
              }
-         } 
+             else
+             {
+               r.temp<-rfs[phases[which.max(LODs[phases])]]
+               if(r.temp > 0.5) r.temp<-0.5
+               r[j,i]<-r[i,j]<-r.temp
+             }
+           }
+         }
+       }
      }
      return(r)
  }
@@ -157,7 +163,7 @@ get_vec_rf_out<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0, acum=TRUE
     for(i in 1:(length(input.seq$seq.num)-1))
     {
         r[i]<-mat[i, i+1]
-        pair.names[i]<-paste(mrk.names[i], mrk.names[i+1], sep="-") 
+        pair.names[i]<-paste(mrk.names[i], mrk.names[i+1], sep="-")
     }
     if(acum)
     {
