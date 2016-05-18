@@ -122,8 +122,10 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
          r <- GET_RF_MAT_NO_LOD(input.seq$seq.num, n.mrk, get(input.seq$twopt)$analysis$CC,
                                 get(input.seq$twopt)$analysis$CR, get(input.seq$twopt)$analysis$RC,
                                 get(input.seq$twopt)$analysis$RR, min.LOD, max.rf)
+         dimnames(r)<-list(mrk.names, mrk.names)
        } else {
          r <- matrix(NA,n.mrk,n.mrk)
+         dimnames(r)<-list(mrk.names, mrk.names)
          for(i in 1:(n.mrk-1)) {
            for(j in (i+1):n.mrk) {
              k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
