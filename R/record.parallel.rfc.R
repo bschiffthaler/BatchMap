@@ -84,6 +84,42 @@
 ##'   LG1.rec
 ##' }
 ##'
+split_map_batches <- function(x, cores){
+  start <- 1
+  interval <- ceiling(length(x) / cores)
+  end <- interval
+  res <- list()
+  for(f in 1:cores){
+    res[[f]] <- x[start:end]
+    start <- end
+    end <- end + interval
+    if(end > length(x)){ end <- length(x)}
+  }
+  return(res)
+}
+
+combine_map_batches <- function(x){
+  final <- NULL
+  for(f in 1:length(x)){
+    if(f == 1){
+      final$seq.num <- x[[f]]$seq.num
+      final$seq.phases <- x[[f]]$seq.phases
+      final$seq.rf <- x[[f]]$seq.rf
+      final$seq.like<- x[[f]]$seq.like
+    } else {
+      final$seq.num <- c(final$seq.num, x[[f]]$seq.num[-1])
+      final$seq.phases <- c(final$seq.phases, x[[f]]$seq.phases)
+      final$seq.rf <- c(final$seq.rf, x[[f]]$seq.rf)
+      final$seq.like<- final$seq.like + x[[f]]$seq.like
+    }
+    final$seq.like <- final$seq.like / length(x)
+    final$data.name <- x[[1]]$data.name
+    final$twopt <- x[[1]]$twopt
+    class(final)<-"sequence"
+  }
+  return(final)
+}
+
 record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, tol=10E-5, useC = TRUE){
   require(parallel)
   require(RcppArmadillo)
@@ -195,9 +231,16 @@ record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, 
     result.new <- results.list[[min_count]]
   }
   ## end of RECORD algorithm
-  cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[avoid.reverse(result.new)],".\n\n",
-      "NOT calling map()\n\n")
-  return(result.new)
+  cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[result.new],".\n\n",
+      "now calling map()\n\n")
+  m <- mclapply(split_map_batches(result.new, cores), mc.cores = cores, function(x){
+    s <- make.seq(get(input.seq$twopt),
+                  input.seq$seq.num[x],
+                  twopt=input.seq$twopt)
+    map(s)
+  })
+  final <- combine_map_batches(m)
+  return(final)
 }
 
 ##end of file
