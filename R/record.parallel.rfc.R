@@ -87,13 +87,24 @@
 split_map_batches <- function(x, cores){
   start <- 1
   interval <- ceiling(length(x) / cores)
+  while(interval < 80){
+    cores = cores - 1
+    interval <- ceiling(length(x) / cores)
+    if(cores <= 0) stop("Mapping group < 80. No need to apply parallel record")
+  }
   end <- interval
   res <- list()
   for(f in 1:cores){
-    res[[f]] <- x[start:end]
-    start <- end
-    end <- end + interval
-    if(end > length(x)){ end <- length(x)}
+    if(f == cores){
+      if(length(start:end) < 80){
+        res[[f - 1]] <- c(res[[f - 1]], x[start:end])
+      }
+    } else {
+      res[[f]] <- x[start:end]
+      start <- end
+      end <- end + interval
+      if(end > length(x)){ end <- length(x)}
+    }
   }
   return(res)
 }
@@ -233,7 +244,8 @@ record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, 
   ## end of RECORD algorithm
   cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[result.new],".\n\n",
       "now calling map()\n\n")
-  m <- mclapply(split_map_batches(result.new, cores), mc.cores = cores, function(x){
+  batch <- split_map_batches(result.new, cores)
+  m <- mclapply(batch, mc.cores = length(batch), function(x){
     s <- make.seq(get(input.seq$twopt),
                   input.seq$seq.num[x],
                   twopt=input.seq$twopt)
