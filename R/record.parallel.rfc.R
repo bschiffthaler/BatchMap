@@ -97,7 +97,7 @@ split_map_batches <- function(x, cores){
   for(f in 1:cores){
     if(f == cores){
       if(length(start:end) < 80){
-        res[[f - 1]] <- c(res[[f - 1]], x[start:end])
+        res[[f - 1]] <- c(res[[f - 1]], x[(start + 1):end])
       } else {
         res[[f]] <- x[start:end]
       }
