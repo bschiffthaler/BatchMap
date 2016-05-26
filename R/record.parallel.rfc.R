@@ -98,6 +98,8 @@ split_map_batches <- function(x, cores){
     if(f == cores){
       if(length(start:end) < 80){
         res[[f - 1]] <- c(res[[f - 1]], x[start:end])
+      } else {
+        res[[f]] <- x[start:end]
       }
     } else {
       res[[f]] <- x[start:end]
