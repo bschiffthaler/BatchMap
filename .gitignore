@@ -10,3 +10,4 @@ onemap.Rproj~
 *.map
 *.bak
 .git_from_github
+.DS_Store

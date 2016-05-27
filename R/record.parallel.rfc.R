@@ -133,7 +133,8 @@ combine_map_batches <- function(x){
   return(final)
 }
 
-record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, tol=10E-5, useC = TRUE){
+record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
+                              tol=10E-5, useC = TRUE, domap = TRUE){
   require(parallel)
   require(RcppArmadillo)
   ## checking for correct object
@@ -244,17 +245,23 @@ record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5, 
     result.new <- results.list[[min_count]]
   }
   ## end of RECORD algorithm
-  cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[result.new],".\n\n",
-      "now calling map()\n\n")
-  batch <- split_map_batches(result.new, cores)
-  m <- mclapply(batch, mc.cores = length(batch), function(x){
-    s <- make.seq(get(input.seq$twopt),
-                  input.seq$seq.num[x],
-                  twopt=input.seq$twopt)
-    map(s)
-  })
-  final <- combine_map_batches(m)
-  return(final)
+  if(domap){
+    cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[result.new],".\n\n",
+        "now calling map()\n\n")
+    batch <- split_map_batches(result.new, cores)
+    m <- mclapply(batch, mc.cores = length(batch), function(x){
+      s <- make.seq(get(input.seq$twopt),
+                    input.seq$seq.num[x],
+                    twopt=input.seq$twopt)
+      map(s)
+    })
+    final <- combine_map_batches(m)
+    return(final)
+  } else {
+    cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[result.new],".\n\n",
+        "NOT calling map()\n\n")
+    return(result.new)
+  }
 }
 
 ##end of file
