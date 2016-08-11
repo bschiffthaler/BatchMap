@@ -138,40 +138,67 @@ SEXP READ_OUTCROSS(SEXP file)
 
   // Start to read markers
 
+  unsigned long lcount = 1; // Lines read
+  unsigned long mcount = 0; // Already counted markers
+
   std::string line;
   while(std::getline(ifs, line))
   {
+    lcount++;
     if(first)
     {
       first = false; continue;
     }
-
+    if(line.size() == 0) continue;
+    if(line.at(0) == '#') continue;
     std::stringstream ss(line);
-    ss.ignore(1);
-
-    std::string marker;
-    ss >> marker;
-
-    std::string segregation_str;
-    ss >> segregation_str;
-
-    char segregation_chr = segregation.at(segregation_str);
-    unsigned short segregation_us = codify_segregation(segregation_chr);
-
-    ss.ignore(1);
-
-    std::string genotype;
-    while(std::getline(ss, genotype, ','))
+    char segregation_chr;
+    if(line.at(0) == '*')
     {
-      geno.push_back(codify_geno.at(std::pair<char, std::string>(segregation_chr,genotype)));
-    }
+      mcount++;
+      if(mcount > n_mar) break; // We ignore phenotype information
+      ss.ignore(1);
 
-    segr_type.push_back(segregation_str);
-    segr_type_num.push_back(segregation_us);
-    markers.push_back(marker);
+      std::string marker;
+      ss >> marker;
+
+      std::string segregation_str;
+      ss >> segregation_str;
+
+      segregation_chr = segregation.at(segregation_str);
+      unsigned short segregation_us = codify_segregation(segregation_chr);
+
+      std::string gt;
+      ss >> gt;
+
+      std::stringstream ss2(gt);
+
+      std::string genotype;
+      while(std::getline(ss2, genotype, ','))
+      {
+        geno.push_back(codify_geno.at(std::pair<char, std::string>(segregation_chr,genotype)));
+      }
+
+      segr_type.push_back(segregation_str);
+      segr_type_num.push_back(segregation_us);
+      markers.push_back(marker);
+    }
+    else
+    {
+      std::string gt;
+      ss >> gt;
+
+      std::stringstream ss2(gt);
+
+      std::string genotype;
+      while(std::getline(ss2, genotype, ','))
+      {
+        geno.push_back(codify_geno.at(std::pair<char, std::string>(segregation_chr,genotype)));
+      }
+    }
   }
 
-  return Rcpp::List::create(Rcpp::Named("geno") = wrap(geno),
+    return Rcpp::List::create(Rcpp::Named("geno") = wrap(geno),
                             Rcpp::Named("marker") = wrap(markers),
                             Rcpp::Named("n.ind") = wrap(n_ind),
                             Rcpp::Named("n.mar") = wrap(n_mar),
