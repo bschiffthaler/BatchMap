@@ -24,6 +24,17 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// READ_OUTCROSS
+SEXP READ_OUTCROSS(SEXP file);
+RcppExport SEXP onemap_READ_OUTCROSS(SEXP fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP >::type file(fileSEXP);
+    __result = Rcpp::wrap(READ_OUTCROSS(file));
+    return __result;
+END_RCPP
+}
 // CCOUNT
 SEXP CCOUNT(SEXP X, SEXP sequence);
 RcppExport SEXP onemap_CCOUNT(SEXP XSEXP, SEXP sequenceSEXP) {

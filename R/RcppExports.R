@@ -5,6 +5,10 @@ GET_RF_MAT_NO_LOD <- function(seqnum, nmrk, CC, CR, RC, RR, minLOD, maxRF) {
     .Call('onemap_GET_RF_MAT_NO_LOD', PACKAGE = 'onemap', seqnum, nmrk, CC, CR, RC, RR, minLOD, maxRF)
 }
 
+READ_OUTCROSS <- function(file) {
+    .Call('onemap_READ_OUTCROSS', PACKAGE = 'onemap', file)
+}
+
 CCOUNT <- function(X, sequence) {
     .Call('onemap_CCOUNT', PACKAGE = 'onemap', X, sequence)
 }
