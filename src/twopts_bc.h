@@ -38,4 +38,4 @@
 using namespace Rcpp;
 
 RcppExport SEXP est_rf_bc_wrap(SEXP geno_R, SEXP mrk, SEXP n_ind_R, SEXP type_R, SEXP verbose_R);
-Rcpp::NumericMatrix est_rf_bc(Rcpp::NumericVector geno, int mrk, int n_ind, int type, int verbose);
+Rcpp::NumericMatrix est_rf_bc(Rcpp::NumericVector geno, long mrk, long n_ind, long type, bool verbose);

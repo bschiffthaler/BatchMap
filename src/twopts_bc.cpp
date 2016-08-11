@@ -36,6 +36,7 @@
 
 #include <Rcpp.h>
 #include "twopts_bc.h"
+#include "progressBar.h"
 #define TOL 0.00001
 #define rf_TOL_min 1e-50
 #define rf_TOL_max 0.5-1e-50
@@ -47,26 +48,26 @@ using namespace std;
 RcppExport SEXP est_rf_bc_wrap(SEXP geno_R, SEXP mrk_R, SEXP n_ind_R, SEXP type_R, SEXP verbose_R)
 {
   Rcpp::NumericVector geno = Rcpp::as<Rcpp::NumericVector>(geno_R);
-  int n_ind = Rcpp::as<int>(n_ind_R);
-  int type = Rcpp::as<int>(type_R);
-  int verbose = Rcpp::as<int>(verbose_R);
-  int mrk = Rcpp::as<int>(mrk_R);
+  long n_ind = Rcpp::as<long>(n_ind_R);
+  long type = Rcpp::as<long>(type_R);
+  bool verbose = Rcpp::as<bool>(verbose_R);
+  long mrk = Rcpp::as<long>(mrk_R);
   NumericMatrix z = est_rf_bc(geno, mrk, n_ind, type, verbose);
   return(wrap(z));
 }
 
 
-Rcpp::NumericMatrix est_rf_bc(Rcpp::NumericVector geno, int mrk,
-			      int n_ind, int type, int verbose)
+Rcpp::NumericMatrix est_rf_bc(Rcpp::NumericVector geno, long mrk,
+			      long n_ind, long type, bool verbose)
 {
-  int n_mar=((int)geno.size()/n_ind);
+  long n_mar=((long)geno.size()/n_ind);
   double rtemp, l, l0, mis=0, nr=0;
   Rcpp::NumericMatrix r(n_mar, n_mar);
   NumericMatrix rm(2, n_mar);
-  int chunk=((n_mar*n_mar)-n_mar)/20, ct1=0, ct2=1, a1, a2, a3;
+  long chunk=((n_mar*n_mar)-n_mar)/20, ct1=0, ct2=1, a1, a2, a3;
   if(mrk < 0)
     {
-      if(verbose==1 && n_mar > 100)
+      if(verbose && n_mar > 100)
 	Rcpp::Rcout << "Computing " << ((n_mar*n_mar)-n_mar)/2 << " recombination fractions:\n\n" << "\t0%\t.";
       else if(verbose==1)
 	Rcpp::Rcout << "Computing " << ((n_mar*n_mar)-n_mar)/2 << " recombination fractions ... \n";
@@ -78,30 +79,27 @@ Rcpp::NumericMatrix est_rf_bc(Rcpp::NumericVector geno, int mrk,
       a1=mrk;
       a2=mrk+1;
     }
-  for(int i=a1; i < a2; i++)
+  for(long i=a1; i < a2; i++)
     {
       if(mrk < 0){
-	if(verbose==1 && n_mar > 100)
+	if(verbose && n_mar > 100)
 	  {
 	    if(ct1%(chunk/(chunk/10))==0)
 	      {
-		Rcpp::Rcout << ".";
-		ct2++;
-		if(ct2%50==0)
-		  Rcpp::Rcout << "\t" << 100*ct1/(((n_mar*n_mar)-n_mar)/2) << "%\n\t" << 100*ct1/(((n_mar*n_mar)-n_mar)/2) << "%\t";
+	      progressBar(Rcpp::Rcout, ct1, ((n_mar*n_mar)-n_mar)/2, 80);
 	      }
 	  }
       }
       if(mrk < 0) a3=(i+1);
       else a3=0;
       R_CheckUserInterrupt(); /* check for ^C */
-      for(int j=a3; j  < n_mar; j++)
+      for(long j=a3; j  < n_mar; j++)
 	{
 	  ct1++;
 	  nr=mis=0;
-	  std::vector<int> k_sub(&geno[i*n_ind],&geno[i*n_ind+n_ind]);
-	  std::vector<int> k1_sub(&geno[j*n_ind],&geno[j*n_ind+n_ind]);
-	  for(int k=0; k < n_ind; k++)
+	  std::vector<long> k_sub(&geno[i*n_ind],&geno[i*n_ind+n_ind]);
+	  std::vector<long> k1_sub(&geno[j*n_ind],&geno[j*n_ind+n_ind]);
+	  for(long k=0; k < n_ind; k++)
 	    {
 	      if(k_sub[k]==0 || k1_sub[k]==0) mis++;
 	      else if((k_sub[k] != k1_sub[k])) nr++;

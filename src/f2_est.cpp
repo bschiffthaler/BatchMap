@@ -45,14 +45,14 @@ using namespace std;
 #define rf_TOL_min 1e-50
 #define rf_TOL_max 0.5-1e-50
 
-Rcpp::NumericVector est_rf_C_C(std::vector<int> k_sub,
-			       std::vector<int> k1_sub,
-			       int n_ind)
+Rcpp::NumericVector est_rf_C_C(std::vector<long> k_sub,
+			       std::vector<long> k1_sub,
+			       long n_ind)
 {
   Rcpp::NumericVector r(2);
-  int n0=0, n1=0, n2=0, n3=0, n4=0, n5=0;
+  long n0=0, n1=0, n2=0, n3=0, n4=0, n5=0;
   double rold=0, rnew=0.01, l, l0;
-  for(int k=0; k < n_ind; k++)
+  for(long k=0; k < n_ind; k++)
     {
       if(k_sub[k]==1)
 	{
@@ -101,14 +101,14 @@ Rcpp::NumericVector est_rf_C_C(std::vector<int> k_sub,
   return(r);
 }
 
-Rcpp::NumericVector est_rf_C_D_43(std::vector<int> k_sub,
-				  std::vector<int> k1_sub,
-				  int n_ind)
+Rcpp::NumericVector est_rf_C_D_43(std::vector<long> k_sub,
+				  std::vector<long> k1_sub,
+				  long n_ind)
 {
   Rcpp::NumericVector r(2);
-  int n0=0, n1=0, n3=0, n4=0, n5=0, n6=0, n8=0;
+  long n0=0, n1=0, n3=0, n4=0, n5=0, n6=0, n8=0;
   double rold=0, rnew=0.01, l, l0;
-  for(int k=0; k < n_ind; k++)
+  for(long k=0; k < n_ind; k++)
     {
       if(k_sub[k]==1)
 	{
@@ -162,15 +162,15 @@ Rcpp::NumericVector est_rf_C_D_43(std::vector<int> k_sub,
   return (r);
 }
 
-Rcpp::NumericVector est_rf_C_D_51(std::vector<int> k_sub,
-				  std::vector<int> k1_sub,
-				  int n_ind)
+Rcpp::NumericVector est_rf_C_D_51(std::vector<long> k_sub,
+				  std::vector<long> k1_sub,
+				  long n_ind)
 {
   Rcpp::NumericVector r(2);
-  int n0=0, n1=0, n3=0, n4=0, n5=0, n6=0, n8=0;
+  long n0=0, n1=0, n3=0, n4=0, n5=0, n6=0, n8=0;
   double r0, r1, r2;
   double rold=0, rnew=0.01, l, l0;
-  for(int k=0; k < n_ind; k++)
+  for(long k=0; k < n_ind; k++)
     {
       if(k_sub[k]==1)
 	{
@@ -227,15 +227,15 @@ Rcpp::NumericVector est_rf_C_D_51(std::vector<int> k_sub,
   return (r);
 }
 
-Rcpp::NumericVector est_rf_D_D_43(std::vector<int> k_sub,
-				  std::vector<int> k1_sub,
-				  int n_ind)
+Rcpp::NumericVector est_rf_D_D_43(std::vector<long> k_sub,
+				  std::vector<long> k1_sub,
+				  long n_ind)
 {
   Rcpp::NumericVector r(2);
-  int n0=0, n1=0, n2=0, n3=0, n4=0, n5=0, n6=0, n7=0, n8=0, n9=0, n10=0, n11=0, n12=0, n13=0;
+  long n0=0, n1=0, n2=0, n3=0, n4=0, n5=0, n6=0, n7=0, n8=0, n9=0, n10=0, n11=0, n12=0, n13=0;
   double r0, r1, r2;
   double rold=0, rnew=0.01, l, l0;
-  for(int k=0; k < n_ind; k++)
+  for(long k=0; k < n_ind; k++)
     {
       if(k_sub[k]==3)
 	{
@@ -266,7 +266,7 @@ Rcpp::NumericVector est_rf_D_D_43(std::vector<int> k_sub,
   r0=(1.0-rnew)*(1.0-rnew);
   r1=rnew*(1.0-rnew);
   r2=rnew*rnew;
-  //Likelihood  
+  //Likelihood
   if(rnew > rf_TOL_max)
     {
       r(0)=rf_TOL_max;
@@ -286,15 +286,15 @@ Rcpp::NumericVector est_rf_D_D_43(std::vector<int> k_sub,
   return (r);
 }
 
-Rcpp::NumericVector est_rf_D_D_51(std::vector<int> k_sub,
-				  std::vector<int> k1_sub,
-				  int n_ind)
+Rcpp::NumericVector est_rf_D_D_51(std::vector<long> k_sub,
+				  std::vector<long> k1_sub,
+				  long n_ind)
 {
   Rcpp::NumericVector r(2);
-  int n0=0, n1=0, n5=0, n11=0, n12=0;
+  long n0=0, n1=0, n5=0, n11=0, n12=0;
   double r0, r1, r2;
   double rold=0, rnew=0.01, l, l0;
-  for(int k=0; k < n_ind; k++)
+  for(long k=0; k < n_ind; k++)
     {
       if(k_sub[k]==1)
 	{
@@ -342,15 +342,15 @@ Rcpp::NumericVector est_rf_D_D_51(std::vector<int> k_sub,
   return (r);
 }
 
-Rcpp::NumericVector est_rf_D_D_43_51(std::vector<int> k_sub,
-				     std::vector<int> k1_sub,
-				     int n_ind)
+Rcpp::NumericVector est_rf_D_D_43_51(std::vector<long> k_sub,
+				     std::vector<long> k1_sub,
+				     long n_ind)
 {
   Rcpp::NumericVector r(2);
-  int n0=0, n1=0, n2=0, n3=0, n4=0, n5=0, n6=0, n7=0, n8=0, n9=0, n10=0, n11=0, n12=0, n13=0;
+  long n0=0, n1=0, n2=0, n3=0, n4=0, n5=0, n6=0, n7=0, n8=0, n9=0, n10=0, n11=0, n12=0, n13=0;
   double r0, r1, r2;
   double rold=0, rnew=0.01, l, l0;
-  for(int k=0; k < n_ind; k++)
+  for(long k=0; k < n_ind; k++)
     {
       if(k_sub[k]==3)
 	{
@@ -399,15 +399,15 @@ Rcpp::NumericVector est_rf_D_D_43_51(std::vector<int> k_sub,
   return (r);
 }
 
-Rcpp::NumericVector est_rf_A_A(std::vector<int> k_sub,
-			       std::vector<int> k1_sub,
-			       int n_ind)
+Rcpp::NumericVector est_rf_A_A(std::vector<long> k_sub,
+			       std::vector<long> k1_sub,
+			       long n_ind)
 {
   Rcpp::NumericVector r(2);
-  int n0=0, n1=0, n2=0, n3=0, n4=0, n5=0, n6=0, n7=0, n8=0, n9=0, n10=0, n11=0, n12=0, n13=0;
+  long n0=0, n1=0, n2=0, n3=0, n4=0, n5=0, n6=0, n7=0, n8=0, n9=0, n10=0, n11=0, n12=0, n13=0;
   double r0, r1, r2;
   double rold=0, rnew=0.01, l, l0;
-  for(int k=0; k < n_ind; k++)
+  for(long k=0; k < n_ind; k++)
     {
       if(k_sub[k]==1)
 	{

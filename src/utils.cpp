@@ -6,7 +6,7 @@ using namespace std;
 
 Rcpp::NumericMatrix transpose_counts(Rcpp::NumericMatrix n)
 {
-  int temp;
+  long temp;
   temp=n(1,2); n(1,2)=n(2,1); n(2,1)=temp;
   temp=n(1,3); n(1,3)=n(3,1); n(3,1)=temp;
   temp=n(1,4); n(1,4)=n(4,1); n(4,1)=temp;

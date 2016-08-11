@@ -35,7 +35,7 @@
  */
 
 #include <Rcpp.h>
-#include "progressBar.h""
+#include "progressBar.h"
 #include "out_est.h"
 #include "utils.h"
 #include "twopts_out.h"
@@ -46,9 +46,9 @@ using namespace std;
 
 RcppExport SEXP est_rf_out_wrap(SEXP geno_R, SEXP mrk_R, SEXP segreg_type_R, SEXP n_ind_R, SEXP verbose_R)
 {
-  int n_ind = Rcpp::as<int>(n_ind_R);
-  int verbose = Rcpp::as<int>(verbose_R);
-  int mrk = Rcpp::as<int>(mrk_R);
+  long n_ind = Rcpp::as<long>(n_ind_R);
+  bool verbose = Rcpp::as<bool>(verbose_R);
+  long mrk = Rcpp::as<long>(mrk_R);
   Rcpp::NumericVector segreg_type = Rcpp::as<Rcpp::NumericVector>(segreg_type_R);
   Rcpp::NumericVector geno = Rcpp::as<Rcpp::NumericVector>(geno_R);
   List z = est_rf_out(geno, mrk, segreg_type, n_ind, verbose);
@@ -56,11 +56,11 @@ RcppExport SEXP est_rf_out_wrap(SEXP geno_R, SEXP mrk_R, SEXP segreg_type_R, SEX
 }
 
 Rcpp::List est_rf_out(Rcpp::NumericVector geno,
-                      int mrk,
+                      long mrk,
                       Rcpp::NumericVector segreg_type,
-                      int n_ind, int verbose)
+                      long n_ind, bool verbose)
 {
-  int n_mar=(geno.size()/n_ind), k1, k2;
+  long n_mar=(geno.size()/n_ind), k1, k2;
   long chunk=((n_mar*n_mar)-n_mar)/20, ct1=0, ct2=1, a1, a2, a3;
   NumericMatrix n(5,5);
   NumericVector r(8);
@@ -73,7 +73,7 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
   NumericMatrix lm(4,n_mar);
   if(mrk < 0)
   {
-    if(verbose==1 && n_mar > 100)
+    if(verbose && n_mar > 100)
       Rcpp::Rcout << "Computing " << ((n_mar*n_mar)-n_mar)/2 << " recombination fractions:\n\n" << "\t0%\t.";
     else if(verbose==1)
       Rcpp::Rcout << "Computing " << ((n_mar*n_mar)-n_mar)/2 << " recombination fractions ... \n";
@@ -85,7 +85,7 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
     a1=mrk;
     a2=mrk+1;
   }
-  for(int i=a1; i < a2; i++)
+  for(long i=a1; i < a2; i++)
   {
     if(mrk < 0){
       if(verbose==1 && n_mar > 100)
@@ -99,14 +99,14 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
     R_CheckUserInterrupt();
     if(mrk < 0) a3=(i+1);
     else a3=0;
-    for(int j=a3; j  < n_mar; j++)
+    for(long j=a3; j  < n_mar; j++)
     {
       ct1++;
-      std::vector<int> k_sub(&geno[i*n_ind],&geno[i*n_ind+n_ind]);
-      std::vector<int> k1_sub(&geno[j*n_ind],&geno[j*n_ind+n_ind]);
+      std::vector<long> k_sub(&geno[i*n_ind],&geno[i*n_ind+n_ind]);
+      std::vector<long> k1_sub(&geno[j*n_ind],&geno[j*n_ind+n_ind]);
       std::fill(n.begin(), n.end(), 0);
       std::fill(r.begin(), r.end(), 0);
-      for(int k=0; k < n_ind; k++)
+      for(long k=0; k < n_ind; k++)
       {
         if(k_sub[k]==1)
         {
@@ -372,7 +372,7 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
   }
   if(mrk < 0)
   {
-    if(verbose==1 && n_mar > 100) Rcpp::Rcout << "\t100%\n";
+    if(verbose && n_mar > 100) Rcpp::Rcout << "\n";
     List z = List::create(wrap(r1), wrap(r2), wrap(r3), wrap(r4));
     return(z);
   }

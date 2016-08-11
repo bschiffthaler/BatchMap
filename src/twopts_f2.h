@@ -41,7 +41,7 @@ using namespace Rcpp;
 using namespace std;
 
 RcppExport SEXP est_rf_f2_wrap(SEXP geno_R, SEXP mrk_R, SEXP segreg_type_R, SEXP n_ind_R, SEXP verbose_R);
-Rcpp::NumericMatrix est_rf_f2(Rcpp::NumericVector geno, 
-			      int mrk, 
-			      Rcpp::NumericVector segreg_type, 
-			      int n_ind, int verbose);
+Rcpp::NumericMatrix est_rf_f2(Rcpp::NumericVector geno,
+			      long mrk,
+			      Rcpp::NumericVector segreg_type,
+			      long n_ind, bool verbose);

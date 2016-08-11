@@ -20,15 +20,15 @@
 */
 
 /*
-  File: out_est.h 
-  
+  File: out_est.h
+
   Description: Header for a set of functions to compute the
   recombination fraction in outcross experimental populations. These
   functions contain the EM algorithms for all possible combination of
   types of markers (A, B1, B2, B3, C, D1 and D2). For more detail
   refer to Wu 2002.
 
-  Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002) Simultaneous
+  Wu, R., Ma, C.-X., Palonger, I. and Zeng, Z.-B. (2002) Simultaneous
   maximum likelihood estimation of linkage and linkage phases in
   outcrossing species. Theoretical Population Biology 61: 349-363.
 
@@ -52,83 +52,83 @@ using namespace std;
 #define LN_75 -0.28768207245178
 
 Rcpp::NumericVector rf_A_A(Rcpp::NumericMatrix n,
-			     int n_ind,
-			   int mis);
+			     long n_ind,
+			   long mis);
 Rcpp::NumericVector rf_A_B1(Rcpp::NumericMatrix n,
-			    int n_ind,
-			    int mis);
+			    long n_ind,
+			    long mis);
 Rcpp::NumericVector rf_A_B2(Rcpp::NumericMatrix n,
-			    int n_ind,
-			    int mis);
+			    long n_ind,
+			    long mis);
 Rcpp::NumericVector rf_A_B3(Rcpp::NumericMatrix n,
-			    int n_ind,
-			    int mis);
+			    long n_ind,
+			    long mis);
 Rcpp::NumericVector rf_A_C(Rcpp::NumericMatrix n,
-			   int n_ind,
-			   int mis);
+			   long n_ind,
+			   long mis);
 Rcpp::NumericVector rf_A_D1(Rcpp::NumericMatrix n,
-			   int n_ind,
-			    int mis);
+			   long n_ind,
+			    long mis);
 Rcpp::NumericVector rf_A_D2(Rcpp::NumericMatrix n,
-			   int n_ind,
-			    int mis);
+			   long n_ind,
+			    long mis);
 Rcpp::NumericVector rf_B1_B1(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_B1_B2(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_B1_B3(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_B1_C(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_B1_D1(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_B1_D2(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_B2_B2(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_B2_B3(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_B2_C(Rcpp::NumericMatrix n,
-			    int n_ind,
-			    int mis);
+			    long n_ind,
+			    long mis);
 Rcpp::NumericVector rf_B2_D1(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_B2_D2(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_B3_B3(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_B3_C(Rcpp::NumericMatrix n,
-			     int n_ind,
-			    int mis);
+			     long n_ind,
+			    long mis);
 Rcpp::NumericVector rf_B3_D1(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_B3_D2(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_C_C(Rcpp::NumericMatrix n,
-			     int n_ind,
-			   int mis);
+			     long n_ind,
+			   long mis);
 Rcpp::NumericVector rf_C_D1(Rcpp::NumericMatrix n,
-			     int n_ind,
-			    int mis);
+			     long n_ind,
+			    long mis);
 Rcpp::NumericVector rf_C_D2(Rcpp::NumericMatrix n,
-			    int n_ind,
-			    int mis);
+			    long n_ind,
+			    long mis);
 Rcpp::NumericVector rf_D1_D1(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
 Rcpp::NumericVector rf_D2_D2(Rcpp::NumericMatrix n,
-			     int n_ind,
-			     int mis);
+			     long n_ind,
+			     long mis);
