@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include "progressBar.h"
 
 // [[Rcpp::plugins(cpp11)]]s
 
@@ -126,8 +127,6 @@ SEXP READ_OUTCROSS(SEXP file)
 
   std::ifstream ifs(inf.c_str(), std::ios::in);
 
-  std::cerr << inf << '\n';
-
   std::string x;
 
   ifs >> x; n_ind = std::stoul(x);
@@ -156,6 +155,7 @@ SEXP READ_OUTCROSS(SEXP file)
     if(line.at(0) == '*')
     {
       mcount++;
+      progressBar(Rcout, mcount, n_mar, 60);
       if(mcount > n_mar) break; // We ignore phenotype information
       ss.ignore(1);
 

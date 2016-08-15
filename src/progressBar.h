@@ -14,8 +14,8 @@ void progressBar(std::ostream& out, T current, T2 max,
   float ratio = v/m;
 
   unsigned short bars = static_cast<unsigned short>(width * ratio);
-
-  std::cout << "\r[";
+  bars = bars > width ? 0 : bars;
+  std::cout << "\r\t[";
   for(unsigned short i = 0; i < bars; i++)
   {
     std::cout << "#";
@@ -26,6 +26,6 @@ void progressBar(std::ostream& out, T current, T2 max,
   }
   std::cout << std::setprecision(2) <<
     std::setiosflags (std::ios::fixed) << "]\t" <<
-      (ratio * 100) << "%     ";
+      (ratio * 100) << "%\t  ";
 
 }
