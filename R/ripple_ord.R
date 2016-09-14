@@ -226,25 +226,26 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
 
 ripple_ord <- function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
                        ripple.cores = 4, method = "one", n = NULL,
-                       pref = "neutral")
+                       pref = "neutral", start = 1)
 {
   LG <- input.seq
+  if(start + ws > length(input.seq$seq.num)) return(LG)
   if(method == "all"){
-    for(i in 1:(length(input.seq$seq.num) - ws))
+    for(i in start:(length(input.seq$seq.num) - ws))
     {
       LG <- ripple_all(LG,ws,LOD,tol,phasing.cores,ripple.cores,i)
     }
   }
   if(method == "random")
   {
-    for(i in 1:(length(input.seq$seq.num) - ws))
+    for(i in start:(length(input.seq$seq.num) - ws))
     {
       LG <- ripple_rand(LG,ws,LOD,tol,phasing.cores,ripple.cores,i,n,pref)
     }
   }
   if(method == "one")
   {
-    for(i in 1:(length(input.seq$seq.num) - ws))
+    for(i in start:(length(input.seq$seq.num) - ws))
     {
       LG <- ripple_one(LG,ws,LOD,tol,phasing.cores,ripple.cores,i)
     }

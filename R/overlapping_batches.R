@@ -50,7 +50,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
                      seeds = seeds)
     if(! is.null(fun.order ))
     {
-      LG <- fun.order(LG, ripple.cores = ripple.cores, ...)
+      LG <- fun.order(LG, ripple.cores = ripple.cores, start=overlap+2, ...)
     }
     LGs[[i]] <- LG
   }

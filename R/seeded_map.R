@@ -100,7 +100,7 @@ seeded.map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4,
   results <- list(rep(NA,4),rep(-Inf,4))
   seq.phase[1:length(seeds)] <- seeds
 
-  for(mrk in length(seeds):(length(seq.num)-1)) {
+  for(mrk in (length(seeds)+1):(length(seq.num)-1)) {
     results <- list(rep(NA,4),rep(-Inf,4))
     message("Phasing marker ", input.seq$seq.num[mrk])
     ## gather two-point information
