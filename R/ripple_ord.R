@@ -1,4 +1,4 @@
-ripple_all<-function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
+ripple_all<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
                      ripple.cores = 4, start = 1) {
   ## checking for correct objects
   if(!any(class(input.seq)=="sequence")) {
@@ -43,7 +43,7 @@ ripple_all<-function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
                      tryCatch({
                        mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
                                           twopt = input.seq$twopt),
-                                 phase.cores = phasing.cores)
+                                 phase.cores = phase.cores)
                      }, error = function(e){},
                      finally = {
                        return(mp)
@@ -54,7 +54,7 @@ ripple_all<-function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
   return(poss[[best]])
 }
 
-ripple_rand<-function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
+ripple_rand<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
                      ripple.cores = 4, start = 1, n = NULL, pref = "neutral") {
   ## checking for correct objects
   if(!any(class(input.seq)=="sequence")) {
@@ -124,7 +124,7 @@ ripple_rand<-function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
                      tryCatch({
                        mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
                                           twopt = input.seq$twopt),
-                                 phase.cores = phasing.cores)
+                                 phase.cores = phase.cores)
                      }, error = function(e){},
                      finally = {
                        return(mp)
@@ -139,7 +139,7 @@ ripple_rand<-function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
   }
 }
 
-ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
+ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
                        ripple.cores = 4, start = 1)
 {
   if(!any(class(input.seq)=="sequence")) {
@@ -209,7 +209,7 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
                      tryCatch({
                        mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
                                           twopt = input.seq$twopt),
-                                 phase.cores = phasing.cores)
+                                 phase.cores = phase.cores)
                      }, error = function(e){},
                      finally = {
                        return(mp)
@@ -224,7 +224,7 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
   }
 }
 
-ripple_ord <- function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
+ripple_ord <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
                        ripple.cores = 4, method = "one", n = NULL,
                        pref = "neutral", start = 1)
 {
@@ -233,21 +233,21 @@ ripple_ord <- function(input.seq,ws=4,LOD=3,tol=10E-2, phasing.cores = 4,
   if(method == "all"){
     for(i in start:(length(input.seq$seq.num) - ws))
     {
-      LG <- ripple_all(LG,ws,LOD,tol,phasing.cores,ripple.cores,i)
+      LG <- ripple_all(LG,ws,LOD,tol,phase.cores,ripple.cores,i)
     }
   }
   if(method == "random")
   {
     for(i in start:(length(input.seq$seq.num) - ws))
     {
-      LG <- ripple_rand(LG,ws,LOD,tol,phasing.cores,ripple.cores,i,n,pref)
+      LG <- ripple_rand(LG,ws,LOD,tol,phase.cores,ripple.cores,i,n,pref)
     }
   }
   if(method == "one")
   {
     for(i in start:(length(input.seq$seq.num) - ws))
     {
-      LG <- ripple_one(LG,ws,LOD,tol,phasing.cores,ripple.cores,i)
+      LG <- ripple_one(LG,ws,LOD,tol,phase.cores,ripple.cores,i)
     }
   }
   return(LG)
