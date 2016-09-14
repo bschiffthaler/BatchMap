@@ -29,28 +29,43 @@ generate_overlapping_batches <- function(input.seq, size = 50, overlap = 15)
 
 map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
                         fun.order = NULL, phase.cores = 4,
-                        ripple.cores = 1, ...)
+                        ripple.cores = 1, verbosity = NULL,...)
 {
   batches <- generate_overlapping_batches(input.seq, size, overlap)
+  if("batch" %in% verbosity)
+  {
+    message("Have ", length(batches), " batches.")
+    message("The number of markers in the final batch is: ",
+            length(batches[[length(batches)]]))
+    message("Prcoessing batch 1...")
+  }
   LGs <- list()
   LG <- map(make.seq(get(input.seq$twopt), batches[[1]],
-                     twopt = input.seq$twopt), phase.cores = phase.cores)
+                     twopt = input.seq$twopt), phase.cores = phase.cores,
+            verbosity = verbosity)
   if(! is.null(fun.order ))
   {
-    LG <- fun.order(LG, ripple.cores = ripple.cores, ...)
+    LG <- fun.order(LG, verbosity = verbosity,
+                    ripple.cores = ripple.cores, ...)
   }
   LGs[[1]] <- LG
   for(i in 2:length(batches))
   {
+    if("batch" %in% verbosity)
+    {
+      message("Processing batch ",i,"...")
+    }
     seeds <- tail(LGs[[i - 1]]$seq.phases, overlap)
     batches[[i]][1:(overlap+1)] <- tail(LGs[[i - 1]]$seq.num, overlap + 1)
     LG <- seeded.map(make.seq(get(input.seq$twopt),
                               batches[[i]],
                               twopt = input.seq$twopt),
+                     verbosity = verbosity,
                      seeds = seeds)
     if(! is.null(fun.order ))
     {
-      LG <- fun.order(LG, ripple.cores = ripple.cores, start=overlap+2, ...)
+      LG <- fun.order(LG, ripple.cores = ripple.cores, start=overlap+2,
+                      verbosity = verbosity, ...)
     }
     LGs[[i]] <- LG
   }
@@ -67,5 +82,11 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
     final.phase <- c(final.phase,
                    LGs[[i]]$seq.phases[(overlap + 1):length(LGs[[i]]$seq.phases)])
   }
-  map(make.seq(get(input.seq$twopt), final.seq, final.phase, input.seq$twopt))
+  if("batch" %in% verbosity)
+  {
+    message("Final call to map...")
+  }
+
+  map(make.seq(get(input.seq$twopt), final.seq, final.phase, input.seq$twopt),
+      verbosity = verbosity)
 }

@@ -1,5 +1,5 @@
 ripple_all<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
-                     ripple.cores = 4, start = 1) {
+                     ripple.cores = 4, start = 1, verbosity = NULL) {
   ## checking for correct objects
   if(!any(class(input.seq)=="sequence")) {
     stop(deparse(substitute(input.seq)),
@@ -27,9 +27,12 @@ ripple_all<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
 
   #### first position
   p <- start
-  message("...", input.seq$seq.num[p-1], "|",
-          paste(input.seq$seq.num[p:(p+ws-1)], collapse = "-"),"|",
-          input.seq$seq.num[p+ws],"...")
+  if("order" %in% verbosity)
+  {
+    message("...", input.seq$seq.num[p-1], "|",
+            paste(input.seq$seq.num[p:(p+ws-1)], collapse = "-"),"|",
+            input.seq$seq.num[p+ws],"...")
+  }
   all.ord <- t(apply(perm.tot(input.seq$seq.num[p:(p+ws-1)]),1,function(x){
     return(c(head(input.seq$seq.num,p-1),
              x,tail(input.seq$seq.num,-p-ws+1)))
@@ -37,13 +40,17 @@ ripple_all<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
 
   poss <- mclapply(1:nrow(all.ord), mc.allow.recursive = TRUE,
                    mc.cores = ripple.cores, function(i){
-                     message("Trying order ",i," of ",nrow(all.ord),
-                             " for star position ",p)
+                     if("position" %in% verbosity)
+                     {
+                       message("Trying order ",i," of ",nrow(all.ord),
+                               " for start position ",p)
+                     }
                      mp <- list(seq.like = -Inf)
                      tryCatch({
                        mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
                                           twopt = input.seq$twopt),
-                                 phase.cores = phase.cores)
+                                 phase.cores = phase.cores,
+                                 verbosity = verbosity)
                      }, error = function(e){},
                      finally = {
                        return(mp)
@@ -55,7 +62,8 @@ ripple_all<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
 }
 
 ripple_rand<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
-                     ripple.cores = 4, start = 1, n = NULL, pref = "neutral") {
+                     ripple.cores = 4, start = 1, n = NULL, pref = "neutral",
+                     verbosity = NULL) {
   ## checking for correct objects
   if(!any(class(input.seq)=="sequence")) {
     stop(deparse(substitute(input.seq)),
@@ -89,10 +97,12 @@ ripple_rand<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
 
   #### first position
   p <- start
-  message("...", input.seq$seq.num[p-1], "|",
-          paste(input.seq$seq.num[p:(p+ws-1)], collapse = "-"),"|",
-          input.seq$seq.num[p+ws],"...")
-
+  if("order" %in% verbosity)
+  {
+    message("...", input.seq$seq.num[p-1], "|",
+            paste(input.seq$seq.num[p:(p+ws-1)], collapse = "-"),"|",
+            input.seq$seq.num[p+ws],"...")
+  }
   ref <- input.seq$seq.num[p:(p+ws-1)]
 
   probs <- drop(cor(ref,t(perm.tot(input.seq$seq.num[p:(p+ws-1)]))))
@@ -118,13 +128,17 @@ ripple_rand<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
   }
   poss <- mclapply(1:nrow(all.ord), mc.allow.recursive = TRUE,
                    mc.cores = ripple.cores, function(i){
-                     message("Trying order ",i," of ",nrow(all.ord),
-                             " for star position ",p)
+                     if("position" %in% order)
+                     {
+                       message("Trying order ",i," of ",nrow(all.ord),
+                               " for start position ",p)
+                     }
                      mp <- list(seq.like = -Inf)
                      tryCatch({
                        mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
                                           twopt = input.seq$twopt),
-                                 phase.cores = phase.cores)
+                                 phase.cores = phase.cores,
+                                 verbosity = verbosity)
                      }, error = function(e){},
                      finally = {
                        return(mp)
@@ -140,7 +154,7 @@ ripple_rand<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
 }
 
 ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
-                       ripple.cores = 4, start = 1)
+                       ripple.cores = 4, start = 1, verbosity = NULL)
 {
   if(!any(class(input.seq)=="sequence")) {
     stop(deparse(substitute(input.seq)),
@@ -171,10 +185,12 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
 
   #### first position
   p <- start
-  message("...", input.seq$seq.num[p-1], "|",
-          paste(input.seq$seq.num[p:(p+ws-1)], collapse = "-"),"|",
-          input.seq$seq.num[p+ws],"...")
-
+  if("order" %in% verbosity)
+  {
+    message("...", input.seq$seq.num[p-1], "|",
+            paste(input.seq$seq.num[p:(p+ws-1)], collapse = "-"),"|",
+            input.seq$seq.num[p+ws],"...")
+  }
   all.ord <- matrix(NA,(sum((ws-1):1) + 1) * 2,ws)
   all.ord[1,] <- input.seq$seq.num[p:(p+ws-1)]
 
@@ -203,13 +219,17 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
 
   poss <- mclapply(1:nrow(all.ord), mc.allow.recursive = TRUE,
                    mc.cores = ripple.cores, function(i){
-                     message("Trying order ",i," of ",nrow(all.ord),
-                             " for star position ",p)
+                     if("position" %in% verbosity)
+                     {
+                       message("Trying order ",i," of ",nrow(all.ord),
+                               " for start position ",p)
+                     }
                      mp <- list(seq.like = -Inf)
                      tryCatch({
                        mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
                                           twopt = input.seq$twopt),
-                                 phase.cores = phase.cores)
+                                 phase.cores = phase.cores,
+                                 verbosity = verbosity)
                      }, error = function(e){},
                      finally = {
                        return(mp)
@@ -226,28 +246,31 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
 
 ripple_ord <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
                        ripple.cores = 4, method = "one", n = NULL,
-                       pref = "neutral", start = 1)
+                       pref = "neutral", start = 1, verbosity = NULL)
 {
   LG <- input.seq
   if(start + ws > length(input.seq$seq.num)) return(LG)
   if(method == "all"){
     for(i in start:(length(input.seq$seq.num) - ws))
     {
-      LG <- ripple_all(LG,ws,LOD,tol,phase.cores,ripple.cores,i)
+      LG <- ripple_all(LG,ws,LOD,tol,phase.cores,ripple.cores,i,
+                       verbosity = verbosity)
     }
   }
   if(method == "random")
   {
     for(i in start:(length(input.seq$seq.num) - ws))
     {
-      LG <- ripple_rand(LG,ws,LOD,tol,phase.cores,ripple.cores,i,n,pref)
+      LG <- ripple_rand(LG,ws,LOD,tol,phase.cores,ripple.cores,i,n,pref,
+                        verbosity = verbosity)
     }
   }
   if(method == "one")
   {
     for(i in start:(length(input.seq$seq.num) - ws))
     {
-      LG <- ripple_one(LG,ws,LOD,tol,phase.cores,ripple.cores,i)
+      LG <- ripple_one(LG,ws,LOD,tol,phase.cores,ripple.cores,i,
+                       verbosity = verbosity)
     }
   }
   return(LG)

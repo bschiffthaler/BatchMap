@@ -81,7 +81,7 @@
 ##'   markers <- make.seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
 ##'   map(markers)
 ##'
-map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4)
+map <- function(input.seq,tol=10E-5, verbosity=FALSE, phase.cores = 4)
 {
   ## checking for correct object
   if(!("sequence" %in% class(input.seq)))
@@ -99,7 +99,10 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4)
     ## if only the marker order is provided, without predefined linkage phases,
     ## a search for the best combination of phases is performed and recombination
     ## fractions are estimated
-    message("Phasing marker ", input.seq$seq.num[1])
+    if("phase" %in% verbosity)
+    {
+      message("Phasing marker ", input.seq$seq.num[1])
+    }
     seq.phase <- numeric(length(seq.num)-1)
     results <- list(rep(NA,4),rep(-Inf,4))
 
@@ -117,7 +120,8 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4)
                          map(make.seq(get(input.seq$twopt),
                                       seq.num[1:2],
                                       phase=Ph.Init[j],
-                                      twopt=input.seq$twopt))
+                                      twopt=input.seq$twopt),
+                             verbosity = verbosity)
                        })
     for(j in 1:nrow(Ph.Init))
     {
@@ -129,7 +133,10 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4)
     if(length(seq.num) > 2) {
       ## for sequences with three or more markers, these are added sequentially
       for(mrk in 2:(length(seq.num)-1)) {
-        message("Phasing marker ", input.seq$seq.num[mrk])
+        if("phase" %in% verbosity)
+        {
+          message("Phasing marker ", input.seq$seq.num[mrk])
+        }
         results <- list(rep(NA,4),rep(-Inf,4))
         ## gather two-point information
         phase.init <- vector("list",mrk)
@@ -145,7 +152,8 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4)
                              map(make.seq(get(input.seq$twopt),
                                           seq.num[1:(mrk+1)],
                                           phase=Ph.Init[j,],
-                                          twopt=input.seq$twopt))
+                                          twopt=input.seq$twopt),
+                                 verbosity = verbosity)
                            })
         for(j in 1:nrow(Ph.Init))
         {
@@ -174,7 +182,8 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4)
       }
     }
     ## one last call to map function, with the final map
-    map(make.seq(get(input.seq$twopt),seq.num,phase=seq.phase,twopt=input.seq$twopt))
+    map(make.seq(get(input.seq$twopt),seq.num,phase=seq.phase,
+                 twopt=input.seq$twopt), verbosity = verbosity)
   }
   else {
     ## if the linkage phases are provided but the recombination fractions have
@@ -189,7 +198,8 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4)
                                  verbose=FALSE,
                                  tol=tol)
     return(structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=final.map$rf,
-                          seq.like=final.map$loglike, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "sequence"))
+                          seq.like=final.map$loglike, data.name=input.seq$data.name,
+                          twopt=input.seq$twopt), class = "sequence"))
   }
 }
 

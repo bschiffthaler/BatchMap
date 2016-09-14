@@ -82,7 +82,7 @@
 ##'   map(markers)
 ##'
 seeded.map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4,
-                       seeds)
+                       seeds, verbosity = NULL)
 {
   ## checking for correct object
   if(!("sequence" %in% class(input.seq)))
@@ -102,7 +102,10 @@ seeded.map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4,
 
   for(mrk in (length(seeds)+1):(length(seq.num)-1)) {
     results <- list(rep(NA,4),rep(-Inf,4))
-    message("Phasing marker ", input.seq$seq.num[mrk])
+    if("phase" %in% verbosity)
+    {
+      message("Phasing marker ", input.seq$seq.num[mrk])
+    }
     ## gather two-point information
     phase.init <- vector("list",mrk)
     list.init <- phases(make.seq(get(input.seq$twopt),
@@ -117,7 +120,8 @@ seeded.map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4,
                          map(make.seq(get(input.seq$twopt),
                                       seq.num[1:(mrk+1)],
                                       phase=Ph.Init[j,],
-                                      twopt=input.seq$twopt))
+                                      twopt=input.seq$twopt),
+                             verbosity = verbosity)
                        })
     for(j in 1:nrow(Ph.Init))
     {
@@ -145,7 +149,8 @@ seeded.map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4,
     seq.phase[mrk] <- results[[1]][which.max(results[[2]])] # best combination of phases is chosen
   }
   ## one last call to map function, with the final map
-  map(make.seq(get(input.seq$twopt),seq.num,phase=seq.phase,twopt=input.seq$twopt))
+  map(make.seq(get(input.seq$twopt),seq.num,phase=seq.phase,twopt=input.seq$twopt),
+      verbosity = verbosity)
 }
 
 ## end of file
