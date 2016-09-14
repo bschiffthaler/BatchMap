@@ -15,7 +15,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
+  aint with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
@@ -38,24 +38,24 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-Rcpp::NumericVector est_rf_C_C(std::vector<long> k_sub,
-			       std::vector<long> k1_sub,
-			       long n_ind);
-Rcpp::NumericVector est_rf_C_D_43(std::vector<long> k_sub,
-				  std::vector<long> k1_sub,
-				  long n_ind);
-Rcpp::NumericVector est_rf_C_D_51(std::vector<long> k_sub,
-				  std::vector<long> k1_sub,
-				  long n_ind);
-Rcpp::NumericVector est_rf_D_D_43(std::vector<long> k_sub,
-				  std::vector<long> k1_sub,
-				  long n_ind);
-Rcpp::NumericVector est_rf_D_D_51(std::vector<long> k_sub,
-				  std::vector<long> k1_sub,
-				  long n_ind);
-Rcpp::NumericVector est_rf_D_D_43_51(std::vector<long> k_sub,
-				     std::vector<long> k1_sub,
-				     long n_ind);
-Rcpp::NumericVector est_rf_A_A(std::vector<long> k_sub,
-			       std::vector<long> k1_sub,
-			       long n_ind);
+Rcpp::NumericVector est_rf_C_C(std::vector<int> k_sub,
+			       std::vector<int> k1_sub,
+			       int n_ind);
+Rcpp::NumericVector est_rf_C_D_43(std::vector<int> k_sub,
+				  std::vector<int> k1_sub,
+				  int n_ind);
+Rcpp::NumericVector est_rf_C_D_51(std::vector<int> k_sub,
+				  std::vector<int> k1_sub,
+				  int n_ind);
+Rcpp::NumericVector est_rf_D_D_43(std::vector<int> k_sub,
+				  std::vector<int> k1_sub,
+				  int n_ind);
+Rcpp::NumericVector est_rf_D_D_51(std::vector<int> k_sub,
+				  std::vector<int> k1_sub,
+				  int n_ind);
+Rcpp::NumericVector est_rf_D_D_43_51(std::vector<int> k_sub,
+				     std::vector<int> k1_sub,
+				     int n_ind);
+Rcpp::NumericVector est_rf_A_A(std::vector<int> k_sub,
+			       std::vector<int> k1_sub,
+			       int n_ind);

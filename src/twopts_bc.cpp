@@ -15,7 +15,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
+  aint with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
@@ -48,23 +48,23 @@ using namespace std;
 RcppExport SEXP est_rf_bc_wrap(SEXP geno_R, SEXP mrk_R, SEXP n_ind_R, SEXP type_R, SEXP verbose_R)
 {
   Rcpp::NumericVector geno = Rcpp::as<Rcpp::NumericVector>(geno_R);
-  long n_ind = Rcpp::as<long>(n_ind_R);
-  long type = Rcpp::as<long>(type_R);
+  int n_ind = Rcpp::as<int>(n_ind_R);
+  int type = Rcpp::as<int>(type_R);
   bool verbose = Rcpp::as<bool>(verbose_R);
-  long mrk = Rcpp::as<long>(mrk_R);
+  int mrk = Rcpp::as<int>(mrk_R);
   NumericMatrix z = est_rf_bc(geno, mrk, n_ind, type, verbose);
   return(wrap(z));
 }
 
 
-Rcpp::NumericMatrix est_rf_bc(Rcpp::NumericVector geno, long mrk,
-			      long n_ind, long type, bool verbose)
+Rcpp::NumericMatrix est_rf_bc(Rcpp::NumericVector geno, int mrk,
+			      int n_ind, int type, bool verbose)
 {
-  long n_mar=((long)geno.size()/n_ind);
+  int n_mar=((int)geno.size()/n_ind);
   double rtemp, l, l0, mis=0, nr=0;
   Rcpp::NumericMatrix r(n_mar, n_mar);
   NumericMatrix rm(2, n_mar);
-  long chunk=((n_mar*n_mar)-n_mar)/20, ct1=0, ct2=1, a1, a2, a3;
+  int chunk=((n_mar*n_mar)-n_mar)/20, ct1=0, ct2=1, a1, a2, a3;
   if(mrk < 0)
     {
       if(verbose && n_mar > 100)
@@ -79,7 +79,7 @@ Rcpp::NumericMatrix est_rf_bc(Rcpp::NumericVector geno, long mrk,
       a1=mrk;
       a2=mrk+1;
     }
-  for(long i=a1; i < a2; i++)
+  for(int i=a1; i < a2; i++)
     {
       if(mrk < 0){
 	if(verbose && n_mar > 100)
@@ -93,13 +93,13 @@ Rcpp::NumericMatrix est_rf_bc(Rcpp::NumericVector geno, long mrk,
       if(mrk < 0) a3=(i+1);
       else a3=0;
       R_CheckUserInterrupt(); /* check for ^C */
-      for(long j=a3; j  < n_mar; j++)
+      for(int j=a3; j  < n_mar; j++)
 	{
 	  ct1++;
 	  nr=mis=0;
-	  std::vector<long> k_sub(&geno[i*n_ind],&geno[i*n_ind+n_ind]);
-	  std::vector<long> k1_sub(&geno[j*n_ind],&geno[j*n_ind+n_ind]);
-	  for(long k=0; k < n_ind; k++)
+	  std::vector<int> k_sub(&geno[i*n_ind],&geno[i*n_ind+n_ind]);
+	  std::vector<int> k1_sub(&geno[j*n_ind],&geno[j*n_ind+n_ind]);
+	  for(int k=0; k < n_ind; k++)
 	    {
 	      if(k_sub[k]==0 || k1_sub[k]==0) mis++;
 	      else if((k_sub[k] != k1_sub[k])) nr++;

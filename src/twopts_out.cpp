@@ -46,9 +46,9 @@ using namespace std;
 
 RcppExport SEXP est_rf_out_wrap(SEXP geno_R, SEXP mrk_R, SEXP segreg_type_R, SEXP n_ind_R, SEXP verbose_R)
 {
-  long n_ind = Rcpp::as<long>(n_ind_R);
+  int n_ind = Rcpp::as<int>(n_ind_R);
   bool verbose = Rcpp::as<bool>(verbose_R);
-  long mrk = Rcpp::as<long>(mrk_R);
+  int mrk = Rcpp::as<int>(mrk_R);
   Rcpp::NumericVector segreg_type = Rcpp::as<Rcpp::NumericVector>(segreg_type_R);
   Rcpp::NumericVector geno = Rcpp::as<Rcpp::NumericVector>(geno_R);
   List z = est_rf_out(geno, mrk, segreg_type, n_ind, verbose);
@@ -56,13 +56,13 @@ RcppExport SEXP est_rf_out_wrap(SEXP geno_R, SEXP mrk_R, SEXP segreg_type_R, SEX
 }
 
 Rcpp::List est_rf_out(Rcpp::NumericVector geno,
-                      long mrk,
+                      int mrk,
                       Rcpp::NumericVector segreg_type,
-                      long n_ind, bool verbose)
+                      int n_ind, bool verbose)
 {
-  long n_mar=((long)geno.size()/n_ind), k1, k2;
+  int n_mar=((int)geno.size()/n_ind), k1, k2;
   Rcout << n_mar << " markers input.\n";
-  long chunk=((n_mar*n_mar)-n_mar)/20, ct1=0, ct2=1, a1, a2, a3;
+  int chunk=((n_mar*n_mar)-n_mar)/20, ct1=0, ct2=1, a1, a2, a3;
   NumericMatrix n(5,5);
   NumericVector r(8);
   NumericVector d1d2 =  NumericVector::create(0.25, 0.25, 0.25, 0.25, 0.00, 0.00, 0.00, 0.00);
@@ -86,28 +86,28 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
     a1=mrk;
     a2=mrk+1;
   }
-  for(long i=a1; i < a2; i++)
+  for(int i=a1; i < a2; i++)
   {
     if(mrk < 0){
       if(verbose==1 && n_mar > 100)
       {
         if(ct1%(chunk/(chunk/10))==0)
         {
-          progressBar(Rcpp::Rcout, ct1, ((n_mar*n_mar)-n_mar)/2, 80);
+          progressBar(Rcpp::Rcout, ct1, ((n_mar*n_mar)-n_mar)/2, 40);
         }
       }
     }
     R_CheckUserInterrupt();
     if(mrk < 0) a3=(i+1);
     else a3=0;
-    for(long j=a3; j  < n_mar; j++)
+    for(int j=a3; j  < n_mar; j++)
     {
       ct1++;
-      std::vector<long> k_sub(&geno[i*n_ind],&geno[i*n_ind+n_ind]);
-      std::vector<long> k1_sub(&geno[j*n_ind],&geno[j*n_ind+n_ind]);
+      std::vector<int> k_sub(&geno[i*n_ind],&geno[i*n_ind+n_ind]);
+      std::vector<int> k1_sub(&geno[j*n_ind],&geno[j*n_ind+n_ind]);
       std::fill(n.begin(), n.end(), 0);
       std::fill(r.begin(), r.end(), 0);
-      for(long k=0; k < n_ind; k++)
+      for(int k=0; k < n_ind; k++)
       {
         if(k_sub[k]==1)
         {

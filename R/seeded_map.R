@@ -81,7 +81,8 @@
 ##'   markers <- make.seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
 ##'   map(markers)
 ##'
-map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4)
+seeded.map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4,
+                       seeds)
 {
   ## checking for correct object
   if(!("sequence" %in% class(input.seq)))
@@ -95,102 +96,56 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4)
   if(length(seq.num) < 2) stop("The sequence must have at least 2 markers")
   ##For F2, BC and rils
 
-  if((seq.phases == -1) && (seq.rf == -1) && is.null(seq.like)) {
-    ## if only the marker order is provided, without predefined linkage phases,
-    ## a search for the best combination of phases is performed and recombination
-    ## fractions are estimated
-    message("Phasing marker ", input.seq$seq.num[1])
-    seq.phase <- numeric(length(seq.num)-1)
-    results <- list(rep(NA,4),rep(-Inf,4))
+  seq.phase <- numeric(length(seq.num)-1)
+  results <- list(rep(NA,4),rep(-Inf,4))
+  seq.phase[1:length(seeds)] <- seeds
 
-    ## linkage map is started with the first two markers in the sequence
-    ## gather two-point information for this pair
-    phase.init <- vector("list",1)
-    list.init <- phases(make.seq(get(input.seq$twopt,pos = -1),
-                                 seq.num[1:2],
+  for(mrk in length(seeds):(length(seq.num)-1)) {
+    results <- list(rep(NA,4),rep(-Inf,4))
+    message("Phasing marker ", input.seq$seq.num[mrk])
+    ## gather two-point information
+    phase.init <- vector("list",mrk)
+    list.init <- phases(make.seq(get(input.seq$twopt),
+                                 c(seq.num[mrk],seq.num[mrk+1]),
                                  twopt=input.seq$twopt))
-    phase.init[[1]] <- list.init$phase.init[[1]]
+    phase.init[[mrk]] <- list.init$phase.init[[1]]
+    for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
     Ph.Init <- comb.ger(phase.init)
     phases <- mclapply(1:nrow(Ph.Init), mc.cores = phase.cores,
                        function(j) {
-                         ## call to 'map' function with predefined linkage phase
+                         ## call to 'map' function with predefined linkage phases
                          map(make.seq(get(input.seq$twopt),
-                                      seq.num[1:2],
-                                      phase=Ph.Init[j],
+                                      seq.num[1:(mrk+1)],
+                                      phase=Ph.Init[j,],
                                       twopt=input.seq$twopt))
                        })
     for(j in 1:nrow(Ph.Init))
     {
-      results[[1]][j] <- phases[[j]]$seq.phases
+      results[[1]][j] <- phases[[j]]$seq.phases[mrk]
       results[[2]][j] <- phases[[j]]$seq.like
     }
-    seq.phase[1] <- results[[1]][which.max(results[[2]])] # best linkage phase is chosen
-
-    if(length(seq.num) > 2) {
-      ## for sequences with three or more markers, these are added sequentially
-      for(mrk in 2:(length(seq.num)-1)) {
-        message("Phasing marker ", input.seq$seq.num[mrk])
-        results <- list(rep(NA,4),rep(-Inf,4))
-        ## gather two-point information
-        phase.init <- vector("list",mrk)
-        list.init <- phases(make.seq(get(input.seq$twopt),
-                                     c(seq.num[mrk],seq.num[mrk+1]),
-                                     twopt=input.seq$twopt))
-        phase.init[[mrk]] <- list.init$phase.init[[1]]
-        for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
-        Ph.Init <- comb.ger(phase.init)
-        phases <- mclapply(1:nrow(Ph.Init), mc.cores = phase.cores,
-                           function(j) {
-                             ## call to 'map' function with predefined linkage phases
-                             map(make.seq(get(input.seq$twopt),
-                                          seq.num[1:(mrk+1)],
-                                          phase=Ph.Init[j,],
-                                          twopt=input.seq$twopt))
-                           })
-        for(j in 1:nrow(Ph.Init))
-        {
-          results[[1]][j] <- phases[[j]]$seq.phases[mrk]
-          results[[2]][j] <- phases[[j]]$seq.like
-        }
-        if(all(is.na(results[[2]])))
-        {
-          warning("Could not determine phase for marker ",
-                  input.seq$seq.num[mrk],". Trying to add next...")
-          # Ph.Init2 <- do.call(rbind, unlist(apply(Ph.Init,1,function(x){
-          #   lapply(1:4,function(y){c(x,y)})
-          # }),recursive = FALSE))
-          # results <- list(rep(NA,16),rep(-Inf,16))
-          # for(j in 1:nrow(Ph.Init2)) {
-          #   ## call to 'map' function with predefined linkage phases
-          #   temp <- map(make.seq(get(input.seq$twopt),
-          #                        seq.num[1:(mrk+2)],
-          #                        phase=Ph.Init2[j,],
-          #                        twopt=input.seq$twopt))
-          #   results[[1]][j] <- temp$seq.phases[mrk]
-          #   results[[2]][j] <- temp$seq.like
-          # }
-        }
-        seq.phase[mrk] <- results[[1]][which.max(results[[2]])] # best combination of phases is chosen
-      }
+    if(all(is.na(results[[2]])))
+    {
+      warning("Could not determine phase for marker ",
+              input.seq$seq.num[mrk],". Trying to add next...")
+      # Ph.Init2 <- do.call(rbind, unlist(apply(Ph.Init,1,function(x){
+      #   lapply(1:4,function(y){c(x,y)})
+      # }),recursive = FALSE))
+      # results <- list(rep(NA,16),rep(-Inf,16))
+      # for(j in 1:nrow(Ph.Init2)) {
+      #   ## call to 'map' function with predefined linkage phases
+      #   temp <- map(make.seq(get(input.seq$twopt),
+      #                        seq.num[1:(mrk+2)],
+      #                        phase=Ph.Init2[j,],
+      #                        twopt=input.seq$twopt))
+      #   results[[1]][j] <- temp$seq.phases[mrk]
+      #   results[[2]][j] <- temp$seq.like
+      # }
     }
-    ## one last call to map function, with the final map
-    map(make.seq(get(input.seq$twopt),seq.num,phase=seq.phase,twopt=input.seq$twopt))
+    seq.phase[mrk] <- results[[1]][which.max(results[[2]])] # best combination of phases is chosen
   }
-  else {
-    ## if the linkage phases are provided but the recombination fractions have
-    ## not yet been estimated or need to be reestimated, this is done here
-    ## gather two-point information
-    rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
-    ## estimate parameters
-    final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
-                                 type=get(input.seq$data.name, pos=1)$segr.type.num[seq.num],
-                                 phase=seq.phases,
-                                 rf.vec=rf.init,
-                                 verbose=FALSE,
-                                 tol=tol)
-    return(structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=final.map$rf,
-                          seq.like=final.map$loglike, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "sequence"))
-  }
+  ## one last call to map function, with the final map
+  map(make.seq(get(input.seq$twopt),seq.num,phase=seq.phase,twopt=input.seq$twopt))
 }
 
 ## end of file

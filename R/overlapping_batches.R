@@ -1,0 +1,71 @@
+generate_overlapping_batches <- function(input.seq, size = 50, overlap = 15)
+{
+  start <- 1
+  end <- size
+  current <- 1
+  if(size > length(input.seq$seq.num)/2)
+  {
+    stop("You should at least have two overlapping batches.",
+         " Reconsider the size parameter.")
+  }
+  res <- list()
+  while(end <= length(input.seq$seq.num))
+  {
+    res[[current]] <- input.seq$seq.num[start:end]
+    current <- current + 1
+    start <- end - overlap
+    if(end == length(input.seq$seq.num)) break
+    end <- end + size - overlap - 1
+    if(end > length(input.seq$seq.num)) end <- length(input.seq$seq.num)
+  }
+  sizes <- unlist(lapply(res, length))
+  if(any(sizes/size > 1.25))
+  {
+    warning("One group is 25% bigger than the group size. ",
+            "Consider adjusting parameters.")
+  }
+  return(res)
+}
+
+map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
+                        fun.order = NULL, phase.cores = 4,
+                        ripple.cores = 1, ...)
+{
+  batches <- generate_overlapping_batches(input.seq, size, overlap)
+  LGs <- list()
+  LG <- map(make.seq(get(input.seq$twopt), batches[[1]],
+                     twopt = input.seq$twopt), phase.cores = phase.cores)
+  if(! is.null(fun.order ))
+  {
+    LG <- fun.order(LG, ripple.cores = ripple.cores, ...)
+  }
+  LGs[[1]] <- LG
+  for(i in 2:length(batches))
+  {
+    seeds <- tail(LGs[[i - 1]]$seq.phases, overlap)
+    batches[[i]][1:(overlap+1)] <- tail(LGs[[i - 1]]$seq.num, overlap + 1)
+    LG <- seeded.map(make.seq(get(input.seq$twopt),
+                              batches[[i]],
+                              twopt = input.seq$twopt),
+                     seeds = seeds)
+    if(! is.null(fun.order ))
+    {
+      LG <- fun.order(LG, ripple.cores = ripple.cores, ...)
+    }
+    LGs[[i]] <- LG
+  }
+  final.seq <- LGs[[1]]$seq.num
+  final.phase <- LGs[[1]]$seq.phases
+  for(i in 2:length(batches))
+  {
+    start <- length(final.seq) - overlap
+    final.seq[start:length(final.seq)] <- head(LGs[[i]]$seq.num, overlap + 1)
+    final.seq <- c(final.seq,
+                   LGs[[i]]$seq.num[(overlap + 2):length(LGs[[i]]$seq.num)])
+    start <- length(final.phase) - overlap + 1
+    final.phase[start:length(final.phase)] <- head(LGs[[i]]$seq.phases, overlap)
+    final.phase <- c(final.phase,
+                   LGs[[i]]$seq.phases[(overlap + 1):length(LGs[[i]]$seq.phases)])
+  }
+  map(make.seq(get(input.seq$twopt), final.seq, final.phase, input.seq$twopt))
+}

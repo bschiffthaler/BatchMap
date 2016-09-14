@@ -15,7 +15,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
+  aint with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
@@ -52,11 +52,11 @@ using namespace std;
 #define LN_75 -0.28768207245178
 
 Rcpp::NumericVector rf_A_A(Rcpp::NumericMatrix n,
-			  long n_ind,
-			  long mis)
+			  int n_ind,
+			  int mis)
 {
   NumericVector r(8);
-  long n1, n2, n3, n4;
+  int n1, n2, n3, n4;
   double l0, l;
   l0=-2.0*M_LN2*(n_ind-mis);
   n1=n(4,1)+n(3,2)+n(2,3)+n(1,4);
@@ -74,8 +74,8 @@ Rcpp::NumericVector rf_A_A(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_A_B1(Rcpp::NumericMatrix n,
-			    long n_ind,
-			    long mis)
+			    int n_ind,
+			    int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -113,8 +113,8 @@ Rcpp::NumericVector rf_A_B1(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_A_B2(Rcpp::NumericMatrix n,
-			    long n_ind,
-			    long mis)
+			    int n_ind,
+			    int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -152,8 +152,8 @@ Rcpp::NumericVector rf_A_B2(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_A_B3(Rcpp::NumericMatrix n,
-			    long n_ind,
-			    long mis)
+			    int n_ind,
+			    int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -198,8 +198,8 @@ Rcpp::NumericVector rf_A_B3(Rcpp::NumericMatrix n,
 }
 
 Rcpp::NumericVector rf_A_C(Rcpp::NumericMatrix n,
-			   long n_ind,
-			   long mis)
+			   int n_ind,
+			   int mis)
 {
   NumericVector r(8);
   double l, l0, r0, r1, r2, rnew, rold;
@@ -246,8 +246,8 @@ Rcpp::NumericVector rf_A_C(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_A_D1(Rcpp::NumericMatrix n,
-			   long n_ind,
-			   long mis)
+			   int n_ind,
+			   int mis)
 {
   NumericVector r(8);
   double l, l0,  rnew, rold;
@@ -268,8 +268,8 @@ Rcpp::NumericVector rf_A_D1(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_A_D2(Rcpp::NumericMatrix n,
-			   long n_ind,
-			   long mis)
+			   int n_ind,
+			   int mis)
 {
   NumericVector r(8);
   double l, l0,  rnew, rold;
@@ -290,8 +290,8 @@ Rcpp::NumericVector rf_A_D2(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B1_B1(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -322,8 +322,8 @@ Rcpp::NumericVector rf_B1_B1(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B1_B2(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -354,8 +354,8 @@ Rcpp::NumericVector rf_B1_B2(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B1_B3(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -394,8 +394,8 @@ Rcpp::NumericVector rf_B1_B3(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B1_C(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -444,8 +444,8 @@ Rcpp::NumericVector rf_B1_C(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B1_D1(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -467,8 +467,8 @@ Rcpp::NumericVector rf_B1_D1(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B1_D2(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -490,8 +490,8 @@ Rcpp::NumericVector rf_B1_D2(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B2_B2(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -526,8 +526,8 @@ Rcpp::NumericVector rf_B2_B2(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B2_B3(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -574,8 +574,8 @@ Rcpp::NumericVector rf_B2_B3(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B2_C(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -621,8 +621,8 @@ Rcpp::NumericVector rf_B2_C(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B2_D1(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -643,8 +643,8 @@ Rcpp::NumericVector rf_B2_D1(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B2_D2(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -665,8 +665,8 @@ Rcpp::NumericVector rf_B2_D2(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B3_B3(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -705,8 +705,8 @@ Rcpp::NumericVector rf_B3_B3(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B3_C(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -754,8 +754,8 @@ Rcpp::NumericVector rf_B3_C(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B3_D1(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -776,8 +776,8 @@ Rcpp::NumericVector rf_B3_D1(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_B3_D2(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -798,8 +798,8 @@ Rcpp::NumericVector rf_B3_D2(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_C_C(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -842,8 +842,8 @@ Rcpp::NumericVector rf_C_C(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_C_D1(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -867,8 +867,8 @@ Rcpp::NumericVector rf_C_D1(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_C_D2(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -892,8 +892,8 @@ Rcpp::NumericVector rf_C_D2(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_D1_D1(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -915,8 +915,8 @@ Rcpp::NumericVector rf_D1_D1(Rcpp::NumericMatrix n,
   return(r);
 }
 Rcpp::NumericVector rf_D2_D2(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
@@ -940,8 +940,8 @@ Rcpp::NumericVector rf_D2_D2(Rcpp::NumericMatrix n,
 
 /*
 Rcpp::NumericVector rf_X_X(Rcpp::NumericMatrix n,
-			     long n_ind,
-			     long mis)
+			     int n_ind,
+			     int mis)
 {
   NumericVector r(8);
   double l, l0, rnew, rold;

@@ -44,9 +44,9 @@ using namespace std;
 
 RcppExport SEXP est_rf_f2_wrap(SEXP geno_R, SEXP mrk_R, SEXP segreg_type_R, SEXP n_ind_R, SEXP verbose_R)
 {
-  long n_ind = Rcpp::as<long>(n_ind_R);
+  int n_ind = Rcpp::as<int>(n_ind_R);
   bool verbose = Rcpp::as<bool>(verbose_R);
-  long mrk = Rcpp::as<long>(mrk_R);
+  int mrk = Rcpp::as<int>(mrk_R);
   Rcpp::NumericVector segreg_type = Rcpp::as<Rcpp::NumericVector>(segreg_type_R);
   Rcpp::NumericVector geno = Rcpp::as<Rcpp::NumericVector>(geno_R);
   NumericMatrix z = est_rf_f2(geno, mrk, segreg_type, n_ind, verbose);
@@ -54,12 +54,12 @@ RcppExport SEXP est_rf_f2_wrap(SEXP geno_R, SEXP mrk_R, SEXP segreg_type_R, SEXP
 }
 
 Rcpp::NumericMatrix est_rf_f2(Rcpp::NumericVector geno,
-                              long mrk,
+                              int mrk,
                               Rcpp::NumericVector segreg_type,
-                              long n_ind, bool verbose)
+                              int n_ind, bool verbose)
 {
-  long n_mar=((long)geno.size()/n_ind), k1, k2;
-  long chunk=((n_mar*n_mar)-n_mar)/20, ct1=0, ct2=1, a1, a2, a3;
+  int n_mar=((int)geno.size()/n_ind), k1, k2;
+  int chunk=((n_mar*n_mar)-n_mar)/20, ct1=0, ct2=1, a1, a2, a3;
   NumericMatrix r(n_mar, n_mar);
   NumericMatrix rm(2, n_mar);
   Rcpp::NumericVector rtemp(2);
@@ -77,7 +77,7 @@ Rcpp::NumericMatrix est_rf_f2(Rcpp::NumericVector geno,
     a1=mrk;
     a2=mrk+1;
   }
-  for(long i=a1; i < a2; i++)
+  for(int i=a1; i < a2; i++)
   {
     if(mrk < 0){
       if(verbose && n_mar > 100)
@@ -90,11 +90,11 @@ Rcpp::NumericMatrix est_rf_f2(Rcpp::NumericVector geno,
       R_CheckUserInterrupt(); // check for ^C
       if(mrk < 0) a3=(i+1);
       else a3=0;
-      for(long j=a3; j  < n_mar; j++)
+      for(int j=a3; j  < n_mar; j++)
       {
         ct1++;
-        std::vector<long> k_sub(&geno[i*n_ind],&geno[i*n_ind+n_ind]);
-        std::vector<long> k1_sub(&geno[j*n_ind],&geno[j*n_ind+n_ind]);
+        std::vector<int> k_sub(&geno[i*n_ind],&geno[i*n_ind+n_ind]);
+        std::vector<int> k1_sub(&geno[j*n_ind],&geno[j*n_ind+n_ind]);
         k1=segreg_type(i); k2=segreg_type(j);
         // Rcpp::Rcout << k1 << "--" << k2 << "\n";
         switch(k1){
