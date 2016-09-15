@@ -246,33 +246,77 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
 
 ripple_ord <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
                        ripple.cores = 4, method = "one", n = NULL,
-                       pref = "neutral", start = 1, verbosity = NULL)
+                       pref = "neutral", start = 1, verbosity = NULL,
+                       batches = NULL)
 {
   LG <- input.seq
   if(start + ws > length(input.seq$seq.num)) return(LG)
+  timings <- vector()
+  stime <- Sys.time()
   if(method == "all"){
     for(i in start:(length(input.seq$seq.num) - ws))
     {
+      tic <- Sys.time()
       LG <- ripple_all(LG,ws,LOD,tol,phase.cores,ripple.cores,i,
                        verbosity = verbosity)
+      toc <- Sys.time()
+      timings <- c(timings, as.numeric(difftime(toc, tic, units = "secs")))
+      if("time" %in% verbosity)
+      {
+        tim <- predict_time(batches, ws, timings)
+        message("Pedicted finish time: ", (stime + tim[1]))
+      }
     }
   }
   if(method == "random")
   {
     for(i in start:(length(input.seq$seq.num) - ws))
     {
+      tic <- Sys.time()
       LG <- ripple_rand(LG,ws,LOD,tol,phase.cores,ripple.cores,i,n,pref,
                         verbosity = verbosity)
+      toc <- Sys.time()
+      timings <- c(timings, as.numeric(difftime(toc, tic, units = "secs")))
+      if("time" %in% verbosity)
+      {
+        tim <- predict_time(batches, ws, timings)
+        message("Pedicted finish time: ", stime + tim[1])
+      }
     }
   }
   if(method == "one")
   {
     for(i in start:(length(input.seq$seq.num) - ws))
     {
+      tic <- Sys.time()
       LG <- ripple_one(LG,ws,LOD,tol,phase.cores,ripple.cores,i,
                        verbosity = verbosity)
+      toc <- Sys.time()
+      timings <- c(timings, as.numeric(difftime(toc, tic, units = "secs")))
+      if("time" %in% verbosity)
+      {
+        tim <- predict_time(batches, ws, timings)
+        message("Pedicted finish time: ", stime + tim[1])
+      }
     }
   }
   return(LG)
 }
 
+predict_time <- function(batches, ws, timings)
+{
+  if(is.null(batches)) return(NULL)
+  m <- mean(timings)
+  s <- sd(timings)
+  overlap <- length(intersect(batches[[1]], batches[[2]]))
+  tot <- length(batches[[1]]) - ws
+  for(f in 2:length(batches))
+  {
+    tot <- tot + length(batches[[f]] - overlap - ws)
+  }
+  m <- round(m*tot)
+  s <- round(s*tot)
+  message("The current best estimate for the total time is ", m, "s +/- ",
+          s, "s.")
+  return(c(m,s))
+}

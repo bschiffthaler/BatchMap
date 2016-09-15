@@ -46,7 +46,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
   if(! is.null(fun.order ))
   {
     LG <- fun.order(LG, verbosity = verbosity,
-                    ripple.cores = ripple.cores, ...)
+                    ripple.cores = ripple.cores, batches = batches, ...)
   }
   LGs[[1]] <- LG
   for(i in 2:length(batches))
@@ -65,7 +65,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
     if(! is.null(fun.order ))
     {
       LG <- fun.order(LG, ripple.cores = ripple.cores, start=overlap+2,
-                      verbosity = verbosity, ...)
+                      verbosity = verbosity, batches = batches, ...)
     }
     LGs[[i]] <- LG
   }

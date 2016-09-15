@@ -114,7 +114,8 @@ seeded.map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4,
     phase.init[[mrk]] <- list.init$phase.init[[1]]
     for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
     Ph.Init <- comb.ger(phase.init)
-    phases <- mclapply(1:nrow(Ph.Init), mc.cores = phase.cores,
+    phases <- mclapply(1:nrow(Ph.Init),
+                       mc.cores = min(nrow(Ph.Init),phase.cores),
                        function(j) {
                          ## call to 'map' function with predefined linkage phases
                          map(make.seq(get(input.seq$twopt),
