@@ -1,13 +1,9 @@
-generate_overlapping_batches <- function(input.seq, size = 50, overlap = 15)
+generate_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
+                                         silent = FALSE)
 {
   start <- 1
   end <- size
   current <- 1
-  if(size > length(input.seq$seq.num)/2)
-  {
-    stop("You should at least have two overlapping batches.",
-         " Reconsider the size parameter.")
-  }
   res <- list()
   while(end <= length(input.seq$seq.num))
   {
@@ -19,12 +15,31 @@ generate_overlapping_batches <- function(input.seq, size = 50, overlap = 15)
     if(end > length(input.seq$seq.num)) end <- length(input.seq$seq.num)
   }
   sizes <- unlist(lapply(res, length))
-  if(any(sizes/size > 1.25))
+  if(length(sizes) < 2 & ! silent)
+  {
+    warning("You should at least have two overlapping batches.",
+            " Reconsider the size parameter.")
+  }
+  if(any(sizes/size > 1.25) & ! silent)
   {
     warning("One group is 25% bigger than the group size. ",
             "Consider adjusting parameters.")
   }
   return(res)
+}
+
+pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
+{
+  test.sizes <- c(size, (size - 1):(size - around), (size + 1):(size + around))
+  all.batches <- lapply(test.sizes, function(s){
+    generate_overlapping_batches(input.seq, s, overlap, silent = TRUE)
+  })
+  x <- unlist(lapply(all.batches, function(f){
+    ran <- range(unlist(lapply(f,length)))
+    ran[2] - ran[1]
+  }))
+  x <- which(x == min(x))
+  test.sizes[x[length(x)]] #prefer larger maps
 }
 
 map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
