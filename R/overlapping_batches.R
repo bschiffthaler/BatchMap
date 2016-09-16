@@ -68,6 +68,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
   {
     if("batch" %in% verbosity)
     {
+      print(LGs[[i - 1]])
       message("Processing batch ",i,"...")
     }
     seeds <- tail(LGs[[i - 1]]$seq.phases, overlap)
