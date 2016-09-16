@@ -154,7 +154,8 @@ ripple_rand<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
 }
 
 ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
-                       ripple.cores = 4, start = 1, verbosity = NULL)
+                       ripple.cores = 4, start = 1, verbosity = NULL,
+                       no_reverse = TRUE)
 {
   if(!any(class(input.seq)=="sequence")) {
     stop(deparse(substitute(input.seq)),
@@ -191,7 +192,14 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
             paste(input.seq$seq.num[p:(p+ws-1)], collapse = "-"),"|",
             input.seq$seq.num[p+ws],"...")
   }
-  all.ord <- matrix(NA,(sum((ws-1):1) + 1) * 2,ws)
+  if(no_reverse)
+  {
+    all.ord <- matrix(NA,(sum((ws-1):1) + 1), ws)
+  }
+  else
+  {
+    all.ord <- matrix(NA,(sum((ws-1):1) + 1) * 2,ws)
+  }
   all.ord[1,] <- input.seq$seq.num[p:(p+ws-1)]
 
   r <- 2
@@ -206,12 +214,15 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
       r <- r+1
     }
   }
-  for(r in (sum((ws-1):1) + 2):((sum((ws-1):1) + 1) * 2))
+  if(! no_reverse)
   {
-    all.ord[r,] <- rev(all.ord[r - sum((ws-1):1) + 1,])
+    for(r in (sum((ws-1):1) + 2):((sum((ws-1):1) + 1) * 2))
+    {
+      all.ord[r,] <- rev(all.ord[r - sum((ws-1):1) + 1,])
+    }
   }
   all.ord <- all.ord[!duplicated(apply(all.ord,1,paste,collapse="-")),]
-
+  all.ord <- all.ord[-1,]
   all.ord <- t(apply(all.ord,1,function(x){
     return(c(head(input.seq$seq.num,p-1),
              x,tail(input.seq$seq.num,-p-ws+1)))
@@ -247,7 +258,7 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
 ripple_ord <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
                        ripple.cores = 4, method = "one", n = NULL,
                        pref = "neutral", start = 1, verbosity = NULL,
-                       batches = NULL)
+                       batches = NULL, no_reverse = TRUE)
 {
   LG <- input.seq
   if(start + ws > length(input.seq$seq.num)) return(LG)
@@ -290,7 +301,7 @@ ripple_ord <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
     {
       tic <- Sys.time()
       LG <- ripple_one(LG,ws,LOD,tol,phase.cores,ripple.cores,i,
-                       verbosity = verbosity)
+                       verbosity = verbosity, no_reverse)
       toc <- Sys.time()
       timings <- c(timings, as.numeric(difftime(toc, tic, units = "secs")))
       if("time" %in% verbosity)
@@ -306,7 +317,7 @@ ripple_ord <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
 predict_time <- function(batches, ws, timings)
 {
   if(is.null(batches)) return(NULL)
-  m <- mean(timings)
+  m <- median(timings)
   s <- sd(timings)
   overlap <- length(intersect(batches[[1]], batches[[2]]))
   tot <- length(batches[[1]]) - ws
