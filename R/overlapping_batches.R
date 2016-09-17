@@ -44,7 +44,8 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 
 map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
                         fun.order = NULL, phase.cores = 4,
-                        ripple.cores = 1, verbosity = NULL,...)
+                        ripple.cores = 1, verbosity = NULL, max.dist = Inf,
+                        ws = 4, ...)
 {
   batches <- generate_overlapping_batches(input.seq, size, overlap)
   if("batch" %in% verbosity)
@@ -58,10 +59,13 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
   LG <- map(make.seq(get(input.seq$twopt), batches[[1]],
                      twopt = input.seq$twopt), phase.cores = phase.cores,
             verbosity = verbosity)
-  if(! is.null(fun.order ))
+  round <- 0
+  while(any(kosambi(LG$seq.rf) > max.dist))
   {
-    LG <- fun.order(LG, verbosity = verbosity,
-                    ripple.cores = ripple.cores, batches = batches, ...)
+    LG <-  fun.order(LG, ripple.cores = ripple.cores, start=overlap+2,
+                     verbosity = verbosity, batches = batches,
+                     ws = ws + round, ...)
+    round <- round + 1
   }
   LGs[[1]] <- LG
   for(i in 2:length(batches))
@@ -80,8 +84,14 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
                      seeds = seeds)
     if(! is.null(fun.order ))
     {
-      LG <- fun.order(LG, ripple.cores = ripple.cores, start=overlap+2,
-                      verbosity = verbosity, batches = batches, ...)
+      round <- 0
+      while(any(kosambi(LG$seq.rf) > max.dist))
+      {
+       LG <-  fun.order(LG, ripple.cores = ripple.cores, start=overlap+2,
+                        verbosity = verbosity, batches = batches,
+                        ws = ws + round, ...)
+       round <- round + 1
+      }
     }
     LGs[[i]] <- LG
   }
