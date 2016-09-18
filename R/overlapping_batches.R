@@ -70,7 +70,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
     }
     print(LG)
     if(round %% increase.every == 0) increment <- increment + 1
-    LG <-  fun.order(LG, ripple.cores = ripple.cores, start=overlap+2,
+    LG <-  fun.order(LG, ripple.cores = ripple.cores, start = 1,
                      verbosity = verbosity, batches = batches,
                      ws = ws + increment, ...)
     round <- round + 1
