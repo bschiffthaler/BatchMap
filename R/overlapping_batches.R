@@ -45,7 +45,7 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
                         fun.order = NULL, phase.cores = 4,
                         ripple.cores = 1, verbosity = NULL, max.dist = Inf,
-                        ws = 4, ...)
+                        ws = 4, increase.every = 4, max.tries = 10, ...)
 {
   batches <- generate_overlapping_batches(input.seq, size, overlap)
   if("batch" %in% verbosity)
@@ -59,12 +59,19 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
   LG <- map(make.seq(get(input.seq$twopt), batches[[1]],
                      twopt = input.seq$twopt), phase.cores = phase.cores,
             verbosity = verbosity)
-  round <- 0
+  round <- 1
+  increment <- 0
   while(any(kosambi(LG$seq.rf) > max.dist))
   {
+    if(round > max.tries)
+    {
+      warning("Algorithm could not solve gaps in batch 1.")
+      break
+    }
+    if(round %% increase.every == 0) increment <- increment + 1
     LG <-  fun.order(LG, ripple.cores = ripple.cores, start=overlap+2,
                      verbosity = verbosity, batches = batches,
-                     ws = ws + round, ...)
+                     ws = ws + increment, ...)
     round <- round + 1
   }
   LGs[[1]] <- LG
@@ -84,13 +91,20 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
                      seeds = seeds)
     if(! is.null(fun.order ))
     {
-      round <- 0
+      round <- 1
+      increment <- 0
       while(any(kosambi(LG$seq.rf) > max.dist))
       {
-       LG <-  fun.order(LG, ripple.cores = ripple.cores, start=overlap+2,
-                        verbosity = verbosity, batches = batches,
-                        ws = ws + round, ...)
-       round <- round + 1
+        if(round > max.tries)
+        {
+          warning("Algorithm could not solve gaps in batch ", i)
+          break
+        }
+        if(round %% increase.every == 0) increment <- increment + 1
+        LG <-  fun.order(LG, ripple.cores = ripple.cores, start=overlap+2,
+                         verbosity = verbosity, batches = batches,
+                         ws = ws + increment, ...)
+        round <- round + 1
       }
     }
     LGs[[i]] <- LG
@@ -113,6 +127,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
     message("Final call to map...")
   }
 
-  map(make.seq(get(input.seq$twopt), final.seq, final.phase, input.seq$twopt),
-      verbosity = verbosity)
+  mp <- map(make.seq(get(input.seq$twopt), final.seq, final.phase, input.seq$twopt),
+            verbosity = verbosity)
+  return(list(Map = mp, LGs = LGs))
 }
