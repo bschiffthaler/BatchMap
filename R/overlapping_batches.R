@@ -45,7 +45,8 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
                         fun.order = NULL, phase.cores = 4,
                         ripple.cores = 1, verbosity = NULL, max.dist = Inf,
-                        ws = 4, increase.every = 4, max.tries = 10, ...)
+                        ws = 4, increase.every = 4, max.tries = 10,
+                        min.tries = 0, ...)
 {
   batches <- generate_overlapping_batches(input.seq, size, overlap)
   if("batch" %in% verbosity)
@@ -61,7 +62,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
             verbosity = verbosity)
   round <- 1
   increment <- 0
-  while(any(kosambi(LG$seq.rf) > max.dist))
+  while(any(kosambi(LG$seq.rf) > max.dist) | round <= min.tries)
   {
     if(round > max.tries)
     {
@@ -94,7 +95,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
     {
       round <- 1
       increment <- 0
-      while(any(kosambi(LG$seq.rf) > max.dist))
+      while(any(kosambi(LG$seq.rf) > max.dist) | round <= min.tries )
       {
         if(round > max.tries)
         {
