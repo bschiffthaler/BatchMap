@@ -68,6 +68,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
       warning("Algorithm could not solve gaps in batch 1.")
       break
     }
+    print(LG)
     if(round %% increase.every == 0) increment <- increment + 1
     LG <-  fun.order(LG, ripple.cores = ripple.cores, start=overlap+2,
                      verbosity = verbosity, batches = batches,
