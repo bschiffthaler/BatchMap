@@ -113,6 +113,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
   }
   final.seq <- LGs[[1]]$seq.num
   final.phase <- LGs[[1]]$seq.phases
+  final.rf <- LGs[[1]]$seq.rf
   for(i in 2:length(batches))
   {
     start <- length(final.seq) - overlap
@@ -123,13 +124,17 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
     final.phase[start:length(final.phase)] <- head(LGs[[i]]$seq.phases, overlap)
     final.phase <- c(final.phase,
                    LGs[[i]]$seq.phases[(overlap + 1):length(LGs[[i]]$seq.phases)])
+    final.rf[start:length(final.rf)] <- head(LGs[[i]]$seq.rf, overlap)
+    final.rf <- c(final.rf,
+                     LGs[[i]]$seq.rf[(overlap + 1):length(LGs[[i]]$seq.rf)])
+
   }
   if("batch" %in% verbosity)
   {
     message("Final call to map...")
   }
-
-  mp <- map(make.seq(get(input.seq$twopt), final.seq, final.phase, input.seq$twopt),
-            verbosity = verbosity)
+  s <- make.seq(get(input.seq$twopt), final.seq, final.phase, input.seq$twopt)
+  s$seq.rf <- final.rf
+  mp <- map(s, verbosity = verbosity)
   return(list(Map = mp, LGs = LGs))
 }

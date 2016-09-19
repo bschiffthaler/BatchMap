@@ -159,7 +159,7 @@ SEXP READ_OUTCROSS(SEXP file)
     if(line.at(0) == '*')
     {
       mcount++;
-      progressBar(Rcout, mcount, n_mar, 60);
+      progressBar(Rcout, mcount, n_mar, 40);
       if(mcount > n_mar) break; // We ignore phenotype information
       ss.ignore(1);
 
