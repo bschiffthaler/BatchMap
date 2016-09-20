@@ -5,7 +5,8 @@
 \title{Compares and displays plausible alternative orders for a given linkage
 group}
 \usage{
-ripple_seq(input.seq, ws = 4, ext.w = NULL, LOD = 3, tol = 0.1)
+ripple_seq(input.seq, ws = 4, LOD = 3, tol = 0.1, phasing.cores = 4,
+  ripple.cores = 32)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence} with a
@@ -14,18 +15,18 @@ predefined order.}
 \item{ws}{an integer specifying the length of the window size
 (defaults to 4).}
 
-\item{ext.w}{an integer specifying how many markers should be
-considered in the vicinity of the permuted window. If
-\code{ext.w=NULL} all markers in the sequence are
-considered. In this veriosn, it is used only in backcross,
-\eqn{F_2}{F_2} or RIL crosses.}
-
 \item{LOD}{threshold for the LOD-Score, so that alternative orders
 with LOD less then or equal to this threshold will be
 displayed.}
 
 \item{tol}{tolerance for the C routine, i.e., the value used to
 evaluate convergence.}
+
+\item{ext.w}{an integer specifying how many markers should be
+considered in the vicinity of the permuted window. If
+\code{ext.w=NULL} all markers in the sequence are
+considered. In this veriosn, it is used only in backcross,
+\eqn{F_2}{F_2} or RIL crosses.}
 }
 \value{
 This function does not return any value; it just produces

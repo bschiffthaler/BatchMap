@@ -138,26 +138,35 @@ record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
   require(parallel)
   require(RcppArmadillo)
   ## checking for correct object
-  if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is
-                                              not an object of class 'sequence'")
+  if(!any(class(input.seq)=="sequence")){
+    stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  }
   n.mrk <- length(input.seq$seq.num)
 
   ## create reconmbination fraction matrix
 
   if(class(get(input.seq$twopt))[2]=="outcross")
-    r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD, useC = TRUE)
+  {
+    r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD,
+                      useC = useC)
+  }
   else
+  {
     r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
+  }
   r[is.na(r)]<-0.5
   diag(r)<-0
 
   ##RECORD algorithm
-  X<-r*get(input.seq$data.name, pos=1)$n.ind ## Obtaining X multiplying the MLE of the recombination
+  ## Obtaining X multiplying the MLE of the recombination
+  X<-r*get(input.seq$data.name, pos=1)$n.ind
   ## fraction by the number of individuals
 
   if(n.mrk==2)
-    return(map(make.seq(get(input.seq$twopt),input.seq$seq.num[1:2],twopt=input.seq$twopt), tol=10E-5))
-
+  {
+    return(map(make.seq(get(input.seq$twopt),input.seq$seq.num[1:2],
+                        twopt=input.seq$twopt), tol=10E-5))
+  }
   ## For three markers (calculation of 3 possible orders: 3!/2)
   else if(n.mrk==3) {
     all.perm<-perm.pars(1:3)
@@ -165,15 +174,17 @@ record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
     for(k in 1:nrow(all.perm)){
       m.new<-COUNT(X, all.perm[k,])
       if(m.new < m.old)
+      {
         result.new <- all.perm[k,]; m.old<-m.new
+      }
     }
   }
-
   ## For more than three markers (RECORD algorithm itself)
-  else{
+  else {
     marks<-c(1:n.mrk)
     result.new<-sample(marks)## randomize markers
-    results.list <- mclapply(1:times,mc.cores=cores, function(l){ ## loop for replicates the RECORD procedure
+    results.list <- mclapply(1:times,mc.cores=cores, function(l){
+      ## loop for replicates the RECORD procedure
       result<-sample(marks, 2)
       for(i in 2:(n.mrk-2)){
         next.mark<-sample(c(1:n.mrk)[-result],1)
@@ -218,7 +229,8 @@ record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
           }
           else{
             if(j!=(n.mrk-i)){
-              perm.order<-c(result[1:(j-1)],rev(result[j:(j+i)]),result[(j+i+1):length(result)])
+              perm.order<-c(result[1:(j-1)],rev(result[j:(j+i)]),
+                            result[(j+i+1):length(result)])
               COUNT.temp<-CCOUNT(X,perm.order - 1)
               if(COUNT.temp < temp){
                 result<-perm.order
@@ -246,7 +258,8 @@ record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
   }
   ## end of RECORD algorithm
   if(domap){
-    cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[result.new],".\n\n",
+    message("\norder obtained using RECORD algorithm:\n\n",
+        input.seq$seq.num[result.new],".\n\n",
         "now calling map()\n\n")
     batch <- split_map_batches(result.new, cores)
     m <- mclapply(batch, mc.cores = length(batch), function(x){
@@ -258,7 +271,8 @@ record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
     final <- combine_map_batches(m)
     return(final)
   } else {
-    cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[result.new],".\n\n",
+    message("\norder obtained using RECORD algorithm:\n\n",
+            input.seq$seq.num[result.new],".\n\n",
         "NOT calling map()\n\n")
     return(result.new)
   }

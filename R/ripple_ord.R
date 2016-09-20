@@ -1,124 +1,23 @@
-ripple_all<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
-                     ripple.cores = 4, start = 1, verbosity = NULL) {
-  ## checking for correct objects
-  if(!any(class(input.seq)=="sequence")) {
-    stop(deparse(substitute(input.seq)),
-         " is not an object of class 'sequence'")
-  }
-  if(ws < 2) stop("ws must be greater than or equal to 2")
-  if(ws > 5) warning("WARNING: this operation may take a VERY long time\n\n")
-  len <- length(input.seq$seq.num)
-  ## computations unnecessary in this case
-  if (len <= ws) stop("Length of sequence ",
-                      deparse(substitute(input.seq)),
-                      " is smaller than ws. You can use the ",
-                      "compare function instead")
-
-  ## allocate variables
-  rf.init <- rep(NA,len-1)
-  phase <- rep(NA,len-1)
-  tot <- prod(1:ws)
-  best.ord.phase <- matrix(NA,tot,len-1)
-  best.ord.like <- best.ord.LOD <- rep(-Inf,tot)
-  all.data <- list()
-
-  ## gather two-point information
-  list.init <- phases(input.seq)
-
-  #### first position
-  p <- start
-  if("order" %in% verbosity)
-  {
-    message("...", input.seq$seq.num[p-1], "|",
-            paste(input.seq$seq.num[p:(p+ws-1)], collapse = "-"),"|",
-            input.seq$seq.num[p+ws],"...")
-  }
+generate_all <- function(input.seq, p, ws)
+{
   all.ord <- t(apply(perm.tot(input.seq$seq.num[p:(p+ws-1)]),1,function(x){
     return(c(head(input.seq$seq.num,p-1),
              x,tail(input.seq$seq.num,-p-ws+1)))
-    }))
-
-  poss <- mclapply(1:nrow(all.ord), mc.allow.recursive = TRUE,
-                   mc.cores = ripple.cores, function(i){
-                     if("position" %in% verbosity)
-                     {
-                       message("Trying order ",i," of ",nrow(all.ord),
-                               " for start position ",p)
-                     }
-                     mp <- list(seq.like = -Inf)
-                     tryCatch({
-                       if(start > 1)
-                       {
-                         seeds <- input.seq$seq.phases[1:(start - 1)]
-                         mp <- seeded.map(make.seq(get(input.seq$twopt),
-                                                   all.ord[i,],
-                                                   twopt = input.seq$twopt),
-                                          phase.cores = phase.cores,
-                                          verbosity = verbosity,
-                                          seeds = seeds)
-                       }
-                       else
-                       {
-                         mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
-                                            twopt = input.seq$twopt),
-                                   phase.cores = phase.cores,
-                                   verbosity = verbosity)
-                       }
-                     }, error = function(e){},
-                     finally = {
-                       return(mp)
-                     })
-                   })
-  best <- which.max(sapply(poss,"[[","seq.like"))
-
-  return(poss[[best]])
+  }))
+  return(all.ord)
 }
 
-ripple_rand<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
-                     ripple.cores = 4, start = 1, n = NULL, pref = "neutral",
-                     verbosity = NULL) {
-  ## checking for correct objects
-  if(!any(class(input.seq)=="sequence")) {
-    stop(deparse(substitute(input.seq)),
-         " is not an object of class 'sequence'")
-  }
-  if(ws < 2) stop("ws must be greater than or equal to 2")
-  if(ws > 5) warning("WARNING: this operation may take a VERY long time\n\n")
-  if(is.null(input.seq$seq.like)) stop("You need to run map() at least once ",
-                                       "before attempting to ripple.")
+generate_rand <- function(input.seq, p, ws, n, pref)
+{
   if(is.null(n))
   {
     n <- prod(ws:1)/2
   }
-  len <- length(input.seq$seq.num)
-  ## computations unnecessary in this case
-  if (len <= ws) stop("Length of sequence ",
-                      deparse(substitute(input.seq)),
-                      " is smaller than ws. You can use the ",
-                      "compare function instead")
 
-  ## allocate variables
-  rf.init <- rep(NA,len-1)
-  phase <- rep(NA,len-1)
-  tot <- prod(1:ws)
-  best.ord.phase <- matrix(NA,tot,len-1)
-  best.ord.like <- best.ord.LOD <- rep(-Inf,tot)
-  all.data <- list()
-
-  ## gather two-point information
-  list.init <- phases(input.seq)
-
-  #### first position
-  p <- start
-  if("order" %in% verbosity)
-  {
-    message("...", input.seq$seq.num[p-1], "|",
-            paste(input.seq$seq.num[p:(p+ws-1)], collapse = "-"),"|",
-            input.seq$seq.num[p+ws],"...")
-  }
   ref <- input.seq$seq.num[p:(p+ws-1)]
 
-  probs <- drop(cor(ref,t(perm.tot(input.seq$seq.num[p:(p+ws-1)]))))
+  probs <- drop(cor(ref,t(perm.tot(input.seq$seq.num[p:(p+ws-1)])),
+                    method = "spearman"))
 
   probs <- (probs - min(probs)) / (max(probs) - min(probs))
   probs[probs == 1] <- 0
@@ -127,97 +26,24 @@ ripple_rand<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
     return(c(head(input.seq$seq.num,p-1),
              x,tail(input.seq$seq.num,-p-ws+1)))
   }))
-  if(prefs == "similar")
+
+  if(pref == "similar")
   {
     all.ord <- all.ord[sample(1:nrow(all.ord),n,FALSE,probs),]
   }
-  if(prefs == "dissimilar")
+  if(pref == "dissimilar")
   {
     all.ord <- all.ord[sample(1:nrow(all.ord),n,FALSE,-probs),]
   }
-  if(prefs == "neutral")
+  if(pref == "neutral")
   {
     all.ord <- all.ord[sample(1:nrow(all.ord),n,FALSE),]
   }
-  poss <- mclapply(1:nrow(all.ord), mc.allow.recursive = TRUE,
-                   mc.cores = ripple.cores, function(i){
-                     if("position" %in% order)
-                     {
-                       message("Trying order ",i," of ",nrow(all.ord),
-                               " for start position ",p)
-                     }
-                     mp <- list(seq.like = -Inf)
-                     tryCatch({
-                       if(start > 1)
-                       {
-                         seeds <- input.seq$seq.phases[1:(start - 1)]
-                         mp <- seeded.map(make.seq(get(input.seq$twopt),
-                                                   all.ord[i,],
-                                                   twopt = input.seq$twopt),
-                                          phase.cores = phase.cores,
-                                          verbosity = verbosity,
-                                          seeds = seeds)
-                       }
-                       else
-                       {
-                         mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
-                                            twopt = input.seq$twopt),
-                                   phase.cores = phase.cores,
-                                   verbosity = verbosity)
-                       }
-                     }, error = function(e){},
-                     finally = {
-                       return(mp)
-                     })
-                   })
-  best <- which.max(sapply(poss,"[[","seq.like"))
-  if(poss[[best]]$seq.like > input.seq$seq.like)
-  {
-    return(poss[[best]])
-  } else {
-    return(input.seq)
-  }
+  return(all.ord)
 }
 
-ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
-                       ripple.cores = 4, start = 1, verbosity = NULL,
-                       no_reverse = TRUE)
+generate_one <- function(input.seq, p, ws, no_reverse)
 {
-  if(!any(class(input.seq)=="sequence")) {
-    stop(deparse(substitute(input.seq)),
-         " is not an object of class 'sequence'")
-  }
-  if(ws < 2) stop("ws must be greater than or equal to 2")
-  if(ws > 5) warning("WARNING: this operation may take a VERY long time\n\n")
-  if(is.null(input.seq$seq.like)) stop("You need to run map() at least once ",
-                                       "before attempting to ripple.")
-
-  len <- length(input.seq$seq.num)
-  ## computations unnecessary in this case
-  if (len <= ws) stop("Length of sequence ",
-                      deparse(substitute(input.seq)),
-                      " is smaller than ws. You can use the ",
-                      "compare function instead")
-
-  ## allocate variables
-  rf.init <- rep(NA,len-1)
-  phase <- rep(NA,len-1)
-  tot <- prod(1:ws)
-  best.ord.phase <- matrix(NA,tot,len-1)
-  best.ord.like <- best.ord.LOD <- rep(-Inf,tot)
-  all.data <- list()
-
-  ## gather two-point information
-  list.init <- phases(input.seq)
-
-  #### first position
-  p <- start
-  if("order" %in% verbosity)
-  {
-    message("...", input.seq$seq.num[p-1], "|",
-            paste(input.seq$seq.num[p:(p+ws-1)], collapse = "-"),"|",
-            input.seq$seq.num[p+ws],"...")
-  }
   if(no_reverse)
   {
     all.ord <- matrix(NA,(sum((ws-1):1) + 1), ws)
@@ -253,6 +79,49 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
     return(c(head(input.seq$seq.num,p-1),
              x,tail(input.seq$seq.num,-p-ws+1)))
   }))
+  return(all.ord)
+}
+
+ripple_window<-function(input.seq, ws=4, LOD=3, tol=10E-4, phase.cores = 4,
+                        ripple.cores = 4, start = 1, verbosity = NULL,
+                        type = "one", n = NULL, pref = NULL,
+                        no_reverse = TRUE) {
+
+  ## checking for correct objects
+  if(!any(class(input.seq)=="sequence")) {
+    stop(deparse(substitute(input.seq)),
+         " is not an object of class 'sequence'")
+  }
+  if(ws < 2) stop("ws must be greater than or equal to 2")
+  len <- length(input.seq$seq.num)
+  ## computations unnecessary in this case
+  if (len <= ws) stop("Length of sequence ",
+                      deparse(substitute(input.seq)),
+                      " is smaller than ws. You can use the ",
+                      "compare function instead")
+
+  ## allocate variables
+  rf.init <- rep(NA,len-1)
+  phase <- rep(NA,len-1)
+  tot <- prod(1:ws)
+  best.ord.phase <- matrix(NA,tot,len-1)
+  best.ord.like <- best.ord.LOD <- rep(-Inf,tot)
+  all.data <- list()
+
+  ## gather two-point information
+  list.init <- phases(input.seq)
+
+  p <- start
+  if("order" %in% verbosity)
+  {
+    message(p-1, "...", input.seq$seq.num[p-1], "|",
+            paste(input.seq$seq.num[p:(p+ws-1)], collapse = "-"),"|",
+            input.seq$seq.num[p+ws],"...", p+1)
+  }
+
+  if(type == "all") all.ord <- generate_all(input.seq, p, ws)
+  if(type == "rand") all.ord <- generate_rand(input.seq, p, ws, n, pref)
+  if(type == "one") all.ord <- generate_one(input.seq, p, ws, no_reverse)
 
   poss <- mclapply(1:nrow(all.ord), mc.allow.recursive = TRUE,
                    mc.cores = ripple.cores, function(i){
@@ -285,6 +154,7 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
                        return(mp)
                      })
                    })
+
   best <- which.max(sapply(poss,"[[","seq.like"))
   if(poss[[best]]$seq.like > input.seq$seq.like)
   {
@@ -294,7 +164,8 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
   }
 }
 
-ripple_ord <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
+
+ripple_ord <- function(input.seq, ws = 4, LOD = 3, tol = 10E-4, phase.cores = 4,
                        ripple.cores = 4, method = "one", n = NULL,
                        pref = "neutral", start = 1, verbosity = NULL,
                        batches = NULL, no_reverse = TRUE)
@@ -303,51 +174,20 @@ ripple_ord <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
   if(start + ws > length(input.seq$seq.num)) return(LG)
   timings <- vector()
   stime <- Sys.time()
-  if(method == "all"){
-    for(i in start:(length(input.seq$seq.num) - ws))
-    {
-      tic <- Sys.time()
-      LG <- ripple_all(LG,ws,LOD,tol,phase.cores,ripple.cores,i,
-                       verbosity = verbosity)
-      toc <- Sys.time()
-      timings <- c(timings, as.numeric(difftime(toc, tic, units = "secs")))
-      if("time" %in% verbosity)
-      {
-        tim <- predict_time(batches, ws, timings)
-        message("Pedicted finish time: ", (stime + tim[1]))
-      }
-    }
-  }
-  if(method == "random")
+  for(i in start:(length(input.seq$seq.num) - ws))
   {
-    for(i in start:(length(input.seq$seq.num) - ws))
+    tic <- Sys.time()
+    LG <- ripple_window(input.seq = LG,ws = ws,LOD = LOD,tol = tol,
+                        phase.cores = phase.cores, ripple.cores = ripple.cores,
+                        start = i, verbosity = verbosity,
+                        no_reverse = no_reverse, type = method, n = n,
+                        pref = pref)
+    toc <- Sys.time()
+    timings <- c(timings, as.numeric(difftime(toc, tic, units = "secs")))
+    if("time" %in% verbosity)
     {
-      tic <- Sys.time()
-      LG <- ripple_rand(LG,ws,LOD,tol,phase.cores,ripple.cores,i,n,pref,
-                        verbosity = verbosity)
-      toc <- Sys.time()
-      timings <- c(timings, as.numeric(difftime(toc, tic, units = "secs")))
-      if("time" %in% verbosity)
-      {
-        tim <- predict_time(batches, ws, timings)
-        message("Pedicted finish time: ", stime + tim[1])
-      }
-    }
-  }
-  if(method == "one")
-  {
-    for(i in start:(length(input.seq$seq.num) - ws))
-    {
-      tic <- Sys.time()
-      LG <- ripple_one(LG,ws,LOD,tol,phase.cores,ripple.cores,i,
-                       verbosity = verbosity, no_reverse)
-      toc <- Sys.time()
-      timings <- c(timings, as.numeric(difftime(toc, tic, units = "secs")))
-      if("time" %in% verbosity)
-      {
-        tim <- predict_time(batches, ws, timings)
-        message("Pedicted finish time: ", stime + tim[1])
-      }
+      tim <- predict_time(batches, ws, timings)
+      message("Pedicted finish time: ", (stime + tim[1]))
     }
   }
   return(LG)

@@ -1,22 +1,3 @@
-#######################################################################
-##                                                                     ##
-## Package: onemap                                                     ##
-##                                                                     ##
-## File: map.R                                                         ##
-## Contains: map                                                       ##
-##                                                                     ##
-## Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  ##
-## copyright (c) 2009, Gabriel R A Margarido                           ##
-##                                                                     ##
-## First version: 02/27/2009                                           ##
-## Last update: 01/14/2016                                             ##
-## License: GNU General Public License version 2 (June, 1991) or later ##
-##                                                                     ##
-#######################################################################
-
-## This function constructs the linkage map for a set of markers in a given order
-
-
 ##' Construct the linkage map for a sequence of markers
 ##'
 ##' Estimates the multipoint log-likelihood, linkage phases and recombination
