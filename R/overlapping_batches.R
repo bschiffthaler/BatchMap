@@ -134,7 +134,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
     message("Final call to map...")
   }
   s <- make.seq(get(input.seq$twopt), final.seq, final.phase, input.seq$twopt)
-  s$seq.rf <- final.rf
+  # s$seq.rf <- final.rf
   mp <- map(s, verbosity = verbosity)
   return(list(Map = mp, LGs = LGs))
 }

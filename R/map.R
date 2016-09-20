@@ -187,7 +187,7 @@ map <- function(input.seq,tol=10E-5, verbosity=FALSE, phase.cores = 4)
     map(make.seq(get(input.seq$twopt),seq.num,phase=seq.phase,
                  twopt=input.seq$twopt), verbosity = verbosity)
   }
-  else if(seq.rf == -1){
+  else if(length(seq.rf) == 1){
     ## if the linkage phases are provided but the recombination fractions have
     ## not yet been estimated or need to be reestimated, this is done here
     ## gather two-point information
@@ -203,18 +203,18 @@ map <- function(input.seq,tol=10E-5, verbosity=FALSE, phase.cores = 4)
                           seq.like=final.map$loglike, data.name=input.seq$data.name,
                           twopt=input.seq$twopt), class = "sequence"))
   }
-  else
-  {
-    final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
-                                 type=get(input.seq$data.name, pos=1)$segr.type.num[seq.num],
-                                 phase=seq.phases,
-                                 rf.vec=seq.rf,
-                                 verbose=FALSE,
-                                 tol=tol)
-    return(structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=final.map$rf,
-                          seq.like=final.map$loglike, data.name=input.seq$data.name,
-                          twopt=input.seq$twopt), class = "sequence"))
-  }
+  # else
+  # {
+  #   final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
+  #                                type=get(input.seq$data.name, pos=1)$segr.type.num[seq.num],
+  #                                phase=seq.phases,
+  #                                rf.vec=seq.rf,
+  #                                verbose=FALSE,
+  #                                tol=tol)
+  #   return(structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=final.map$rf,
+  #                         seq.like=final.map$loglike, data.name=input.seq$data.name,
+  #                         twopt=input.seq$twopt), class = "sequence"))
+  # }
 }
 
 ## end of file

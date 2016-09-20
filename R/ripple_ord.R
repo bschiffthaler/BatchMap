@@ -47,10 +47,23 @@ ripple_all<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
                      }
                      mp <- list(seq.like = -Inf)
                      tryCatch({
-                       mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
-                                          twopt = input.seq$twopt),
-                                 phase.cores = phase.cores,
-                                 verbosity = verbosity)
+                       if(start > 1)
+                       {
+                         seeds <- input.seq$seq.phases[1:(start - 1)]
+                         mp <- seeded.map(make.seq(get(input.seq$twopt),
+                                                   all.ord[i,],
+                                                   twopt = input.seq$twopt),
+                                          phase.cores = phase.cores,
+                                          verbosity = verbosity,
+                                          seeds = seeds)
+                       }
+                       else
+                       {
+                         mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
+                                            twopt = input.seq$twopt),
+                                   phase.cores = phase.cores,
+                                   verbosity = verbosity)
+                       }
                      }, error = function(e){},
                      finally = {
                        return(mp)
@@ -135,10 +148,23 @@ ripple_rand<-function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
                      }
                      mp <- list(seq.like = -Inf)
                      tryCatch({
-                       mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
-                                          twopt = input.seq$twopt),
-                                 phase.cores = phase.cores,
-                                 verbosity = verbosity)
+                       if(start > 1)
+                       {
+                         seeds <- input.seq$seq.phases[1:(start - 1)]
+                         mp <- seeded.map(make.seq(get(input.seq$twopt),
+                                                   all.ord[i,],
+                                                   twopt = input.seq$twopt),
+                                          phase.cores = phase.cores,
+                                          verbosity = verbosity,
+                                          seeds = seeds)
+                       }
+                       else
+                       {
+                         mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
+                                            twopt = input.seq$twopt),
+                                   phase.cores = phase.cores,
+                                   verbosity = verbosity)
+                       }
                      }, error = function(e){},
                      finally = {
                        return(mp)
@@ -237,10 +263,23 @@ ripple_one <- function(input.seq,ws=4,LOD=3,tol=10E-2, phase.cores = 4,
                      }
                      mp <- list(seq.like = -Inf)
                      tryCatch({
-                       mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
-                                          twopt = input.seq$twopt),
-                                 phase.cores = phase.cores,
-                                 verbosity = verbosity)
+                       if(start > 1)
+                       {
+                         seeds <- input.seq$seq.phases[1:(start - 1)]
+                         mp <- seeded.map(make.seq(get(input.seq$twopt),
+                                                   all.ord[i,],
+                                                   twopt = input.seq$twopt),
+                                          phase.cores = phase.cores,
+                                          verbosity = verbosity,
+                                          seeds = seeds)
+                       }
+                       else
+                       {
+                         mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
+                                            twopt = input.seq$twopt),
+                                   phase.cores = phase.cores,
+                                   verbosity = verbosity)
+                       }
                      }, error = function(e){},
                      finally = {
                        return(mp)
