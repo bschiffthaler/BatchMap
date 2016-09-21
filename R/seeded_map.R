@@ -1,21 +1,25 @@
-##' Construct the linkage map for a sequence of markers
+##' Construct the linkage map for a sequence of markers after seeding phases
 ##'
 ##' Estimates the multipoint log-likelihood, linkage phases and recombination
-##' frequencies for a sequence of markers in a given order.
+##' frequencies for a sequence of markers in a given order using seeded phases.
 ##'
-##' Markers are mapped in the order defined in the object \code{input.seq}. If
-##' this object also contains a user-defined combination of linkage phases,
-##' recombination frequencies and log-likelihood are estimated for that
-##' particular case. Otherwise, the best linkage phase combination is also
-##' estimated. The multipoint likelihood is calculated according to Wu et al.
-##' (2002b)(Eqs. 7a to 11), assuming that the recombination fraction is the
-##' same in both parents. Hidden Markov chain codes adapted from Broman et al.
-##' (2008) were used.
+##' Markers are mapped in the order defined in the object \code{input.seq}. The
+##' best combination of linkage phases id also estimated starting from the first
+##' position not in the given seeds.The multipoint likelihood is calculated
+##' according to Wu et al. (2002b)(Eqs. 7a to 11), assuming that the
+##' recombination fraction is the same in both parents. Hidden Markov chain
+##' codes adapted from Broman et al. (2008) were used.
 ##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
-##' @param verbose If \code{TRUE}, print tracing information.
+##' @param verbosity A character vector that includes any or all of "batch",
+##' "order", "position", "time" and "phase" to output progress status
+##' information.
+##' @param seeds A vector given the integer encoding of phases for the first
+##' \emph{N} positions of the map
+##' @param phase.cores The number of parallel processes to use when estimating
+##' the phase of a marker. (Should be no more than 4)
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -29,7 +33,9 @@
 ##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 ##' 2-point analyses.}
 ##' @author Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
-##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com}
+##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com}.
+##' Modified to use seeded phases by Bastian Schiffthaler
+##' \email{bastian.schiffthaler@umu.se}
 ##' @seealso \code{\link[onemap]{make.seq}}
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
@@ -56,13 +62,11 @@
 ##'   data(example.out)
 ##'   twopt <- rf.2pts(example.out)
 ##'
-##'   markers <- make.seq(twopt,c(30,12,3,14,2)) # correct phases
-##'   map(markers)
+##'   markers <- make.seq(twopt,c(30,12,3,14,2))
+##'   seeded.map(markers, seeds = c(1,2,3,4))
 ##'
-##'   markers <- make.seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
-##'   map(markers)
 ##'
-seeded.map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4,
+seeded.map <- function(input.seq, tol=10E-5, phase.cores = 4,
                        seeds, verbosity = NULL)
 {
   ## checking for correct object
@@ -75,12 +79,13 @@ seeded.map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4,
   seq.like<-input.seq$seq.like
   ##Checking for appropriate number of markers
   if(length(seq.num) < 2) stop("The sequence must have at least 2 markers")
-  ##For F2, BC and rils
 
   seq.phase <- numeric(length(seq.num)-1)
   results <- list(rep(NA,4),rep(-Inf,4))
+  #Add seeds as known phases
   seq.phase[1:length(seeds)] <- seeds
 
+  #Skip all seeds i the phase estimation
   for(mrk in (length(seeds)+1):(length(seq.num)-1)) {
     results <- list(rep(NA,4),rep(-Inf,4))
     if("phase" %in% verbosity)
@@ -113,25 +118,14 @@ seeded.map <- function(input.seq,tol=10E-5, verbose=FALSE, phase.cores = 4,
     if(all(is.na(results[[2]])))
     {
       warning("Could not determine phase for marker ",
-              input.seq$seq.num[mrk],". Trying to add next...")
-      # Ph.Init2 <- do.call(rbind, unlist(apply(Ph.Init,1,function(x){
-      #   lapply(1:4,function(y){c(x,y)})
-      # }),recursive = FALSE))
-      # results <- list(rep(NA,16),rep(-Inf,16))
-      # for(j in 1:nrow(Ph.Init2)) {
-      #   ## call to 'map' function with predefined linkage phases
-      #   temp <- map(make.seq(get(input.seq$twopt),
-      #                        seq.num[1:(mrk+2)],
-      #                        phase=Ph.Init2[j,],
-      #                        twopt=input.seq$twopt))
-      #   results[[1]][j] <- temp$seq.phases[mrk]
-      #   results[[2]][j] <- temp$seq.like
-      # }
+              input.seq$seq.num[mrk])
     }
-    seq.phase[mrk] <- results[[1]][which.max(results[[2]])] # best combination of phases is chosen
+    # best combination of phases is chosen
+    seq.phase[mrk] <- results[[1]][which.max(results[[2]])]
   }
   ## one last call to map function, with the final map
-  map(make.seq(get(input.seq$twopt),seq.num,phase=seq.phase,twopt=input.seq$twopt),
+  map(make.seq(get(input.seq$twopt),seq.num,phase=seq.phase,
+               twopt=input.seq$twopt),
       verbosity = verbosity)
 }
 

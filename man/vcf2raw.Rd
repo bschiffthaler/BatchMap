@@ -4,8 +4,7 @@
 \alias{vcf2raw}
 \title{Convert variants from a VCF file to OneMap file format}
 \usage{
-vcf2raw(input = NULL, output = NULL, cross = c("outcross",
-  "f2 intercross", "backcross", "riself", "risib"), parent1 = NULL,
+vcf2raw(input = NULL, output = NULL, cross = "outcross", parent1 = NULL,
   parent2 = NULL, min_class = 1)
 }
 \arguments{
@@ -13,10 +12,7 @@ vcf2raw(input = NULL, output = NULL, cross = c("outcross",
 
 \item{output}{path to the output OneMap file.}
 
-\item{cross}{type of cross. Must be one of: \code{"outcross"} for full-sibs;
-\code{"f2 intercross"} for an F2 intercross progeny; \code{"backcross"};
-\code{"riself"} for recombinant inbred lines by self-mating; or
-\code{"risib"} for recombinant inbred lines by sib-mating.}
+\item{cross}{type of cross. Must be one of: \code{"outcross"} for full-sibs;}
 
 \item{parent1}{\code{string} or \code{vector} of \code{strings} specifying
 sample ID(s) of the first parent.}

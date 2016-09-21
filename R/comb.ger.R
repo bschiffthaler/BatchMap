@@ -14,7 +14,7 @@
 #                                                                     #
 #######################################################################
 
-## This function combines two linkage phase vectors 
+## This function combines two linkage phase vectors
 comb <-
 function(x,y) {
   count <- 0
@@ -47,7 +47,7 @@ function(w, seq.num, seq.phases) {
     parents <- matrix("",length(seq.num),4)
     for (i in 1:length(seq.num))
       parents[i,] <- return.geno(get(w$data.name, pos=1)$segr.type[seq.num[i]],link.phases[i])
-      return(parents)
+    return(parents)
 }
 
 
@@ -60,16 +60,22 @@ function(M,w,seq.num) {
   }
   v<-which(duplicated(M.new)==FALSE)
   if(length(v)>1){
-    k<-numeric()    
+    k<-numeric()
     for(i in 1:(length(v)-1)){
       for(j in (i+1):length(v)){
-        if(all(diplo(w=w, seq.num=seq.num, M[v[i],])==diplo(w=w, seq.num=seq.num, M[v[j],])[,c(2,1,3,4)])){
-         k<-c(k,j)         
+        if(all(diplo(w=w, seq.num=seq.num, M[v[i],]) ==
+               diplo(w=w, seq.num=seq.num, M[v[j],])[,c(2,1,3,4)]))
+        {
+          k<-c(k,j)
         }
-        if(all(diplo(w=w, seq.num=seq.num, M[v[i],])==diplo(w=w, seq.num=seq.num, M[v[j],])[,c(1,2,4,3)])){
-          k<-c(k,j)         
+        if(all(diplo(w=w, seq.num=seq.num, M[v[i],]) ==
+               diplo(w=w, seq.num=seq.num, M[v[j],])[,c(1,2,4,3)]))
+        {
+          k<-c(k,j)
         }
-        if(all(diplo(w=w, seq.num=seq.num, M[v[i],])==diplo(w=w, seq.num=seq.num, M[v[j],])[,c(2,1,4,3)])){
+        if(all(diplo(w=w, seq.num=seq.num, M[v[i],]) ==
+               diplo(w=w, seq.num=seq.num, M[v[j],])[,c(2,1,4,3)]))
+        {
           k<-c(k,j)
         }
       }

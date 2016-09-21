@@ -36,7 +36,7 @@
 ##'     segregation pattern. Only used for outcross populations.
 ##'
 ##' @param ... currently ignored
-##' 
+##'
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
@@ -80,39 +80,6 @@ plot.onemap <- function(x, all=TRUE, ...) {
         df.OM <- cbind(ind=1:x$n.ind, df.OM)
         df.OM$value <- factor(df.OM$value)
     }
-    # Defining the label for genotypes
-    if (is(x, "backcross")) {
-        if (suppressWarnings(all(levels(df.OM$value)==c("0","1","2"))))
-            labels.OM <- c("-","AA","AB")
-        else if (all(levels(df.OM$value)==c("1","2")))
-            labels.OM <- c("AA","AB")
-    } else if (is(x, "riself") || is(x, "risib")) {
-        if (suppressWarnings(all(levels(df.OM$value)==c("0","1","2"))))
-            labels.OM <- c("-","AA","BB")
-        else if (all(levels(df.OM$value)==c("1","2")))
-            labels.OM <- c("AA","BB")
-    } else if (is(x, "f2")) {
-        if (suppressWarnings(all(levels(df.OM$value)==c("0","1","2","3","4","5"))))
-            labels.OM <- c("-","AA","AB","BB","not BB","not AA")
-        else if (suppressWarnings(all(levels(df.OM$value)==c("1","2","3","4","5"))))
-            labels.OM <- c("AA","AB","BB","not BB","not AA")
-        else if (suppressWarnings(all(levels(df.OM$value)==c("0","1","2","3"))))
-            labels.OM <- c("-","AA","AB","BB")
-        else if (suppressWarnings(all(levels(df.OM$value)==c("1","2","3"))))
-            labels.OM <- c("AA","AB","BB")
-        else if (suppressWarnings(all(levels(df.OM$value)==c("0","1","2","3","5"))))
-            labels.OM <- c("-","AA","AB","BB","not AA")
-        else if (suppressWarnings(all(levels(df.OM$value)==c("1","2","3","5"))))
-            labels.OM <- c("AA","AB","BB","not AA")
-        else if (suppressWarnings(all(levels(df.OM$value)==c("0","1","2","3","4"))))
-            labels.OM <- c("-","AA","AB","BB","not BB")
-        else if (suppressWarnings(all(levels(df.OM$value)==c("1","2","3","4"))))
-            labels.OM <- c("AA","AB","BB","not BB")
-        else if (suppressWarnings(all(levels(df.OM$value)==c("0","4","5"))))
-            labels.OM <- c("-","not BB","not AA")
-        else if (suppressWarnings(all(levels(df.OM$value)==c("4","5"))))
-            labels.OM <- c("not BB","not AA")
-    }
     # Plotting
     g <- ggplot(data=df.OM, aes(x=ind, y=variable, fill=factor(value)))
     g <- g + geom_tile()
@@ -122,7 +89,7 @@ plot.onemap <- function(x, all=TRUE, ...) {
                                    values=c("#00A08A", "#5BBCD6",  "#F2AD00", "#F98400", "#FF0000"))
         if (x$n.mar>20)
             g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
-        
+
         if (all==TRUE) g
         else g <- g + facet_grid( . ~ Mk.type) + theme(axis.text.x=element_text(size=5))
     }
@@ -136,7 +103,7 @@ plot.onemap <- function(x, all=TRUE, ...) {
         }
         if (x$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
     }
-    
+
     return(g)
 }
 ##'
@@ -149,7 +116,7 @@ plot.onemap <- function(x, all=TRUE, ...) {
 ##' with long format
 ##'
 ##' @param x an object of classes \code{onemap} and \code{outcross}, with data and additional information
-##' 
+##'
 ##' @return a dataframe
 ##'
 create_dataframe_for_plot_outcross <- function(x) {
@@ -226,7 +193,7 @@ create_dataframe_for_plot_outcross <- function(x) {
 
 
 ##' Draw a graphic showing the number of markers of each segregation pattern.
-##' 
+##'
 ##' The function receives an object of class \code{onemap}.
 ##' For outcrossing populations, it can show detailed information (all 18 possible categories),
 ##' or a simplified version.

@@ -47,7 +47,7 @@ using \code{NULL}, the new values override the ones in object
 
   data(example.out)
   twopts <- rf.2pts(example.out)
-  
+
   all.data <- make.seq(twopts,"all")
   link_gr <- group(all.data)
   link_gr

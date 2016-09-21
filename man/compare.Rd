@@ -63,7 +63,7 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
   #F2 example
   data(fake.f2.onemap)
   twopt <- rf.2pts(fake.f2.onemap)
-  markers <- make.seq(twopt,c(17,26,29,30,44,46,55)) 
+  markers <- make.seq(twopt,c(17,26,29,30,44,46,55))
   (markers.comp <- compare(markers))
   (markers.comp <- compare(markers,verbose=TRUE))
 

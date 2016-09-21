@@ -17,16 +17,16 @@
 ## Function to assign markers to linkage groups
 
 ##' Assign markers to linkage groups
-##' 
+##'
 ##' Identifies linkage groups of markers, using results from two-point
 ##' (pairwise) analysis and the \emph{transitive} property of linkage.
-##' 
+##'
 ##' If the arguments specifying thresholds used to group markers, i.e., minimum
 ##' LOD Score and maximum recombination fraction, are \code{NULL} (default),
 ##' the values used are those contained in object \code{input.seq}. If not
 ##' using \code{NULL}, the new values override the ones in object
 ##' \code{input.seq}.
-##' 
+##'
 ##' @aliases group
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param LOD a (positive) real number used as minimum LOD score
@@ -57,23 +57,23 @@
 ##'     Institute for Biomedical Research Technical Report}.
 ##' @keywords misc
 ##' @examples
-##' 
+##'
 ##'   data(example.out)
 ##'   twopts <- rf.2pts(example.out)
-##'   
+##'
 ##'   all.data <- make.seq(twopts,"all")
 ##'   link_gr <- group(all.data)
 ##'   link_gr
 ##'   print(link_gr, details=FALSE) #omit the names of the markers
-##' 
+##'
 group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 {
     ## checking for correct object
-    if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")    
+    if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     ## determining thresholds
-    if (is.null(LOD)) 
+    if (is.null(LOD))
         LOD <- get(input.seq$twopt, pos=1)$LOD
-    if (is.null(max.rf)) 
+    if (is.null(max.rf))
         max.rf <- get(input.seq$twopt, pos=1)$max.rf
     cl<-class(get(input.seq$data.name))[2]
     geno<-get(input.seq$data.name)$geno[,input.seq$seq.num]
@@ -120,7 +120,7 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 ##' Show the results of grouping procedure
 ##'
 ##' It shows the linkage groups as well as the unlinked markers.
-##' 
+##'
 ##' @aliases print.group
 ##' @param x an object of class onemap.segreg.test
 ##'
@@ -136,12 +136,13 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 print.group <-
     function(x, detailed=TRUE,...) {
         ## checking for correct object
-        if(!any(class(x)=="group")) stop(deparse(substitute(x))," is not an object of class 'group'")
-        
+        if(!any(class(x)=="group"))
+          stop(deparse(substitute(x))," is not an object of class 'group'")
+
         cat("  This is an object of class 'group'\n")
         cat(paste("  It was generated from the object \"", x$input.name,
                   "\"\n\n",sep=""))
-        
+
         ## criteria
         cat("  Criteria used to assign markers to groups:\n")
         cat("    LOD =", x$LOD, ", Maximum recombination fraction =",
@@ -152,7 +153,7 @@ print.group <-
         cat("  No. groups:            ", x$n.groups, "\n")
         cat("  No. linked markers:    ", sum(!is.na(x$groups)), "\n")
         cat("  No. unlinked markers:  ", sum(x$groups==0), "\n")
-        
+
         if (detailed) {
             ## printing detailed results (markers in each linkage group)
             cat("\n  Printing groups:")
@@ -171,34 +172,9 @@ print.group <-
 ##Checks if a marker i is linked with markers in a vector s
 check.linkage<-function(i, s, cl, geno, st=NULL, max.rf, LOD)
 {
-    s<-s[is.na(match(s,i))]
-    if(cl=="outcross")
-    {
-        r<-est_rf_out(geno = geno[,c(i,s)], mrk = 1, seg_type = st[c(i,s)], nind = nrow(geno))
-        sig<-apply(r[[1]], 2, function(x,y) min(x) <= y, y=max.rf) &
-            apply(r[[2]], 2, function(x,y) max(x) >= y, y=LOD)
-    }
-    else if(cl=="f2")
-    {
-        r<-est_rf_f2(geno = geno[,c(i,s)], mrk = 1, seg_type = st[c(i,s)], nind = nrow(geno))
-        sig<-r[1,] <= max.rf & r[2,] >=LOD
-    }
-    else if(cl=="backcross")
-    {
-        r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 0, nind = nrow(geno))
-        sig<-r[1,] <= max.rf & r[2,] >=LOD
-    }
-    else if(cl=="riself")
-    {
-        r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 1, nind = nrow(geno))
-        sig<-r[1,] <= max.rf & r[2,] >=LOD
-    }
-    
-    else if(cl=="risib")
-    {
-        r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 1, nind = nrow(geno))
-        sig<-r[1,] <= max.rf & r[2,] >=LOD
-    }
-    return(list(lk=s[sig[-1]], unlk=s[!(sig[-1])]))
+  s<-s[is.na(match(s,i))]
+  r<-est_rf_out(geno = geno[,c(i,s)], mrk = 1, seg_type = st[c(i,s)], nind = nrow(geno))
+  sig<-apply(r[[1]], 2, function(x,y) min(x) <= y, y=max.rf) &
+    apply(r[[2]], 2, function(x,y) max(x) >= y, y=LOD)
 }
 ###end of file

@@ -82,10 +82,54 @@ generate_one <- function(input.seq, p, ws, no_reverse)
   return(all.ord)
 }
 
-ripple_window<-function(input.seq, ws=4, LOD=3, tol=10E-4, phase.cores = 4,
-                        ripple.cores = 4, start = 1, verbosity = NULL,
-                        type = "one", n = NULL, pref = NULL,
-                        no_reverse = TRUE) {
+
+#' Update linkage map with alternative orders at a given position
+#'
+#' This function carries out re-ordering of one single window according to user
+#' defined criteria. The best order is chosen based on the difference in log
+#' likelihood. Different heuristics are avaible to select which orders to test.
+#' Note that testing all orders has factorial complexity (N!/2) meaning that
+#' it's not feasible for window sizes larger than 6.
+#'
+#' Methods:
+#' \emph{all:}{Checks for all possible permutations in the window. Will be very
+#' very slow for large window size.}
+#' \emph{one:}{Checks for all possible pairwise switches in the window. The
+#' complexity scales as \code{sum(ws:1)}, \code{ws} being the window size.}
+#' \emph{rand:}{First, generates all possible permutations. Then samples
+#' \code{n} sequences from those and tests those. Time complexity is N.}
+#'
+#' The "rand" method can be further tuned to preferentially select similar,
+#' dissimilar sequences or to perform unbiased sampling. In the first two cases
+#' sampling probability is adjusted via a spearman correlation of the sequences
+#' to all possible sequences.
+#'
+#' @param input.seq An object of class \code{sequence}.
+#' @param ws The window size in which ti consider re-ordering
+#' @param tol The tolerance for checking convergence of the EM model
+#' @param phase.cores The number of parallel processes to use to estimate phases.
+#' Should be no higher than 4.
+#' @param ripple.core The number of parallel processes that should be used when
+#' testing different marker orders.
+#' @param start The position of the first marker of the window within the
+#' input sequence
+#' @param verbosity A character vector that includes any or all of "batch",
+#' "order", "position", "time" and "phase" to output progress status
+#' information.
+#' @param type One of "one", "all" or "rand".
+#' @param n For method "rand": The number of random samples to be tested.
+#' @param pref For method "rand": One of "similar", "dissimilar" or "neutral".
+#' Controls if sampling probability should be adjusted based on similarity to
+#' the input sequence. See description.
+#' @param no_reverse For method "one": If \code{FALSE}, the method will also
+#' create all possible reverse sequences if the marker swaps.
+#'
+#' @return An object of class \code{sequence} that is the best order for the
+#' re-ordered window within the input sequence.
+ripple_window <- function(input.seq, ws=4, tol=10E-4, phase.cores = 4,
+                          ripple.cores = 4, start = 1, verbosity = NULL,
+                          type = "one", n = NULL, pref = NULL,
+                          no_reverse = TRUE) {
 
   ## checking for correct objects
   if(!any(class(input.seq)=="sequence")) {
@@ -165,7 +209,51 @@ ripple_window<-function(input.seq, ws=4, LOD=3, tol=10E-4, phase.cores = 4,
 }
 
 
-ripple_ord <- function(input.seq, ws = 4, LOD = 3, tol = 10E-4, phase.cores = 4,
+#' Update linkage map with alternative orders at all positions
+#'
+#' This function carries out re-ordering of all markers using a sliding window
+#' according to user defined criteria. The best order is chosen based on the
+#' difference in log likelihood. Different heuristics are avaible to select
+#' which orders to test. Note that testing all orders has factorial complexity
+#' (N!/2) meaning that it's not feasible for window sizes larger than 6.
+#'
+#' Methods:
+#' \emph{all:}{Checks for all possible permutations in the window. Will be very
+#' very slow for large window size.}
+#' \emph{one:}{Checks for all possible pairwise switches in the window. The
+#' complexity scales as \code{sum(ws:1)}, \code{ws} being the window size.}
+#' \emph{rand:}{First, generates all possible permutations. Then samples
+#' \code{n} sequences from those and tests those. Time complexity is N.}
+#' The "rand" method can be further tuned to preferentially select similar,
+#' dissimilar sequences or to perform unbiased sampling. In the first two cases
+#' sampling probability is adjusted via a spearman correlation of the sequences
+#' to all possible sequences.
+#'
+#' @param input.seq An object of class \code{sequence}.
+#' @param ws The window size in which ti consider re-ordering
+#' @param tol The tolerance for checking convergence of the EM model
+#' @param phase.cores The number of parallel processes to use to estimate phases.
+#' Should be no higher than 4.
+#' @param ripple.core The number of parallel processes that should be used when
+#' testing different marker orders.
+#' @param start The position of the first marker of the window within the
+#' input sequence
+#' @param verbosity A character vector that includes any or all of "batch",
+#' "order", "position", "time" and "phase" to output progress status
+#' information.
+#' @param type One of "one", "all" or "rand".
+#' @param n For method "rand": The number of random samples to be tested.
+#' @param pref For method "rand": One of "similar", "dissimilar" or "neutral".
+#' Controls if sampling probability should be adjusted based on similarity to
+#' the input sequence. See description.
+#' @param batches List with batches that are being processed. Only used when
+#' estimating finish time.
+#' @param no_reverse For method "one": If \code{FALSE}, the method will also
+#' create all possible reverse sequences if the marker swaps.
+#'
+#' @return An object of class \code{sequence} that is the best order for the
+#' re-ordered input sequence.
+ripple_ord <- function(input.seq, ws = 4, tol = 10E-4, phase.cores = 4,
                        ripple.cores = 4, method = "one", n = NULL,
                        pref = "neutral", start = 1, verbosity = NULL,
                        batches = NULL, no_reverse = TRUE)
@@ -177,7 +265,7 @@ ripple_ord <- function(input.seq, ws = 4, LOD = 3, tol = 10E-4, phase.cores = 4,
   for(i in start:(length(input.seq$seq.num) - ws))
   {
     tic <- Sys.time()
-    LG <- ripple_window(input.seq = LG,ws = ws,LOD = LOD,tol = tol,
+    LG <- ripple_window(input.seq = LG, ws = ws, tol = tol,
                         phase.cores = phase.cores, ripple.cores = ripple.cores,
                         start = i, verbosity = verbosity,
                         no_reverse = no_reverse, type = method, n = n,

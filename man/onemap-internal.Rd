@@ -8,6 +8,7 @@
 \alias{comb.ger}
 \alias{compare_inbred}
 \alias{compare_outcross}
+\alias{combine_map_batches}
 \alias{Cindex}
 \alias{diplo}
 \alias{draw.order}
@@ -18,6 +19,10 @@
 \alias{est_rf_bc}
 \alias{est_rf_f2}
 \alias{est_rf_out}
+\alias{generate_all}
+\alias{generate_one}
+\alias{generate_overlapping_batches}
+\alias{generate_rand}
 \alias{get.bins}
 \alias{get_mat_rf_in}
 \alias{get_vec_rf_in}
@@ -33,8 +38,10 @@
 \alias{ripple_seq_inbred}
 \alias{ripple_seq_outcross}
 \alias{ser.ord}
+\alias{split_map_batches}
 \alias{try_seq_inbred}
 \alias{try_seq_outcross}
+\alias{predict_time}
 \alias{print.compare}
 \alias{print.onemap}
 \alias{print.onemap.bin}
@@ -52,6 +59,7 @@ check.linkage(i, s, cl, geno, st, max.rf, LOD)
 codif.data(geno.in,segr.type.in)
 comb(x,y)
 comb.ger(f)
+combine_map_batches(x)
 compare_inbred(input.seq, n.best, tol, verbose = FALSE)
 compare_outcross(input.seq, n.best, tol, verbose)
 Cindex(order,r)
@@ -64,6 +72,10 @@ est_rf_f2(geno, mrk, seg_type, nind, verbose)
 est_rf_bc(geno, mrk,  nind, type, verbose)
 est_map_hmm_f2(geno, rf.vec, verbose, tol)
 est_map_hmm_bc(geno, rf.vec, verbose, tol)
+generate_all(input.seq, p, ws)
+generate_one(input.seq, p, ws, no_reverse)
+generate_overlapping_batches(input.seq, size = 50, overlap = 15, silent = FALSE)
+generate_rand(input.seq, p, ws, n, pref)
 get.bins(geno, exact)
 get_mat_rf_in(input.seq, LOD, max.rf, min.LOD)
 get_twopt_info(twopt, small, big)
@@ -74,11 +86,13 @@ perm.pars(v)
 perm.tot(v)
 phases(input.seq, LOD=0, max.rf=0.50)
 plotFunction.out(info.graph, cex, main)
+predict_time(batches, ws, timings)
 rem.amb.ph(M,w,seq.num)
 return.geno(segr.type, link.phases)
 ripple_seq_inbred(input.seq, ws, ext.w, LOD, tol)
 ripple_seq_outcross(input.seq, ws, LOD, tol)
 ser.ord(r,i)
+split_map_batches(x, cores)
 try_seq_inbred(input.seq, mrk, tol, draw.try, pos, verbose)
 try_seq_outcross(input.seq, mrk, tol, draw.try, pos, verbose)
 \method{print}{compare}(x, \dots)

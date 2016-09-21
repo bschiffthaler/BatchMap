@@ -18,16 +18,16 @@
 
 
 ##' Seriation
-##' 
+##'
 ##' Implements the marker ordering algorithm \emph{Seriation} (\cite{Buetow &
 ##' Chakravarti, 1987}).
-##' 
+##'
 ##' \emph{Seriation} is an algorithm for marker ordering in linkage groups. It
 ##' is not an exhaustive search method and, therefore, is not computationally
 ##' intensive. However, it does not guarantee that the best order is always
 ##' found. The only requirement is a matrix with recombination fractions
 ##' between markers.
-##' 
+##'
 ##' NOTE: When there are to many pairs of markers with the same value in the
 ##' recombination fraction matrix, it can result in ties during the ordination
 ##' process and the \emph{Seriation} algorithm may not work properly. This is
@@ -35,11 +35,11 @@
 ##' of type \code{D1} and \code{D2}. When this occurs, the function shows the
 ##' following error message: \code{There are too many ties in the ordination
 ##' process - please, consider using another ordering algorithm}.
-##' 
+##'
 ##' After determining the order with \emph{Seriation}, the final map is
 ##' constructed using the multipoint approach (function
 ##' \code{\link[onemap]{map}}).
-##' 
+##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param LOD minimum LOD-Score threshold used when constructing the pairwise
 ##' recombination fraction matrix.
@@ -64,13 +64,13 @@
 ##' @references Buetow, K. H. and Chakravarti, A. (1987) Multipoint gene
 ##' mapping using seriation. I. General methods. \emph{American Journal of
 ##' Human Genetics} 41: 180-188.
-##' 
+##'
 ##' Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
 ##' (2009) Evaluation of algorithms used to order markers on genetics maps.
 ##' \emph{Heredity} 103: 494-502.
 ##' @keywords utilities
 ##' @examples
-##' 
+##'
 ##' \dontrun{
 ##'   ##outcross example
 ##'   data(example.out)
@@ -79,7 +79,7 @@
 ##'   groups <- group(all.mark)
 ##'   LG3 <- make.seq(groups,3)
 ##'   LG3.ser <- seriation(LG3)
-##' 
+##'
 ##'   ##F2 example
 ##'   data(fake.f2.onemap)
 ##'   twopt <- rf.2pts(fake.f2.onemap)
@@ -89,23 +89,20 @@
 ##'   LG1.ser <- seriation(LG1)
 ##'   LG1.ser
 ##' }
-##' 
+##'
 seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
 {
     ## checking for correct object
     if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is
     not an object of class 'sequence'")
     n.mrk <- length(input.seq$seq.num)
-    
-    ## create reconmbination fraction matrix 
-    
-    if(class(get(input.seq$twopt))[2]=="outcross")
-        r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)     
-    else
-        r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)     
+
+    ## create reconmbination fraction matrix
+
+    r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     r[is.na(r)]<-0.5
     diag(r)<-0
-    
+
     ## SERIATION algorithm
     n.mrk<-ncol(r)
     orders <- array(0,dim=c(n.mrk,n.mrk))
@@ -127,7 +124,7 @@ seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
 }
 
 ##Provides an order given the recombination
-##fraction matrix and the starting marker. 
+##fraction matrix and the starting marker.
 ser.ord <- function(r,i) {
     n.mrk <- ncol(r)
     x <- 1:n.mrk
@@ -197,7 +194,7 @@ ser.ord <- function(r,i) {
           else if (unres2[1]==2) {
               if (r[e,m1] < r[e,m2]) { order <- c(e,esq,order,m1,m2,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
             else if (r[e,m1] > r[e,m2]) { order <- c(e,esq,order,m2,m1,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
-            else { esq <- c(e,esq); x[e] <- NaN }	
+            else { esq <- c(e,esq); x[e] <- NaN }
           }
           }
         else if (r[pri,e] > r[ult,e] || rand==2) {
@@ -209,7 +206,7 @@ ser.ord <- function(r,i) {
           else if (unres2[1]==2) {
               if (r[e,m1] < r[e,m2]) { order <- c(esq,order,m2,m1,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
             else if (r[e,m1] > r[e,m2]) { order <- c(esq,order,m1,m2,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
-            else { dir <- c(dir,e); x[e] <- NaN }	
+            else { dir <- c(dir,e); x[e] <- NaN }
           }
         }
       }

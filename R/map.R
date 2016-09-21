@@ -165,20 +165,7 @@ map <- function(input.seq,tol=10E-5, verbosity=FALSE, phase.cores = 4)
         if(all(is.na(results[[2]])))
         {
           warning("Could not determine phase for marker ",
-                  input.seq$seq.num[mrk],". Trying to add next...")
-          # Ph.Init2 <- do.call(rbind, unlist(apply(Ph.Init,1,function(x){
-          #   lapply(1:4,function(y){c(x,y)})
-          # }),recursive = FALSE))
-          # results <- list(rep(NA,16),rep(-Inf,16))
-          # for(j in 1:nrow(Ph.Init2)) {
-          #   ## call to 'map' function with predefined linkage phases
-          #   temp <- map(make.seq(get(input.seq$twopt),
-          #                        seq.num[1:(mrk+2)],
-          #                        phase=Ph.Init2[j,],
-          #                        twopt=input.seq$twopt))
-          #   results[[1]][j] <- temp$seq.phases[mrk]
-          #   results[[2]][j] <- temp$seq.like
-          # }
+                  input.seq$seq.num[mrk])
         }
         seq.phase[mrk] <- results[[1]][which.max(results[[2]])] # best combination of phases is chosen
       }

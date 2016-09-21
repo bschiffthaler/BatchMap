@@ -61,25 +61,16 @@
 marker.type <-
 function(input.seq) {
   ## checking for correct objects
-  if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  if(!any(class(input.seq)=="sequence"))
+    stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
 
   ## printing marker type
-  if(class(get(input.seq$data.name, pos=1))=="outcross"){
-    for(i in 1:length(input.seq$seq.num))
-      cat("  Marker", input.seq$seq.num[i], "(", colnames(get(input.seq$twopt)$analysis[[1]])[input.seq$seq.num[i]], ") has type", get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num[i]], "\n")
-  }
-  else{
-    for(i in 1:length(input.seq$seq.num)){
-      mrk.type<-rep("NA",length(input.seq$seq.num))
-      mrk.type[get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num]=="C.A"]<-"Not  AA : AA (3:1) "
-      mrk.type[get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num]=="D.B"]<-"Not  BB : BB (3:1) "
-      mrk.type[get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num]=="A.H.B"]<-"AA : AB : BB (1:2:1) "
-      mrk.type[get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num]=="M.X"]<-"Mixed: Dominant & Co-dominant"
-      mrk.type[get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num]=="A.H"]<-"AA : AB (1:1)"
-      mrk.type[get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num]=="A.B"]<-"AA : BB (1:1)"
-
-      cat("  Marker", input.seq$seq.num[i], "(", colnames(get(input.seq$twopt)$analysis)[input.seq$seq.num[i]], ") -->", mrk.type[i], "\n")
-    }
+  for(i in 1:length(input.seq$seq.num))
+  {
+    message("  Marker", input.seq$seq.num[i],
+            "(", colnames(get(input.seq$twopt)$analysis[[1]])[input.seq$seq.num[i]],
+            ") has type", get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num[i]],
+            "\n")
   }
 }
 

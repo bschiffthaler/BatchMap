@@ -2,10 +2,10 @@
 % Please edit documentation in R/seeded_map.R
 \name{seeded.map}
 \alias{seeded.map}
-\title{Construct the linkage map for a sequence of markers}
+\title{Construct the linkage map for a sequence of markers after seeding phases}
 \usage{
-seeded.map(input.seq, tol = 1e-04, verbose = FALSE, phase.cores = 4,
-  seeds, verbosity = NULL)
+seeded.map(input.seq, tol = 1e-04, phase.cores = 4, seeds,
+  verbosity = NULL)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -13,7 +13,15 @@ seeded.map(input.seq, tol = 1e-04, verbose = FALSE, phase.cores = 4,
 \item{tol}{tolerance for the C routine, i.e., the value used to evaluate
 convergence.}
 
-\item{verbose}{If \code{TRUE}, print tracing information.}
+\item{phase.cores}{The number of parallel processes to use when estimating
+the phase of a marker. (Should be no more than 4)}
+
+\item{seeds}{A vector given the integer encoding of phases for the first
+\emph{N} positions of the map}
+
+\item{verbosity}{A character vector that includes any or all of "batch",
+"order", "position", "time" and "phase" to output progress status
+information.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
@@ -31,33 +39,31 @@ data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 }
 \description{
 Estimates the multipoint log-likelihood, linkage phases and recombination
-frequencies for a sequence of markers in a given order.
+frequencies for a sequence of markers in a given order using seeded phases.
 }
 \details{
-Markers are mapped in the order defined in the object \code{input.seq}. If
-this object also contains a user-defined combination of linkage phases,
-recombination frequencies and log-likelihood are estimated for that
-particular case. Otherwise, the best linkage phase combination is also
-estimated. The multipoint likelihood is calculated according to Wu et al.
-(2002b)(Eqs. 7a to 11), assuming that the recombination fraction is the
-same in both parents. Hidden Markov chain codes adapted from Broman et al.
-(2008) were used.
+Markers are mapped in the order defined in the object \code{input.seq}. The
+best combination of linkage phases id also estimated starting from the first
+position not in the given seeds.The multipoint likelihood is calculated
+according to Wu et al. (2002b)(Eqs. 7a to 11), assuming that the
+recombination fraction is the same in both parents. Hidden Markov chain
+codes adapted from Broman et al. (2008) were used.
 }
 \examples{
 
   data(example.out)
   twopt <- rf.2pts(example.out)
 
-  markers <- make.seq(twopt,c(30,12,3,14,2)) # correct phases
-  map(markers)
+  markers <- make.seq(twopt,c(30,12,3,14,2))
+  seeded.map(markers, seeds = c(1,2,3,4))
 
-  markers <- make.seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
-  map(markers)
 
 }
 \author{
 Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
-\email{gramarga@usp.br} and Marcelo Mollinari, \email{mmollina@gmail.com}
+\email{gramarga@usp.br} and Marcelo Mollinari, \email{mmollina@gmail.com}.
+Modified to use seeded phases by Bastian Schiffthaler
+\email{bastian.schiffthaler@umu.se}
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

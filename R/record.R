@@ -92,10 +92,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5, runMap = TRU
 
     ## create reconmbination fraction matrix
 
-    if(class(get(input.seq$twopt))[2]=="outcross")
-        r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
-    else
-        r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
+    r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     r[is.na(r)]<-0.5
     diag(r)<-0
 

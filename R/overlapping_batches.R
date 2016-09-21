@@ -28,6 +28,30 @@ generate_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   return(res)
 }
 
+
+##' Picking optimal batch size values
+##'
+##' Suggest an optimal batch size value for use in
+##' \code{\link[onemap]{map_overlapping_batches}}
+##'
+##' @param input.seq an object of class \code{sequence}.
+##' @param size The center size around which an optimum is to be searched
+##' @param overlap The desired overlap between batches
+##' @param around The range around the center which is maximally allowed
+##' to be searched.
+##' @return An integer value for the size which most evenly divides batches. In
+##' case of ties, bigger batch sizes are preferred.
+##' @author Bastian Schiffthaler, \email{bastian.schiffthaler@umu.se}
+##' @seealso \code{\link[onemap]{map_overlapping_batches}}
+##'
+##' @keywords utilities
+##' @examples
+##'
+##' \dontrun{
+##'   LG <- structure(list(seq.num = seq(1,800)), class = "sequence")
+##'   batchsize <- pick_batch_sizes(LG, 50, 19)
+##' }
+##'
 pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 {
   test.sizes <- c(size, (size - 1):(size - around), (size + 1):(size + around))
@@ -42,12 +66,70 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
   test.sizes[x[length(x)]] #prefer larger maps
 }
 
-map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
+##' Mapping overlapping batches
+##'
+##' Apply the batch mapping algorithm using overlapping windows.
+##'
+##' This algorithm implements the overlapping batch maps for high density
+##' marker sets. The mapping problem is reduced to a number of subsets (batches)
+##' which carry information forward in order to more accurately estimate
+##' recombination fractions and phasing. Further the user has the option of
+##' setting \code{fun.order} to a function that tries different orders and
+##' iteratively reorders markers to improve the map. See
+##' \code{\link[onemap]{ripple_ord}} for such an implementation. The ordering
+##' function is triggered at least \code{min.tries} times per batch, or as
+##' long as a batch has two markers with a distance greater than
+##' \code{max.dist}.
+##'
+##' @param input.seq an object of class \code{sequence}.
+##' @param size The center size around which an optimum is to be searched
+##' @param overlap The desired overlap between batches
+##' @param fun.order A function that is applied to each batch to improve
+##' marker order. See \code{\link[onemap]{ripple_ord}}
+##' @param phase.cores The number of parallel processes to use when estimating
+##' the phase of a marker. (Should be no more than 4)
+##' @param ripple.cores The number of parallel processes to use when calculating
+##' alternative order.
+##' @param verbosity A character vector that includes any or all of "batch",
+##' "order", "position", "time" and "phase" to output progress status
+##' information.
+##' @param max.dist The maximum distance (in cM) two markers can have in a batch
+##' before automatic reordering is triggered (given that \code{fun.order} was
+##' set).
+##' @param ws The window size that the reordering function should use
+##' @param increase.every Increase the window size by one every n-th round when
+##' re-ordering.
+##' @param max.tries The maximum number of re-ordering tries. Failing to order
+##' after max.tries outputs a warning.
+##' @param min.tries The minimum number of re-ordering tries.
+##' @param ... Other arguments passed to \code{fun.order}
+##' @return A list with the first element \code{Map} being an object of class
+##' \code{sequence}, which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{name of the object of class \code{outcross} with the raw
+##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
+##' 2-point analyses.} Secondly \code{batches}, a list of \code{Map}s for each
+##' of the batches.
+##' @author Bastian Schiffthaler, \email{bastian.schiffthaler@umu.se}
+##' @seealso \code{\link[onemap]{pick_batch_sizes}}, \code{\link[onemap]{map}}
+##'
+##' @keywords utilities
+##'
+map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                         fun.order = NULL, phase.cores = 4,
                         ripple.cores = 1, verbosity = NULL, max.dist = Inf,
                         ws = 4, increase.every = 4, max.tries = 10,
                         min.tries = 0, ...)
 {
+  #TODO: error checks...
+  #Create initial set of batches
   batches <- generate_overlapping_batches(input.seq, size, overlap)
   if("batch" %in% verbosity)
   {
@@ -57,19 +139,22 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
     message("Prcoessing batch 1...")
   }
   LGs <- list()
+  #The first batch is run in full again to get all necessary data (phases etc.)
   LG <- map(make.seq(get(input.seq$twopt), batches[[1]],
                      twopt = input.seq$twopt), phase.cores = phase.cores,
             verbosity = verbosity)
   round <- 1
   increment <- 0
-  while(any(kosambi(LG$seq.rf) > max.dist) | round <= min.tries)
+  #If an ordering function is defined and a run is needed (either through the
+  #detection of a gap > max.dist or because of min.tries forced runs) we order
+  while((any(kosambi(LG$seq.rf) > max.dist) | round <= min.tries) &
+        ! is.null(fun.order))
   {
     if(round > max.tries)
     {
       warning("Algorithm could not solve gaps in batch 1.")
       break
     }
-    print(LG)
     if(round %% increase.every == 0) increment <- increment + 1
     LG <-  fun.order(LG, ripple.cores = ripple.cores, start = 1,
                      verbosity = verbosity, batches = batches,
@@ -77,13 +162,16 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
     round <- round + 1
   }
   LGs[[1]] <- LG
+  #Start processing all following batches
   for(i in 2:length(batches))
   {
-    if("batch" %in% verbosity)
+    if("batch" %in% verbosity) #Print previous batch-map segment
     {
       print(LGs[[i - 1]])
       message("Processing batch ",i,"...")
     }
+    #Need to use a seeded map in order to not mess with the overlapping area
+    #which we trust more from the prvious batch (as that had more information)
     seeds <- tail(LGs[[i - 1]]$seq.phases, overlap)
     batches[[i]][1:(overlap+1)] <- tail(LGs[[i - 1]]$seq.num, overlap + 1)
     LG <- seeded.map(make.seq(get(input.seq$twopt),
@@ -91,6 +179,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
                               twopt = input.seq$twopt),
                      verbosity = verbosity,
                      seeds = seeds)
+    #Order if fun.order is defined and we have a need to order
     if(! is.null(fun.order ))
     {
       round <- 1
@@ -111,15 +200,20 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
     }
     LGs[[i]] <- LG
   }
+  #Initialize final order, phases and rfs with the first batch
   final.seq <- LGs[[1]]$seq.num
   final.phase <- LGs[[1]]$seq.phases
   final.rf <- LGs[[1]]$seq.rf
+  #Iteratively add data from other batches to the first sequence
   for(i in 2:length(batches))
   {
-    start <- length(final.seq) - overlap
+    start <- length(final.seq) - overlap #start position of overlap with next
+    #Add marker order from the next batch to the sequence starting from the
+    #start of the overlap
     final.seq[start:length(final.seq)] <- head(LGs[[i]]$seq.num, overlap + 1)
     final.seq <- c(final.seq,
                    LGs[[i]]$seq.num[(overlap + 2):length(LGs[[i]]$seq.num)])
+    #Add phases and RFs. We need to shift the indices left by 1
     start <- length(final.phase) - overlap + 1
     final.phase[start:length(final.phase)] <- head(LGs[[i]]$seq.phases, overlap)
     final.phase <- c(final.phase,
@@ -133,8 +227,9 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 10,
   {
     message("Final call to map...")
   }
+  #Create final sequence and run
+  #final.rf is currently only used for debugging purposes
   s <- make.seq(get(input.seq$twopt), final.seq, final.phase, input.seq$twopt)
-  # s$seq.rf <- final.rf
   mp <- map(s, verbosity = verbosity)
-  return(list(Map = mp, LGs = LGs))
+  return(list(Map = mp, batches = LGs))
 }

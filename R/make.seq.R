@@ -219,15 +219,6 @@ print.sequence <- function(x,...) {
       cat("\n")
       cat(length(marnames),"markers            log-likelihood:",x$seq.like,"\n\n")
     }
-    ## whithout diplotypes for another classes
-    else if(class(get(x$data.name, pos=1))[2] == "backcross" || class(get(x$data.name, pos=1))[2] == "f2" || class(get(x$data.name, pos=1))[2] == "riself" || class(get(x$data.name, pos=1))[2] == "risib"){
-      cat("\nPrinting map:\n\n")
-      cat("Markers",rep("",max(longest.number+longest.name-7,0)+10),"Position",rep("",10),"\n\n")
-      for (i in 1:length(x$seq.num)) {
-        cat(marnumbers[i],marnames[i],rep("",max(7-longest.name-longest.number,0)+10),distances[i],rep("",10),"\n")
-      }
-      cat("\n",length(marnames),"markers            log-likelihood:",x$seq.like,"\n\n")
-    }
     else warning("invalid cross type")
   }
 }

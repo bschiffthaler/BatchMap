@@ -1,7 +1,7 @@
 Package: onemap
 Title: Software for constructing genetic maps in experimental crosses:
     full-sib, RILs, F2 and backcrosses
-Version: 2.0.6
+Version: 2.9.0
 Description: Analysis of molecular marker data from model (backcrosses,
     F2 and recombinant inbred lines) and non-model systems (i. e.
     outcrossing species). For the later, it allows statistical
@@ -14,7 +14,8 @@ Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
         c("aut", "cre"), email = "mmollina@usp.br"), person("Karl",
         "Broman", role = "ctb", email = "kbroman@biostat.wisc.edu"),
         person("Augusto", "Garcia", role = c("aut", "ctb"), email =
-        "augusto.garcia@usp.br"))
+        "augusto.garcia@usp.br"), person("Bastian", "Schiffthaler",
+        role = c("ctb"), email = "bastian.schiffthaler@umu.se"))
 LinkingTo: Rcpp (>= 0.10.5), Rhtslib, zlibbioc, RcppArmadillo
 Depends:
     RcppArmadillo (>= 0.6.70),
@@ -30,9 +31,9 @@ Suggests:
 VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL-3
-URL: https://github.com/augusto-garcia/onemap
-BugReports: https://github.com/augusto-garcia/onemap/wiki
-Maintainer: Marcelo Mollinari <mmollina@usp.br>
+URL: https://microasp.upsc.se/delhomme/onemap-devel
+BugReports: https://microasp.upsc.se/delhomme/onemap-devel/issues
+Maintainer: Bastian Schiffthaler<bastian.schiffthaler@umu.se>
 Repository: CRAN
 Packaged: 2013-09-09 16:55:07 UTC; mmollina
 NeedsCompilation: yes

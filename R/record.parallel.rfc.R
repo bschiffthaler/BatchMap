@@ -16,74 +16,6 @@
 ##                                                                     ##
 #######################################################################
 
-
-
-##' Recombination Counting and Ordering
-##'
-##' Implements the marker ordering algorithm \emph{Recombination Counting and
-##' Ordering} (\cite{Van Os et al., 2005}).
-##'
-##' \emph{Recombination Counting and Ordering} (\emph{RECORD}) is an algorithm
-##' for marker ordering in linkage groups. It is not an exhaustive search
-##' method and, therefore, is not computationally intensive. However, it does
-##' not guarantee that the best order is always found. The only requirement is
-##' a matrix with recombination fractions between markers.
-##'
-##' After determining the order with \emph{RECORD}, the final map is
-##' constructed using the multipoint approach (function
-##' \code{\link[onemap]{map}}).
-##'
-##' @param input.seq an object of class \code{sequence}.
-##' @param times integer. Number of replicates of the RECORD procedure.
-##' @param LOD minimum LOD-Score threshold used when constructing the pairwise
-##' recombination fraction matrix.
-##' @param max.rf maximum recombination fraction threshold used as the LOD
-##' value above.
-##' @param tol tolerance for the C routine, i.e., the value used to evaluate
-##' convergence.
-##' @return An object of class \code{sequence}, which is a list containing the
-##' following components: \item{seq.num}{a \code{vector} containing the
-##' (ordered) indices of markers in the sequence, according to the input file.}
-##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
-##' in the sequence, in corresponding positions. \code{-1} means that there are
-##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
-##' recombination frequencies between markers in the sequence. \code{-1} means
-##' that there are no estimated recombination frequencies.}
-##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
-##' \item{data.name}{name of the object of class \code{outcross} with the raw
-##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
-##' 2-point analyses.}
-##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
-##' @seealso \code{\link[onemap]{make.seq}} and \code{\link[onemap]{map}}
-##' @references Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
-##' A. A. F. (2009) Evaluation of algorithms used to order markers on genetics
-##' maps. \emph{Heredity} 103: 494-502.
-##'
-##' Van Os, H., Stam, P., Visser, R.G.F. and Van Eck, H.J. (2005) RECORD: a
-##' novel method for ordering loci on a genetic linkage map. \emph{Theoretical
-##' and Applied Genetics} 112: 30-40.
-##' @keywords utilities
-##' @examples
-##'
-##' \dontrun{
-##'   ##outcross example
-##'   data(example.out)
-##'   twopt <- rf.2pts(example.out)
-##'   all.mark <- make.seq(twopt,"all")
-##'   groups <- group(all.mark)
-##'   LG1 <- make.seq(groups,1)
-##'   LG1.rec <- record(LG1)
-##'
-##'   ##F2 example
-##'   data(fake.f2.onemap)
-##'   twopt <- rf.2pts(fake.f2.onemap)
-##'   all.mark <- make.seq(twopt,"all")
-##'   groups <- group(all.mark)
-##'   LG1 <- make.seq(groups,1)
-##'   LG1.rec <- record(LG1)
-##'   LG1.rec
-##' }
-##'
 split_map_batches <- function(x, cores){
   start <- 1
   interval <- ceiling(length(x) / cores)
@@ -133,7 +65,86 @@ combine_map_batches <- function(x){
   return(final)
 }
 
-record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
+##' Recombination Counting and Ordering
+##'
+##' Implements the marker ordering algorithm \emph{Recombination Counting and
+##' Ordering} (\cite{Van Os et al., 2005}).
+##'
+##' \emph{Recombination Counting and Ordering} (\emph{RECORD}) is an algorithm
+##' for marker ordering in linkage groups. It is not an exhaustive search
+##' method and, therefore, is not computationally intensive. However, it does
+##' not guarantee that the best order is always found. The only requirement is
+##' a matrix with recombination fractions between markers. This implementation
+##' parallelizes over the \code{times} argument using \code{cores} parallel
+##' processes. An optimal choice for the \code{cores} argument is usually an even
+##' divisor of \code{times}.
+##'
+##' If \code{domap} is set to \code{TRUE}, a non-overlapping batch map is
+##' created after ordering is complete. This is also done in parallel using
+##' maximally \code{cores} parallel processes. Since especially the phase
+##' estiamtion in outcrossing populations relies on information that could be
+##' in another batch, the map should be considered very untrustworthy. See
+##' function \code{\link[onemap]{map_overlapping_batches}} for a much better
+##' (but slower) approximation.
+##'
+##' @param input.seq an object of class \code{sequence}.
+##' @param times integer. Number of replicates of the RECORD procedure.
+##' @param cores Number of parallel processes.
+##' @param LOD minimum LOD-Score threshold used when constructing the pairwise
+##' recombination fraction matrix.
+##' @param max.rf maximum recombination fraction threshold used as the LOD
+##' value above.
+##' @param tol tolerance for the C routine, i.e., the value used to evaluate
+##' convergence.
+##' @param useC Use the C implementation to get the matrix of recombination
+##' fractions.
+##' @param domap Calculate a non-overalpping batch map. See details for more
+##' information.
+##' @return An object of class \code{sequence}, which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{name of the object of class \code{outcross} with the raw
+##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
+##' 2-point analyses.}
+##' @author Original implementation: Marcelo Mollinari, \email{mmollina@@usp.br},
+##' Parallel version: Bastian Schiffthaler, \email{bastian.schiffthaler@umu.se}
+##' @seealso \code{\link[onemap]{make.seq}} and \code{\link[onemap]{map}}
+##' @references Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
+##' A. A. F. (2009) Evaluation of algorithms used to order markers on genetics
+##' maps. \emph{Heredity} 103: 494-502.
+##'
+##' Van Os, H., Stam, P., Visser, R.G.F. and Van Eck, H.J. (2005) RECORD: a
+##' novel method for ordering loci on a genetic linkage map. \emph{Theoretical
+##' and Applied Genetics} 112: 30-40.
+##' @keywords utilities
+##' @examples
+##'
+##' \dontrun{
+##'   ##outcross example
+##'   data(example.out)
+##'   twopt <- rf.2pts(example.out)
+##'   all.mark <- make.seq(twopt,"all")
+##'   groups <- group(all.mark)
+##'   LG1 <- make.seq(groups,1)
+##'   LG1.rec <- record(LG1)
+##'
+##'   ##F2 example
+##'   data(fake.f2.onemap)
+##'   twopt <- rf.2pts(fake.f2.onemap)
+##'   all.mark <- make.seq(twopt,"all")
+##'   groups <- group(all.mark)
+##'   LG1 <- make.seq(groups,1)
+##'   LG1.rec <- record.parallel(LG1, cores = 4, times = 16)
+##'   LG1.rec
+##' }
+##'
+record.parallel <- function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
                               tol=10E-5, useC = TRUE, domap = TRUE){
   require(parallel)
   require(RcppArmadillo)
@@ -145,15 +156,9 @@ record.parallel.rfc<-function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
 
   ## create reconmbination fraction matrix
 
-  if(class(get(input.seq$twopt))[2]=="outcross")
-  {
-    r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD,
-                      useC = useC)
-  }
-  else
-  {
-    r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
-  }
+
+  r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD,
+                    useC = useC)
   r[is.na(r)]<-0.5
   diag(r)<-0
 

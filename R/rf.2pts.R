@@ -56,22 +56,24 @@
 ##'
 rf.2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
     ## checking for correct object
-    if(!any(c("onemap", "outcross", "f2", "backcross", "riself", "risib") %in% class(input.obj)))
+    if(!any(c("onemap", "outcross") %in% class(input.obj)))
         stop(deparse(substitute(input.obj))," is not an object of class 'onemap'.")
-    if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
+
+    if(input.obj$n.mar<2)
+      stop("there must be at least two markers to proceed with analysis")
     ## creating variables (result storage and progress output)
     if(("outcross" %in% class(input.obj)))
-        r<-est_rf_out(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
-    else if(("f2" %in% class(input.obj)))
-        r<-est_rf_f2(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
-    else if(("backcross" %in% class(input.obj)))
-        r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=0, verbose = verbose)
-    else if(("riself" %in% class(input.obj)))
-        r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=1, verbose = verbose)
-    else if(("risib" %in% class(input.obj)))
-        r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=2, verbose = verbose)
-    structure(list(data.name=as.character(sys.call())[2], n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf,
-                   input=input.obj$input, analysis=r), class = c("rf.2pts", class(input.obj)[2]))
+        r<-est_rf_out(geno = input.obj$geno,
+                      seg_type = input.obj$segr.type.num,
+                      nind = input.obj$n.ind,
+                      verbose = verbose)
+    structure(list(data.name=as.character(sys.call())[2],
+                   n.mar=input.obj$n.mar,
+                   LOD=LOD,
+                   max.rf=max.rf,
+                   input=input.obj$input,
+                   analysis=r),
+              class = c("rf.2pts", "outcross"))
 }
 
 ##' Print method for object class 'rf.2pts'
@@ -92,114 +94,74 @@ rf.2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
 ##' @return \code{NULL}
 ##' @keywords internal
 ##' @export
-##' 
-print.rf.2pts <- function(x, mrk=NULL,...) {
-    ## checking for correct object
-    if(!is(x, "rf.2pts"))
-        stop(deparse(substitute(x))," is not an object of class 'rf.2pts'")
-    if (any(is.null(mrk))) {
-        ## printing a brief summary
-        cat("  This is an object of class 'rf.2pts'\n")
-        cat("\n  Criteria: LOD =", x$LOD, ", Maximum recombination fraction =",
-            x$max.rf, "\n")
-        cat("\n  This object is too complex to print\n")
-        cat("  Type 'print(object,mrk1=marker,mrk2=marker)' to see the analysis for two markers\n")
-        cat("    mrk1 and mrk2 can be the names or numbers of both markers\n")
+##'
+print.rf.2pts <- function(x, mrk=NULL, ...) {
+  ## checking for correct object
+  if(!is(x, "rf.2pts"))
+    stop(deparse(substitute(x))," is not an object of class 'rf.2pts'")
+  if (any(is.null(mrk))) {
+    ## printing a brief summary
+    cat("  This is an object of class 'rf.2pts'\n")
+    cat("\n  Criteria: LOD =", x$LOD, ", Maximum recombination fraction =",
+        x$max.rf, "\n")
+    cat("\n  This object is too complex to print\n")
+    cat("  Type 'print(object,mrk1=marker,mrk2=marker)' to see the analysis for two markers\n")
+    cat("    mrk1 and mrk2 can be the names or numbers of both markers\n")
+  }
+  else
+  {
+    ## printing detailed results for two markers
+    ## checking if markers exist and converting character to numeric
+    if(length(mrk)!=2)
+      stop(deparse(substitute(mrk))," must be a pair of markers")
+    if (is.character(mrk[1]) && is.character(mrk[2])) {
+      mrk1name<-mrk[1]
+      mrk2name<-mrk[2]
+      mrk[1]<-match(mrk[1], colnames(x$analysis[[1]]))
+      mrk[2]<-match(mrk[2], colnames(x$analysis[[1]]))
+      mrk<-as.numeric(mrk)
+      if (is.na(mrk[1])) stop("marker ", mrk1name, " not found")
+      if (is.na(mrk[2])) stop("marker ", mrk2name, " not found")
     }
-  else {
-      ## printing detailed results for two markers
-      ## checking if markers exist and converting character to numeric
-      if(length(mrk)!=2)
-          stop(deparse(substitute(mrk))," must be a pair of markers")
-      if(is(x, "f2") || is(x, "backcross") || is(x, "risib") || is(x, "riself"))
-      {
-          if (is.character(mrk[1]) && is.character(mrk[2])) {
-              mrk1name<-mrk[1]
-              mrk2name<-mrk[2]
-              mrk[1]<-match(mrk[1], colnames(x$analysis))
-              mrk[2]<-match(mrk[2], colnames(x$analysis))
-              mrk<-as.numeric(mrk)
-              if (is.na(mrk[1])) stop("marker ", mrk1name, " not found")
-              if (is.na(mrk[2])) stop("marker ", mrk2name, " not found")
-          }
-          else if(is.numeric(mrk[1]) && is.numeric(mrk[2]))
-          {
-              if(mrk[1] > nrow(x$analysis)) stop("marker ", mrk[1], " not found: marker number out of bounds")
-              if(mrk[2] > nrow(x$analysis)) stop("marker ", mrk[2], " not found: marker number out of bounds")
-          }
-          else stop("'mrk1' and 'mrk2' must be of the same type \"numeric\" or \"character\"")
-          cat("  Results of the 2-point analysis for markers:", colnames(x$analysis)[mrk[1]],
-              "and", colnames(x$analysis)[mrk[2]], "\n")
-
-          ## results found
-          cat("  Criteria: LOD = ", x$LOD, ", Maximum recombination fraction = ",
-              x$max.rf, "\n\n")
-          ## do not print anything for the same marker
-          if(mrk[1] == mrk[2]) stop("mrk1 and mrk2 are the same")
-          ## results of the two-point analysis
-          if (mrk[1] > mrk[2]){
-              r<-x$analysis[mrk[1],mrk[2]]
-              LOD<-x$analysis[mrk[2],mrk[1]]
-          }
-          else
-          {
-              r<-x$analysis[mrk[2],mrk[1]]
-              LOD<-x$analysis[mrk[1],mrk[2]]
-          }
-          output<-c(r, LOD)
-          names(output)<-c("rf","LOD")
-          print(output)
-      }
-    else if(is(x, "outcross"))
+    else if(is.numeric(mrk[1]) && is.numeric(mrk[2]))
     {
-        if (is.character(mrk[1]) && is.character(mrk[2])) {
-            mrk1name<-mrk[1]
-            mrk2name<-mrk[2]
-            mrk[1]<-match(mrk[1], colnames(x$analysis[[1]]))
-            mrk[2]<-match(mrk[2], colnames(x$analysis[[1]]))
-            mrk<-as.numeric(mrk)
-            if (is.na(mrk[1])) stop("marker ", mrk1name, " not found")
-            if (is.na(mrk[2])) stop("marker ", mrk2name, " not found")
-        }
-        else if(is.numeric(mrk[1]) && is.numeric(mrk[2]))
-        {
-            if(mrk[1] > nrow(x$analysis[[1]])) stop("marker ", mrk[1], " not found: marker number out of bounds")
-            if(mrk[2] > nrow(x$analysis[[1]])) stop("marker ", mrk[2], " not found: marker number out of bounds")
-        }
-        else stop("'mrk1' and 'mrk2' must be of the same type \"numeric\" or \"character\"")
-        cat("  Results of the 2-point analysis for markers:", colnames(x$analysis[[1]])[mrk[1]],
-            "and", colnames(x$analysis[[1]])[mrk[2]], "\n")
-        ## results found
-        cat("  Criteria: LOD = ", x$LOD, ", Maximum recombination fraction = ",
-            x$max.rf, "\n\n")
-        ## do not print anything for the same marker
-        if(mrk[1] == mrk[2]) stop("mrk1 and mrk2 are the same")
-        ## results of the two-point analysis
-        output<-NULL
-        if (mrk[1] > mrk[2]){
-            for(i in 1:4)
-                output<-rbind(output,c(x$analysis[[i]][mrk[1],mrk[2]],
-                                       x$analysis[[i]][mrk[2],mrk[1]]))
-        }
-        else
-        {
-            for(i in 1:4)
-                output<-rbind(output, c(x$analysis[[i]][mrk[2],mrk[1]],
-                                        x$analysis[[i]][mrk[1],mrk[2]]))
-        }
-        dimnames(output)<-list(c("CC", "CR", "RC", "RR"), c("rf","LOD"))
-        print(output)
+      if(mrk[1] > nrow(x$analysis[[1]]))
+        stop("marker ", mrk[1], " not found: marker number out of bounds")
+      if(mrk[2] > nrow(x$analysis[[1]]))
+        stop("marker ", mrk[2], " not found: marker number out of bounds")
     }
+    else stop("'mrk1' and 'mrk2' must be of the same type \"numeric\" or \"character\"")
+    message("  Results of the 2-point analysis for markers:",
+            colnames(x$analysis[[1]])[mrk[1]],
+            "and", colnames(x$analysis[[1]])[mrk[2]], "\n")
+    ## results found
+    message("  Criteria: LOD = ", x$LOD, ", Maximum recombination fraction = ",
+            x$max.rf, "\n\n")
+    ## do not print anything for the same marker
+    if(mrk[1] == mrk[2]) stop("mrk1 and mrk2 are the same")
+    ## results of the two-point analysis
+    output<-NULL
+    if (mrk[1] > mrk[2]){
+      for(i in 1:4)
+        output<-rbind(output,c(x$analysis[[i]][mrk[1],mrk[2]],
+                               x$analysis[[i]][mrk[2],mrk[1]]))
+    }
+    else
+    {
+      for(i in 1:4)
+        output<-rbind(output, c(x$analysis[[i]][mrk[2],mrk[1]],
+                                x$analysis[[i]][mrk[1],mrk[2]]))
+    }
+    dimnames(output)<-list(c("CC", "CR", "RC", "RR"), c("rf","LOD"))
+    print(output)
   }
 }
 
 ##get twopt information for a given pair of markers
 get_twopt_info<-function(twopt, small, big)
 {
-    if(is(twopt, "outcross"))
-        return(t(sapply(twopt$analysis, function(x,i,j) c(x[j,i], x[i,j]), i=small, j=big)))
-    else
-        return(matrix(c(twopt$analysis[big,small], twopt$analysis[small,big]), ncol=2))
+  return(t(sapply(twopt$analysis,
+                  function(x,i,j) c(x[j,i], x[i,j]), i=small, j=big)))
 }
 
 ## end of file

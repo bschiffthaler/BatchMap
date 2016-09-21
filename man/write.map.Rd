@@ -33,12 +33,12 @@ lg<-group(make.seq(twopt, "all"))
   maps.list<-vector("list", lg$n.groups)
 
   for(i in 1:lg$n.groups){
-    ##create linkage group i  
+    ##create linkage group i
     LG.cur <- make.seq(lg,i)
-    ##ordering 
+    ##ordering
     map.cur<-order.seq(LG.cur, subset.search = "sample")
-    ##assign the map of the i-th group to the maps.list 
-    maps.list[[i]]<-make.seq(map.cur, "force")      
+    ##assign the map of the i-th group to the maps.list
+    maps.list[[i]]<-make.seq(map.cur, "force")
   }
 
 ##write maps.list to "fake.f2.onemap.map" file
