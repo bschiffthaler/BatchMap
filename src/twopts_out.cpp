@@ -61,7 +61,7 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
                       int n_ind, bool verbose)
 {
   int n_mar=((int)geno.size()/n_ind), k1, k2;
-  Rcout << n_mar << " markers input.\n";
+  //Rcout << n_mar << " markers input.\n";
   int chunk=((n_mar*n_mar)-n_mar)/20, ct1=0, ct2=1, a1, a2, a3;
   NumericMatrix n(5,5);
   NumericVector r(8);

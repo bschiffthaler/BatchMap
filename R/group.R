@@ -176,5 +176,6 @@ check.linkage<-function(i, s, cl, geno, st=NULL, max.rf, LOD)
   r<-est_rf_out(geno = geno[,c(i,s)], mrk = 1, seg_type = st[c(i,s)], nind = nrow(geno))
   sig<-apply(r[[1]], 2, function(x,y) min(x) <= y, y=max.rf) &
     apply(r[[2]], 2, function(x,y) max(x) >= y, y=LOD)
+  return(list(lk=s[sig[-1]], unlk=s[!(sig[-1])]))
 }
 ###end of file
