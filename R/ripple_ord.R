@@ -160,7 +160,7 @@ ripple_window <- function(input.seq, ws=4, tol=10E-4, phase.cores = 4,
   {
     message(p-1, "...", input.seq$seq.num[p-1], "|",
             paste(input.seq$seq.num[p:(p+ws-1)], collapse = "-"),"|",
-            input.seq$seq.num[p+ws],"...", p+1)
+            input.seq$seq.num[p+ws],"...", p+ws+1)
   }
 
   if(type == "all") all.ord <- generate_all(input.seq, p, ws)

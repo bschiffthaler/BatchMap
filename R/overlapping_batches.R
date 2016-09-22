@@ -136,13 +136,27 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     message("Have ", length(batches), " batches.")
     message("The number of markers in the final batch is: ",
             length(batches[[length(batches)]]))
-    message("Prcoessing batch 1...")
+    message("Processing batch 1...")
   }
   LGs <- list()
   #The first batch is run in full again to get all necessary data (phases etc.)
-  LG <- map(make.seq(get(input.seq$twopt), batches[[1]],
-                     twopt = input.seq$twopt), phase.cores = phase.cores,
-            verbosity = verbosity)
+  tryCatch({
+    LG <- map(make.seq(get(input.seq$twopt), batches[[1]],
+                       twopt = input.seq$twopt), phase.cores = phase.cores,
+              verbosity = verbosity)
+  }, error = function(e) {
+    warning("Error during initial map calculation.",
+            "Trying to fix by reordering...")
+    s <- make.seq(get(input.seq$twopt), batches[[1]], twopt = input.seq$twopt)
+    s$seq.like <- -Inf
+    LG <- ripple_ord(input.seq = s,ws =  ws, phase.cores = phase.cores,
+                     ripple.cores = ripple.cores, method = "one",
+                     no_reverse = TRUE, verbosity = verbosity, start = 1,
+                     batches = batches)
+    if(LG$seq.like == -Inf)
+      stop("Could not fix issue. You need to reorder or provide more",
+           " informative markers")
+  }, finally = {})
   round <- 1
   increment <- 0
   #If an ordering function is defined and a run is needed (either through the
@@ -174,11 +188,25 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     #which we trust more from the prvious batch (as that had more information)
     seeds <- tail(LGs[[i - 1]]$seq.phases, overlap)
     batches[[i]][1:(overlap+1)] <- tail(LGs[[i - 1]]$seq.num, overlap + 1)
-    LG <- seeded.map(make.seq(get(input.seq$twopt),
-                              batches[[i]],
-                              twopt = input.seq$twopt),
-                     verbosity = verbosity,
-                     seeds = seeds)
+    tryCatch({
+      LG <- seeded.map(make.seq(get(input.seq$twopt),
+                                batches[[i]],
+                                twopt = input.seq$twopt),
+                       verbosity = verbosity,
+                       seeds = seeds)
+    }, error = function(e){
+      warning("Error during initial map calculation.",
+              "Trying to fix by reordering...")
+      s <- make.seq(get(input.seq$twopt), batches[[i]], twopt = input.seq$twopt)
+      s$seq.like <- -Inf
+      LG <- ripple_ord(input.seq = s,ws =  ws, phase.cores = phase.cores,
+                       ripple.cores = ripple.cores, method = "one",
+                       no_reverse = TRUE, verbosity = verbosity,
+                       start = overlap + 2, batches = batches)
+      if(LG$seq.like == -Inf)
+        stop("Could not fix issue. You need to reorder or provide more",
+             " informative markers")
+    }, finally = {})
     #Order if fun.order is defined and we have a need to order
     if(! is.null(fun.order ))
     {

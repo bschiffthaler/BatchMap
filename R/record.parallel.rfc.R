@@ -264,7 +264,7 @@ record.parallel <- function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
   ## end of RECORD algorithm
   if(domap){
     message("\norder obtained using RECORD algorithm:\n\n",
-        input.seq$seq.num[result.new],".\n\n",
+            paste(input.seq$seq.num[result.new], collapse = " "),".\n\n",
         "now calling map()\n\n")
     batch <- split_map_batches(result.new, cores)
     m <- mclapply(batch, mc.cores = length(batch), function(x){
@@ -277,7 +277,7 @@ record.parallel <- function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
     return(final)
   } else {
     message("\norder obtained using RECORD algorithm:\n\n",
-            input.seq$seq.num[result.new],".\n\n",
+          paste(input.seq$seq.num[result.new], collapse = " "),".\n\n",
         "NOT calling map()\n\n")
     return(result.new)
   }
