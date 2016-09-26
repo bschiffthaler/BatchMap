@@ -672,34 +672,34 @@ Rcpp::NumericVector rf_B3_B3(Rcpp::NumericMatrix n,
   double l, l0, rnew, rold;
   //Likelihoods under h0: r=0.5
   l0 = -M_LN2*(2*n(3,3)+n(3,2)+2*n(3,1)+2*n(2,3)+n(2,2)+2*n(2,1)+2*n(1,3)+n(1,2)+2*n(1,1));
-    //EM algorithm
+  //EM algorithm
   rold=0;
   rnew=0.01;
   while(abs(rold-rnew) > TOL)
-    {
-      rold=rnew;
-      rnew=((2*n(3,2)+4*n(3,1)+2*n(2,3)+2*n(2,2)+2*n(2,1)+4*n(1,3)+2*n(1,2))*rold*rold+
-	    (-2*n(3,2)-4*n(3,1)-2*n(2,3)-2*n(2,1)-4*n(1,3)-2*n(1,2))*rold+
-	    n(3,2)+2*n(3,1)+n(2,3)+n(2,1)+2*n(1,3)+n(1,2))/
-	(2.0*(n_ind-mis)*(2*(rold*rold)-2*rold+1));
-    }
+  {
+    rold=rnew;
+    rnew=((2*n(3,2)+4*n(3,1)+2*n(2,3)+2*n(2,2)+2*n(2,1)+4*n(1,3)+2*n(1,2))*rold*rold+
+      (-2*n(3,2)-4*n(3,1)-2*n(2,3)-2*n(2,1)-4*n(1,3)-2*n(1,2))*rold+
+      n(3,2)+2*n(3,1)+n(2,3)+n(2,1)+2*n(1,3)+n(1,2))/
+    (2.0*(n_ind-mis)*(2*(rold*rold)-2*rold+1));
+  }
   r(0)=rnew;
   l=n(2,2)*log(2*(rnew*rnew)-2*rnew+1)+(n(2,3)+n(2,1))*log(rnew-(rnew*rnew))+
     (n(3,2)+n(1,2))*log(2*rnew-2*(rnew*rnew))+(2*n(3,1)+2*n(1,3))*log(rnew)+
     (2*n(3,3)+2*n(1,1))*log(1-rnew);
-    r(4)=r(7)=(l-l0)/log(10.0); //transforming to base 10 logarithm
-    rold=0, rnew=0.01;
-    while(abs(rold-rnew) > TOL)
-      {
-	rold=rnew;
-	rnew=((2*n(3,3)+2*n(3,2)+2*n(3,1)+2*n(2,3)+2*n(2,2)+2*n(2,1)+2*n(1,3)+2*n(1,2)+2*n(1,1))*rold*rold+
-	      (-2*n(3,3)-2*n(3,1)-2*n(2,2)-2*n(1,3)-2*n(1,1))*rold+
-	      n(3,3)+n(3,1)+n(2,2)+n(1,3)+n(1,1))/
-	  (2.0*(n_ind-mis)*(2*(rold*rold)-2*rold+1));
-      }
-    r(2)=r(1)=rnew;
-    l=(n(3,2)+n(1,2))*log(2*(rnew*rnew)-2*rnew+1)+(n(2,3)+n(2,1))*log((2*(rnew*rnew)-2*rnew+1)/2)+
-      (n(3,3)+n(3,1)+n(1,3)+n(1,1))*log(rnew-(rnew*rnew))+n(2,2)*log(2*rnew-2*(rnew*rnew));
+  r(4)=r(7)=(l-l0)/log(10.0); //transforming to base 10 logarithm
+  rold=0, rnew=0.01;
+  while(abs(rold-rnew) > TOL)
+  {
+    rold=rnew;
+    rnew=((2*n(3,3)+2*n(3,2)+2*n(3,1)+2*n(2,3)+2*n(2,2)+2*n(2,1)+2*n(1,3)+2*n(1,2)+2*n(1,1))*rold*rold+
+      (-2*n(3,3)-2*n(3,1)-2*n(2,2)-2*n(1,3)-2*n(1,1))*rold+
+      n(3,3)+n(3,1)+n(2,2)+n(1,3)+n(1,1))/
+    (2.0*(n_ind-mis)*(2*(rold*rold)-2*rold+1));
+  }
+  r(2)=r(1)=rnew;
+  l=(n(3,2)+n(1,2))*log(2*(rnew*rnew)-2*rnew+1)+(n(2,3)+n(2,1))*log((2*(rnew*rnew)-2*rnew+1)/2)+
+    (n(3,3)+n(3,1)+n(1,3)+n(1,1))*log(rnew-(rnew*rnew))+n(2,2)*log(2*rnew-2*(rnew*rnew));
   r(5)=r(6)=(l-l0)/log(10.0); //transforming to base 10 logarithm
   r(3)=abs(1.0-r(0));
   return(r);

@@ -34,7 +34,7 @@
  Last update: 11/2015
  */
 
-#include <Rcpp.h>
+#include <RcppArmadillo.h>
 #include "progressBar.h"
 #include "out_est.h"
 #include "utils.h"
@@ -143,6 +143,18 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
         }
         else n(0,0)++;
       }
+      //Rcpp::Rcout << "Marker: " << i + 1 << '\t' << j + 1 << '\n' <<
+      //  "Segr-type: " << k1 << '\t' << k2 << '\n';
+
+      //for(int xx = 0; xx < 5; xx++)
+      //{
+      //  for(int yy = 0; yy < 5; yy++)
+      //  {
+      //    Rcpp::Rcout << n(xx,yy) << '\t';
+      //  }
+      //  Rcpp::Rcout << '\n';
+      //}
+      //Rcpp::Rcout << '\n';
       k1=segreg_type(i); k2=segreg_type(j);
       switch(k1){
       case 1:
@@ -344,8 +356,14 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
       }
       for(int k=0; k < 4; k++)
       {
-        if(r[k] < rf_TOL_min) r[k]=rf_TOL_min;
-        if(r[k] > rf_TOL_max) r[k]=rf_TOL_max;
+        if(r[k] <= arma::datum::eps) {
+          r[k] = 0;
+          r[k+4] = R_PosInf;
+        }
+        if(r[k] >= (1 - arma::datum::eps)) {
+          r[k]= 1;
+          r[k+4]=R_NegInf;
+        }
       }
       if(mrk < 0)
       {
