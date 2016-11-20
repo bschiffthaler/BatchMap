@@ -356,6 +356,9 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
       }
       for(int k=0; k < 4; k++)
       {
+        if(r[k] < rf_TOL_min) r[k]=rf_TOL_min;
+        if(r[k] > rf_TOL_max) r[k]=rf_TOL_max;
+        /*
         if(r[k] <= arma::datum::eps) {
           r[k] = 0;
           r[k+4] = R_PosInf;
@@ -363,7 +366,7 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
         if(r[k] >= (1 - arma::datum::eps)) {
           r[k]= 1;
           r[k+4]=R_NegInf;
-        }
+        } */
       }
       if(mrk < 0)
       {

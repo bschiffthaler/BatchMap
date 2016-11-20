@@ -126,7 +126,8 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                         fun.order = NULL, phase.cores = 4,
                         ripple.cores = 1, verbosity = NULL, max.dist = Inf,
                         ws = 4, increase.every = 4, max.tries = 10,
-                        min.tries = 0, ...)
+                        min.tries = 0, seeds = NULL, optimize = "likelihood",
+                        ...)
 {
   #TODO: error checks...
   #Create initial set of batches
@@ -141,9 +142,16 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   LGs <- list()
   #The first batch is run in full again to get all necessary data (phases etc.)
   tryCatch({
-    LG <- map(make.seq(get(input.seq$twopt), batches[[1]],
-                       twopt = input.seq$twopt), phase.cores = phase.cores,
-              verbosity = verbosity)
+    if(is.null(seeds))
+    {
+      LG <- map(make.seq(get(input.seq$twopt), batches[[1]],
+                         twopt = input.seq$twopt), phase.cores = phase.cores,
+                verbosity = verbosity)
+    } else {
+      LG <- seeded.map(make.seq(get(input.seq$twopt), batches[[1]],
+                                twopt = input.seq$twopt), phase.cores = phase.cores,
+                       verbosity = verbosity, seeds = seeds)
+    }
   }, error = function(e) {
     warning("Error during initial map calculation.",
             "Trying to fix by reordering...")
@@ -152,7 +160,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     LG <- ripple_ord(input.seq = s,ws =  ws, phase.cores = phase.cores,
                      ripple.cores = ripple.cores, method = "one",
                      no_reverse = TRUE, verbosity = verbosity, start = 1,
-                     batches = batches)
+                     batches = batches, optimize = optimize)
     if(LG$seq.like == -Inf)
       stop("Could not fix issue. You need to reorder or provide more",
            " informative markers")
@@ -172,7 +180,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     if(round %% increase.every == 0) increment <- increment + 1
     LG <-  fun.order(LG, ripple.cores = ripple.cores, start = 1,
                      verbosity = verbosity, batches = batches,
-                     ws = ws + increment, ...)
+                     ws = ws + increment, optimize = optimize, ...)
     round <- round + 1
   }
   LGs[[1]] <- LG
@@ -202,7 +210,8 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
       LG <- ripple_ord(input.seq = s,ws =  ws, phase.cores = phase.cores,
                        ripple.cores = ripple.cores, method = "one",
                        no_reverse = TRUE, verbosity = verbosity,
-                       start = overlap + 2, batches = batches)
+                       start = overlap + 2, batches = batches,
+                       optimize = optimize)
       if(LG$seq.like == -Inf)
         stop("Could not fix issue. You need to reorder or provide more",
              " informative markers")
@@ -222,7 +231,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
         if(round %% increase.every == 0) increment <- increment + 1
         LG <-  fun.order(LG, ripple.cores = ripple.cores, start=overlap+2,
                          verbosity = verbosity, batches = batches,
-                         ws = ws + increment, ...)
+                         ws = ws + increment, optimize = optimize, ...)
         round <- round + 1
       }
     }

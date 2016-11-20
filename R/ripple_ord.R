@@ -129,7 +129,7 @@ generate_one <- function(input.seq, p, ws, no_reverse)
 ripple_window <- function(input.seq, ws=4, tol=10E-4, phase.cores = 4,
                           ripple.cores = 4, start = 1, verbosity = NULL,
                           type = "one", n = NULL, pref = NULL,
-                          no_reverse = TRUE) {
+                          no_reverse = TRUE, optimize = "likelihood") {
 
   ## checking for correct objects
   if(!any(class(input.seq)=="sequence")) {
@@ -147,10 +147,10 @@ ripple_window <- function(input.seq, ws=4, tol=10E-4, phase.cores = 4,
   ## allocate variables
   rf.init <- rep(NA,len-1)
   phase <- rep(NA,len-1)
-  tot <- prod(1:ws)
-  best.ord.phase <- matrix(NA,tot,len-1)
-  best.ord.like <- best.ord.LOD <- rep(-Inf,tot)
-  all.data <- list()
+  # tot <- prod(1:ws)
+  # best.ord.phase <- matrix(NA,tot,len-1)
+  # best.ord.like <- best.ord.LOD <- rep(-Inf,tot)
+  # all.data <- list()
 
   ## gather two-point information
   list.init <- phases(input.seq)
@@ -167,45 +167,106 @@ ripple_window <- function(input.seq, ws=4, tol=10E-4, phase.cores = 4,
   if(type == "rand") all.ord <- generate_rand(input.seq, p, ws, n, pref)
   if(type == "one") all.ord <- generate_one(input.seq, p, ws, no_reverse)
 
-  poss <- mclapply(1:nrow(all.ord), mc.allow.recursive = TRUE,
-                   mc.cores = ripple.cores, function(i){
-                     if("position" %in% verbosity)
-                     {
-                       message("Trying order ",i," of ",nrow(all.ord),
-                               " for start position ",p)
-                     }
-                     mp <- list(seq.like = -Inf)
-                     tryCatch({
-                       if(start > 1)
-                       {
-                         seeds <- input.seq$seq.phases[1:(start - 1)]
-                         mp <- seeded.map(make.seq(get(input.seq$twopt),
-                                                   all.ord[i,],
-                                                   twopt = input.seq$twopt),
-                                          phase.cores = phase.cores,
-                                          verbosity = verbosity,
-                                          seeds = seeds)
-                       }
-                       else
-                       {
-                         mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
-                                            twopt = input.seq$twopt),
-                                   phase.cores = phase.cores,
-                                   verbosity = verbosity)
-                       }
-                     }, error = function(e){},
-                     finally = {
-                       return(mp)
-                     })
-                   })
-
-  best <- which.max(sapply(poss,"[[","seq.like"))
-  if(poss[[best]]$seq.like > input.seq$seq.like)
+  if(optimize == "likelihood" || optimize == "size")
   {
-    return(poss[[best]])
-  } else {
-    return(input.seq)
+    poss <- mclapply(1:nrow(all.ord), mc.allow.recursive = TRUE,
+                     mc.cores = ripple.cores, function(i){
+                       if("position" %in% verbosity)
+                       {
+                         message("Trying order ",i," of ",nrow(all.ord),
+                                 " for start position ",p)
+                       }
+                       mp <- list(seq.like = -Inf, seq.rf = -1)
+                       tryCatch({
+                         if(start > 1)
+                         {
+                           seeds <- input.seq$seq.phases[1:(start - 1)]
+                           mp <- seeded.map(make.seq(get(input.seq$twopt),
+                                                     all.ord[i,],
+                                                     twopt = input.seq$twopt),
+                                            phase.cores = phase.cores,
+                                            verbosity = verbosity,
+                                            seeds = seeds)
+                         }
+                         else
+                         {
+                           mp <- map(make.seq(get(input.seq$twopt), all.ord[i,],
+                                              twopt = input.seq$twopt),
+                                     phase.cores = phase.cores,
+                                     verbosity = verbosity)
+                         }
+                       }, error = function(e){},
+                       finally = {
+                         return(mp)
+                       })
+                     })
+  } else if(optimize == "count") {
+    all.ord <- rbind(all.ord, input.seq$seq.num)
+    COUNT<-function(X, sequence){ ## See eq. 1 on the paper (Van Os et al., 2005)
+      return(sum(diag(X[sequence[-length(sequence)],sequence[-1]]),na.rm=TRUE))
+    }
+    r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0)
+    r[is.na(r)]<-0.5
+    diag(r)<-0
+    X<-r*get(input.seq$data.name, pos=1)$n.ind
+    count <- mclapply(1:nrow(all.ord), mc.allow.recursive = TRUE,
+                      mc.cores = ripple.cores, function(i){
+                        if("position" %in% verbosity)
+                        {
+                          message("Trying order ",i," of ",nrow(all.ord),
+                                  " for start position ",p)
+                        }
+                        se <- match(colnames(get(input.seq$data.name)$geno)[all.ord[i,]],
+                                    colnames(X))
+                        return(COUNT(X, se))
+                      })
   }
+
+  if(optimize == "likelihood"){
+    best <- which.max(sapply(poss,"[[","seq.like"))
+    if(poss[[best]]$seq.like > input.seq$seq.like)
+    {
+      return(poss[[best]])
+    } else {
+      return(input.seq)
+    }
+  }
+  if(optimize == "size"){
+
+    # Check which map is shortest. If there are errors in the model, return NULL
+    tryCatch({
+    best <- which.min(sapply(poss,function(f){
+      if(length(f$seq.rf) < 2 | any(f$seq.rf < 0 | f$seq.rf > 0.5))
+        return(NULL)
+      sum(kosambi(f$seq.rf))
+    }))
+    }, error = function(e){
+      save(input.seq, poss, file = "~/bad_poss.RData")
+    }, finally = {})
+
+    # In case all models have errors, just return the input.
+    if(length(poss[[best]]$seq.rf) < 2 | any(poss[[best]]$seq.rf < 0 | poss[[best]]$seq.rf > 0.5))
+      return(input.seq)
+
+    if(sum(kosambi(poss[[best]]$seq.rf)) < sum(kosambi(input.seq$seq.rf)))
+    {
+      return(poss[[best]])
+    } else {
+      return(input.seq)
+    }
+  }
+
+  if(optimize == "count")
+  {
+    best.ord <- which.min(unlist(count))
+    print(all.ord[best.ord,])
+    print(all.ord[nrow(all.ord),])
+    #print(unlist(count))
+    mp <- map(make.seq(get(input.seq$twopt), all.ord[best.ord, ],
+                       twopt = input.seq$twopt))
+    return(mp)
+  }
+
 }
 
 
@@ -256,7 +317,7 @@ ripple_window <- function(input.seq, ws=4, tol=10E-4, phase.cores = 4,
 ripple_ord <- function(input.seq, ws = 4, tol = 10E-4, phase.cores = 4,
                        ripple.cores = 4, method = "one", n = NULL,
                        pref = "neutral", start = 1, verbosity = NULL,
-                       batches = NULL, no_reverse = TRUE)
+                       batches = NULL, no_reverse = TRUE, optimize = "likelihood")
 {
   LG <- input.seq
   if(start + ws > length(input.seq$seq.num)) return(LG)
@@ -269,7 +330,7 @@ ripple_ord <- function(input.seq, ws = 4, tol = 10E-4, phase.cores = 4,
                         phase.cores = phase.cores, ripple.cores = ripple.cores,
                         start = i, verbosity = verbosity,
                         no_reverse = no_reverse, type = method, n = n,
-                        pref = pref)
+                        pref = pref, optimize = optimize)
     toc <- Sys.time()
     timings <- c(timings, as.numeric(difftime(toc, tic, units = "secs")))
     if("time" %in% verbosity)
