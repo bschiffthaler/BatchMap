@@ -72,6 +72,8 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
   NumericMatrix r4(n_mar,n_mar);
   NumericMatrix rm(4,n_mar);
   NumericMatrix lm(4,n_mar);
+  unsigned long n_mar_ul = n_mar;
+  progressBar prog_bar(40, ((n_mar_ul*n_mar_ul)-n_mar_ul)/2, verbose);
   if(mrk < 0)
   {
     if(verbose && n_mar > 100)
@@ -91,9 +93,9 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
     if(mrk < 0){
       if(verbose==1 && n_mar > 100)
       {
-        if(ct1%(chunk/(chunk/10))==0)
+        if(ct1%(chunk/(chunk/10))==0 && verbose)
         {
-          progressBar(Rcpp::Rcout, ct1, ((n_mar*n_mar)-n_mar)/2, 40);
+          prog_bar.update(ct1);
         }
       }
     }

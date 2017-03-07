@@ -38,17 +38,7 @@ ab x oo \tab 1:1 \cr D1.12 \tab bo x aa \tab 1:1 \cr D1.13 \tab ao x oo
   markers.ex <- make.seq(twopts,c(3,6,8,12,16,25))
   marker.type(markers.ex) # segregation type for some markers
 
-  data(fake.f2.onemap)
-  twopts <- rf.2pts(fake.f2.onemap)
-  all.mrk<-make.seq(twopts, "all")
-  lgs<-group(all.mrk)
-  lg1<-make.seq(lgs,1)
-  marker.type(lg1) # segregation type for linkage group 1
 
-
-}
-\author{
-Gabriel R A Margarido, \email{gramarga@gmail.com}
 }
 \references{
 Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)
@@ -58,6 +48,8 @@ outcrossing species. \emph{Theoretical Population Biology} 61: 349-363.
 \seealso{
 \code{\link[onemap]{make.seq}}
 }
+\author{
+Gabriel R A Margarido, \email{gramarga@gmail.com}
+}
 \keyword{manip}
 \keyword{utilities}
-

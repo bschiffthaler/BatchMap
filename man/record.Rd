@@ -4,8 +4,7 @@
 \alias{record}
 \title{Recombination Counting and Ordering}
 \usage{
-record(input.seq, times = 10, LOD = 0, max.rf = 0.5, tol = 1e-04,
-  runMap = TRUE)
+record(input.seq, times = 10, LOD = 0, max.rf = 0.5, tol = 1e-04)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -60,20 +59,8 @@ constructed using the multipoint approach (function
   groups <- group(all.mark)
   LG1 <- make.seq(groups,1)
   LG1.rec <- record(LG1)
-
-  ##F2 example
-  data(fake.f2.onemap)
-  twopt <- rf.2pts(fake.f2.onemap)
-  all.mark <- make.seq(twopt,"all")
-  groups <- group(all.mark)
-  LG1 <- make.seq(groups,1)
-  LG1.rec <- record(LG1)
-  LG1.rec
 }
 
-}
-\author{
-Marcelo Mollinari, \email{mmollina@usp.br}
 }
 \references{
 Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
@@ -87,5 +74,7 @@ and Applied Genetics} 112: 30-40.
 \seealso{
 \code{\link[onemap]{make.seq}} and \code{\link[onemap]{map}}
 }
+\author{
+Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{utilities}
-

@@ -5,7 +5,7 @@
 \title{Recombination Counting and Ordering}
 \usage{
 record.parallel(input.seq, times = 10, cores = 10, LOD = 0,
-  max.rf = 0.5, tol = 1e-04, useC = TRUE, domap = TRUE)
+  max.rf = 0.5, tol = 1e-04, useC = TRUE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -25,9 +25,6 @@ convergence.}
 
 \item{useC}{Use the C implementation to get the matrix of recombination
 fractions.}
-
-\item{domap}{Calculate a non-overalpping batch map. See details for more
-information.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
@@ -56,14 +53,6 @@ a matrix with recombination fractions between markers. This implementation
 parallelizes over the \code{times} argument using \code{cores} parallel
 processes. An optimal choice for the \code{cores} argument is usually an even
 divisor of \code{times}.
-
-If \code{domap} is set to \code{TRUE}, a non-overlapping batch map is
-created after ordering is complete. This is also done in parallel using
-maximally \code{cores} parallel processes. Since especially the phase
-estiamtion in outcrossing populations relies on information that could be
-in another batch, the map should be considered very untrustworthy. See
-function \code{\link[onemap]{map_overlapping_batches}} for a much better
-(but slower) approximation.
 }
 \examples{
 
@@ -75,21 +64,8 @@ function \code{\link[onemap]{map_overlapping_batches}} for a much better
   groups <- group(all.mark)
   LG1 <- make.seq(groups,1)
   LG1.rec <- record(LG1)
-
-  ##F2 example
-  data(fake.f2.onemap)
-  twopt <- rf.2pts(fake.f2.onemap)
-  all.mark <- make.seq(twopt,"all")
-  groups <- group(all.mark)
-  LG1 <- make.seq(groups,1)
-  LG1.rec <- record.parallel(LG1, cores = 4, times = 16)
-  LG1.rec
 }
 
-}
-\author{
-Original implementation: Marcelo Mollinari, \email{mmollina@usp.br},
-Parallel version: Bastian Schiffthaler, \email{bastian.schiffthaler@umu.se}
 }
 \references{
 Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
@@ -103,5 +79,8 @@ and Applied Genetics} 112: 30-40.
 \seealso{
 \code{\link[onemap]{make.seq}} and \code{\link[onemap]{map}}
 }
+\author{
+Original implementation: Marcelo Mollinari, \email{mmollina@usp.br},
+Parallel version: Bastian Schiffthaler, \email{bastian.schiffthaler@umu.se}
+}
 \keyword{utilities}
-

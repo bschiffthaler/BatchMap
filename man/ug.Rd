@@ -56,20 +56,8 @@ using the multipoint approach (function \code{\link[onemap]{map}}).
   groups <- group(all.mark)
   LG1 <- make.seq(groups,1)
   LG1.ug <- ug(LG1)
-
-  #F2 example
-  data(fake.f2.onemap)
-  twopt <- rf.2pts(fake.f2.onemap)
-  all.mark <- make.seq(twopt,"all")
-  groups <- group(all.mark)
-  LG1 <- make.seq(groups,1)
-  LG1.ug <- ug(LG1)
-  LG1.ug
 }
 
-}
-\author{
-Marcelo Mollinari, \email{mmollina@usp.br}
 }
 \references{
 Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
@@ -82,5 +70,7 @@ Tan, Y. and Fu, Y. (2006) A novel method for estimating linkage maps.
 \seealso{
 \code{\link[onemap]{make.seq}}, \code{\link[onemap]{map}}
 }
+\author{
+Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{utilities}
-

@@ -19,16 +19,16 @@
 ## second, it adds markers sequentially with the 'try' function
 
 
-##' Search for the best order of markers combining compare and try_seq
+##' Search for the best order of markers combining compare and try.seq
 ##' functions
 ##'
 ##' For a given sequence of markers, this function first uses the
 ##' \code{compare} function to create a framework for a subset of informative
-##' markers. Then, it tries to map remaining ones using the \code{try_seq}
+##' markers. Then, it tries to map remaining ones using the \code{try.seq}
 ##' function.
 ##'
 ##' For outcrossing populations, the initial subset and the order in which
-##' remaining markers will be used in the \code{try_seq} step is given by the
+##' remaining markers will be used in the \code{try.seq} step is given by the
 ##' degree of informativeness of markers (i.e markers of type A, B, C and D, in
 ##' this order).
 ##'
@@ -38,7 +38,7 @@
 ##' log-likelihood of the \eqn{\frac{n.init!}{2}}{n.init!/2} possible orders.
 ##' If the LOD Score of the second best order is greater than
 ##' \code{subset.THRES}, than it takes the best order to proceed with the
-##' \code{try_seq} step. If not, the procedure is repeated. The maximum number
+##' \code{try.seq} step. If not, the procedure is repeated. The maximum number
 ##' of times to repeat this procedure is given by the \code{subset.n.try}
 ##' argument. ii) \code{"twopt"} uses a two-point based algorithm, given by the
 ##' option \code{"twopt.alg"}, to construct a two-point based map. The options
@@ -48,10 +48,10 @@
 ##' \code{"compare"} step will then be applied on this subset of markers.
 ##'
 ##' In both cases, the order in which the other markers will be used in the
-##' \code{try_seq} step is given by marker types (i.e. co-dominant before
+##' \code{try.seq} step is given by marker types (i.e. co-dominant before
 ##' dominant) and by the missing information on each marker.
 ##'
-##' After running the \code{compare} and \code{try_seq} steps, which result in
+##' After running the \code{compare} and \code{try.seq} steps, which result in
 ##' a "safe" order, markers that could not be mapped are "forced" into the map,
 ##' resulting in a map with all markers positioned.
 ##'
@@ -72,17 +72,17 @@
 ##' should be used if \code{subset.search=="twopt"}. See the \code{Details}
 ##' section.
 ##' @param THRES threshold to be used when positioning markers in the
-##' \code{try_seq} step.
-##' @param touchdown logical. If \code{FALSE} (default), the \code{try_seq}
+##' \code{try.seq} step.
+##' @param touchdown logical. If \code{FALSE} (default), the \code{try.seq}
 ##' step is run only once, with the value of \code{THRES}. If \code{TRUE},
-##' \code{try_seq} runs with \code{THRES} and then once more, with
+##' \code{try.seq} runs with \code{THRES} and then once more, with
 ##' \code{THRES-1}. The latter calculations take longer, but usually are able
 ##' to map more markers.
 ##' @param draw.try if \code{TRUE}, a diagnostic graphic for each
-##' \code{try_seq} step is displayed. See \code{Details} section in
-##' \code{\link[onemap]{try_seq}} function.
+##' \code{try.seq} step is displayed. See \code{Details} section in
+##' \code{\link[onemap]{try.seq}} function.
 ##' @param wait the minimum time interval in seconds to display the diagnostic
-##' graphic for each \code{try_seq} step. Defaults to 0.00
+##' graphic for each \code{try.seq} step. Defaults to 0.00
 ##' @param tol tolerance number for the C routine, i.e., the value used to
 ##' evaluate convergence of the EM algorithm.
 ##' @return An object of class \code{order}, which is a list containing the
@@ -99,7 +99,7 @@
 ##' @author Gabriel R A Margarido, \email{gramarga@@usp.br} and Marcelo
 ##' Mollinari, \email{mmollina@@gmail.com}
 ##' @seealso \code{\link[onemap]{make.seq}}, \code{\link[onemap]{compare}} and
-##' \code{\link[onemap]{try_seq}}.
+##' \code{\link[onemap]{try.seq}}.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43
@@ -140,29 +140,6 @@
 ##'   LG2.ord
 ##'   make.seq(LG2.ord) # get safe sequence
 ##'   make.seq(LG2.ord,"force") # get forced sequence
-##'
-##'   #F2 example
-##'   data(fake.f2.onemap)
-##'   twopt <- rf.2pts(fake.f2.onemap)
-##'   all.mark <- make.seq(twopt,"all")
-##'   groups <- group(all.mark)
-##'   LG3 <- make.seq(groups,3)
-##'   LG3.ord <- order.seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
-##'   LG3.ord
-##'   make.seq(LG3.ord) # get safe sequence
-##'   ord.1<-make.seq(LG3.ord,"force") # get forced sequence
-##'
-##'   LG3.ord.s <- order.seq(LG3, subset.search = "sample", touchdown=TRUE)
-##'   LG3.ord.s
-##'   make.seq(LG3.ord) # get safe sequence
-##'   ord.2<-make.seq(LG3.ord,"force") # get forced sequence
-##'
-##'   rbind(ord.1$seq.num, ord.2$seq.num) # probably, the same order for
-##'   this dataset
-##'
-##'   #Now showing diagnostic graphics for each try_seq step.
-##'   LG3.ord.dg <- order.seq(LG3, subset.search = "sample", touchdown=TRUE,
-##'                           draw.try=TRUE, wait=3)
 ##'
 ##' }
 ##'
@@ -208,7 +185,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
   input.seq2 <- make.seq(seq.ord,1)
   cat ("\n\nRunning try algorithm\n")
   for (i in (n.init+1):length(input.seq$seq.num)){
-    time.elapsed<-system.time(seq.ord <- try_seq(input.seq2,input.seq$seq.num[seq.work[i]],tol=tol, draw.try=draw.try))[3]
+    time.elapsed<-system.time(seq.ord <- try.seq(input.seq2,input.seq$seq.num[seq.work[i]],tol=tol, draw.try=draw.try))[3]
     if(time.elapsed < wait)
       Sys.sleep(wait - time.elapsed)
     if(all(seq.ord$LOD[-which(seq.ord$LOD==max(seq.ord$LOD))[1]] < -THRES))
@@ -225,7 +202,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     ## here, a second round of the 'try' algorithm is performed, if requested
     cat("\n\n\nTrying to map remaining markers with LOD threshold ",THRES-1,"\n")
     for (i in mrk.unpos) {
-      time.elapsed<-system.time(seq.ord <- try_seq(input.seq2,i,tol=tol, draw.try=draw.try))[3]
+      time.elapsed<-system.time(seq.ord <- try.seq(input.seq2,i,tol=tol, draw.try=draw.try))[3]
       if(time.elapsed < wait)
         Sys.sleep(wait - time.elapsed)
       if(all(seq.ord$LOD[-which(seq.ord$LOD==max(seq.ord$LOD))[1]] < (-THRES+1)))
@@ -244,7 +221,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     j <- 1
     cat("\n\nCalculating LOD-Scores\n")
     for (i in mrk.unpos){
-      LOD.unpos[j,] <- try_seq(input.seq=input.seq2,mrk=i,tol=tol)$LOD
+      LOD.unpos[j,] <- try.seq(input.seq=input.seq2,mrk=i,tol=tol)$LOD
       j <- j+1
     }
   } else mrk.unpos <- NULL
@@ -258,7 +235,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     which.order <- order(apply(LOD.unpos,1,function(x) max(x[-which(x==0)[1]])))
 
     for (i in mrk.unpos[which.order]) {
-      time.elapsed<-system.time(seq.ord <- try_seq(input.seq3,i,tol,draw.try=draw.try))[3]
+      time.elapsed<-system.time(seq.ord <- try.seq(input.seq3,i,tol,draw.try=draw.try))[3]
       if(time.elapsed < wait)
         Sys.sleep(wait - time.elapsed)
       input.seq3 <- make.seq(seq.ord,which(seq.ord$LOD==0)[sample(sum(seq.ord$LOD==0))[1]])

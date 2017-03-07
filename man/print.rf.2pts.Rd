@@ -2,25 +2,17 @@
 % Please edit documentation in R/rf.2pts.R
 \name{print.rf.2pts}
 \alias{print.rf.2pts}
-\title{Print method for object class 'rf.2pts'}
+\title{Print twopoint test result}
 \usage{
 \method{print}{rf.2pts}(x, mrk = NULL, ...)
 }
 \arguments{
-\item{x}{an object of class \code{rf.2pts}.}
+\item{x}{The input object}
 
-\item{mrk}{a vector containing a pair of markers, so detailed
-results of the two-point analysis will be printed for them.
-Can be numeric or character strings indicating the
-numbers/names corresponding to any markers in the input file.}
+\item{mrk}{A marker position to print more detailed}
 
-\item{...}{further arguments, passed to other methods. Currently ignored.}
-}
-\value{
-\code{NULL}
+\item{...}{Not used}
 }
 \description{
-It shows the linkage groups as well as the unlinked markers.
+Generic print methods
 }
-\keyword{internal}
-

@@ -117,22 +117,15 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
                    n.groups=i-1, groups=groups), class = "group")
 }
 
-##' Show the results of grouping procedure
+##' Print group result
 ##'
-##' It shows the linkage groups as well as the unlinked markers.
+##' Generic print methods
 ##'
-##' @aliases print.group
-##' @param x an object of class onemap.segreg.test
+##' @param x The input object
+##' @param detailed Print detailed output
+##' @param ... Not used
 ##'
-##' @param detailed logical. If \code{TRUE} the markers in each
-##'     linkage group are printed.
-##'
-##' @param ... currently ignored
-##' @return \code{NULL}
-##' @keywords internal
-##' @export
-##'
-
+##' @method print group
 print.group <-
     function(x, detailed=TRUE,...) {
         ## checking for correct object
@@ -173,7 +166,7 @@ print.group <-
 check.linkage<-function(i, s, cl, geno, st=NULL, max.rf, LOD)
 {
   s<-s[is.na(match(s,i))]
-  r<-est_rf_out(geno = geno[,c(i,s)], mrk = 1, seg_type = st[c(i,s)], nind = nrow(geno))
+  r<-est_rf_out(geno = geno[,c(i,s)], mrk = 1, seg_type = st[c(i,s)], nind = nrow(geno),verbose = FALSE)
   sig<-apply(r[[1]], 2, function(x,y) min(x) <= y, y=max.rf) &
     apply(r[[2]], 2, function(x,y) max(x) >= y, y=LOD)
   return(list(lk=s[sig[-1]], unlk=s[!(sig[-1])]))

@@ -80,13 +80,10 @@ Makes a sequence of markers based on an object of another type.
   markers.comp <- compare(markers)
   (base.map <- make.seq(markers.comp))
   base.map <- make.seq(markers.comp,1,1) # same as above
-  (extend.map <- try_seq(base.map,30))
+  (extend.map <- try.seq(base.map,30))
   (base.map <- make.seq(extend.map,5)) # fifth position is the best
 }
 
-}
-\author{
-Gabriel Margarido, \email{gramarga@gmail.com}
 }
 \references{
 Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M.
@@ -95,8 +92,10 @@ package for constructing primary genetic linkage maps of experimental and
 natural populations. \emph{Genomics} 1: 174-181.
 }
 \seealso{
-\code{\link[onemap]{compare}}, \code{\link[onemap]{try_seq}},
+\code{\link[onemap]{compare}}, \code{\link[onemap]{try.seq}},
 \code{\link[onemap]{order.seq}} and \code{\link[onemap]{map}}.
 }
+\author{
+Gabriel Margarido, \email{gramarga@gmail.com}
+}
 \keyword{utilities}
-

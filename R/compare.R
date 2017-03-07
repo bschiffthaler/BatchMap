@@ -88,24 +88,17 @@
 ##'   (markers.comp <- compare(markers))
 ##'   (markers.comp <- compare(markers,verbose=TRUE))
 ##'
-##'   #F2 example
-##'   data(fake.f2.onemap)
-##'   twopt <- rf.2pts(fake.f2.onemap)
-##'   markers <- make.seq(twopt,c(17,26,29,30,44,46,55))
-##'   (markers.comp <- compare(markers))
-##'   (markers.comp <- compare(markers,verbose=TRUE))
-##'
 ##' }
 ##'
 ##'
 
 compare<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
-  return(compare_outcross(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
+  return(compare.outcross(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
 }
 
 ## Compare all possible orders (exhaustive search) for a given sequence of
 ## markers (for outcrosses)
-compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
+compare.outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
 {
     ## checking for correct objects
     if(!any(class(input.seq)=="sequence"))

@@ -62,34 +62,6 @@
 ##'   LG1 <- make.seq(groups,1)
 ##'   LG1.rcd <- rcd(LG1)
 ##'   rf.graph.table(LG1.rcd, inter=FALSE)
-##' 
-##' \dontrun{
-##'   ##Now, using interactive Tcl-Tk
-##'   rf.graph.table(LG1.rcd, scale=2, inter=TRUE)
-##'
-##'   ##F2 example
-##'   data(fake.f2.onemap)
-##'   twopt <- rf.2pts(fake.f2.onemap)
-##'   all.mark <- make.seq(twopt,"all")
-##'   groups <- group(all.mark)
-##'
-##'   ##"pre-allocate" an empty list of length groups$n.groups (3, in this case)
-##'   maps.list<-vector("list", groups$n.groups)
-##'
-##'   for(i in 1:groups$n.groups){
-##'     ##create linkage group i
-##'     LG.cur <- make.seq(groups,i)
-##'     ##ordering
-##'     map.cur<-order.seq(LG.cur, subset.search = "sample")
-##'     ##assign the map of the i-th group to the maps.list
-##'     maps.list[[i]]<-make.seq(map.cur, "force")
-##'   }
-##'   ##Plot LOD/recombination fraction matrices for each group
-##'   op <- par(mfrow = c(1, 3))
-##'   for(i in 1:groups$n.groups)
-##'     rf.graph.table(maps.list[[i]], axis.cex=.7, main=paste("Group", i),inter=FALSE)
-##'   par(op)
-##' }
 ##'
 
 rf.graph.table <- function(input.seq, scale=1, axis.cex=1, main=NULL, inter=TRUE, mrk.names=FALSE, colorkey = TRUE) {
@@ -124,7 +96,7 @@ rf.graph.table <- function(input.seq, scale=1, axis.cex=1, main=NULL, inter=TRUE
             stop("You must estimate parameters before running 'rf.graph.table' ")
         ## making a list with necessary information
         n.mrk <- length(input.seq$seq.num)
-        
+
         LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
         for(i in 1:(length(input.seq$seq.num)-1)){
             for(j in (i+1):length(input.seq$seq.num)){
@@ -135,26 +107,26 @@ rf.graph.table <- function(input.seq, scale=1, axis.cex=1, main=NULL, inter=TRUE
         mat<-t(get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
         mat.rf<-t(get_mat_rf_in(input.seq, LOD=FALSE,  max.rf = 0.501, min.LOD = -0.1))
     }
-    
-    ##Scaling the LODs to print them properly 
+
+    ##Scaling the LODs to print them properly
     range.LOD<-range(as.dist(t(mat)), na.rm=TRUE)
     range.rf<-range(as.dist(mat), na.rm=TRUE)
     mat[row(mat) > col(mat) & mat > 0.5] <- 0.5 ## if there are recombinations greater than 0.5 (for numrical convergence problems), assuming 0.5
     mat[row(mat) < col(mat)][mat[row(mat) < col(mat)] < 10E-2]<-10E-2
     min.scale<-abs(min(log(mat[row(mat) < col(mat)]), na.rm=TRUE))
     log.LOD<-log(mat[row(mat) < col(mat)]) + min.scale
-    max.scale<-2*max(log.LOD, na.rm=TRUE)  
+    max.scale<-2*max(log.LOD, na.rm=TRUE)
     mat[row(mat) < col(mat)] <- 0.5 - log.LOD/max.scale
     diag(mat)<-NA
     range.scaled.LOD<-range(as.dist(t(mat)), na.rm=TRUE)
-    
+
     ##Write multipoint estimates
     for (i in 1:(n.mrk-1)){
         mat[i+1,i] <- input.seq$seq.rf[i]
         mat.rf[i+1,i] <- mat.rf[i,i+1] <- input.seq$seq.rf[i]
     }
     colnames(mat) <- colnames(get(input.seq$data.name, pos=1)$geno)[input.seq$seq.num]
-    
+
     ##Write NAs in two-point recombination fractions between markers of type D1 and D2
     types <- get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num]
     which.D1D2<-outer((substr(types, 1,2)=="D1"),(substr(types, 1,2)=="D2"))
@@ -165,8 +137,8 @@ rf.graph.table <- function(input.seq, scale=1, axis.cex=1, main=NULL, inter=TRUE
     for(i in 1:(ncol(which.D1D2)-1)) which.D1D2[diag.si[1,i],diag.si[2,i]] <- which.D1D2[diag.si[2,i],diag.si[1,i]] <- 1
     mat<-mat*which.D1D2
     missing<-100*apply(get(input.seq$data.name, pos=1)$geno[,input.seq$seq.num],2, function(x) sum(x==0))/get(input.seq$data.name, pos=1)$n.ind
-    
-    ##info.graph contains all information necessary to plot the graphics 
+
+    ##info.graph contains all information necessary to plot the graphics
     info.graph <- list(mat=mat,
                        mat.rf=mat.rf,
                        seq.num=input.seq$seq.num,
@@ -209,15 +181,15 @@ plotFunction.out <- function(info.graph, cex, main){
     if(!info.graph$colorkey)
         title(main = main, cex.main=cex)
     x<-seq(from=0, to=1, length=info.graph$n)
-    if (info.graph$mrk.names == TRUE) { 
+    if (info.graph$mrk.names == TRUE) {
         text(x = x, y = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$names,
              srt = 90, cex = cex, adj = 1)
-        text(y = x, x = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$names, 
+        text(y = x, x = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$names,
              cex = cex, adj = 1)
     } else {
-        text(x = x, y = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$seq.num, 
+        text(x = x, y = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$seq.num,
              srt = 90, cex = cex, adj = 1)
-        text(y = x, x = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$seq.num, 
+        text(y = x, x = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$seq.num,
              cex = cex, adj = 1)
     }
     if(info.graph$colorkey){
@@ -262,22 +234,22 @@ draw.rf.inter<-function(info.graph, scale, cex){
         }
       else{
           params <- par(bg="white", plt=c(0.1,.95, 0.1, 0.9),xpd=TRUE)
-      } 
+      }
         y.adj<- .8/(-2+info.graph$n*2)
         image(info.graph$mat, axes=FALSE,
               col=rev(tim.colors(200)), #rainbow(n=500, start=min(info.graph$mat, na.rm=TRUE)*1.3, end=max(info.graph$mat, na.rm=TRUE)*1.3)
               useRaster=TRUE)
         if(!info.graph$colorkey) title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=(4+scale)/4, line=.6)
         x<-seq(from=0, to=1, length=info.graph$n)
-        if (info.graph$mrk.names == TRUE) { 
+        if (info.graph$mrk.names == TRUE) {
             text(x = x, y = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$names,
                  srt = 90, cex = cex, adj = 1)
-            text(y = x, x = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$names, 
+            text(y = x, x = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$names,
                  cex = cex, adj = 1)
         } else {
-            text(x = x, y = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$seq.num, 
+            text(x = x, y = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$seq.num,
                  srt = 90, cex = cex, adj = 1)
-            text(y = x, x = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$seq.num, 
+            text(y = x, x = y.adj + rep(-diff(x)[1], info.graph$n), info.graph$seq.num,
                  cex = cex, adj = 1)
         }
         if(info.graph$colorkey){
@@ -352,7 +324,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
                              sep="")
             }
             else if (class(get(info.graph$data.name, pos=1))[2] == "f2" || class(get(info.graph$data.name, pos=1))[2] == "backcross")
-            {    
+            {
                 ##getting type of marker ('another classes')
                 if(info.graph$types[x.n]=="A.H.B")  mkt<-"AA : AB : BB (1:2:1) "
                 else if(info.graph$types[x.n]=="D.B")  mkt<-" Not BB : BB (3:1) "
@@ -376,7 +348,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
                              "\n\nMarker number:\n    ", mkx.n,
                              "\n\nMarker type: \n    ", mkt,
                              "\n\n", format(info.graph$missing[x.n], digits=2), "% of missing data for this marker",
-                             sep="")  
+                             sep="")
             }
             else stop("invalid type of cross")
             mbval<- tkmessageBox(title="Labeling Marker",message=msg,type="ok",icon="question")
@@ -411,7 +383,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
             else if(info.graph$types[y.n]=="M.X")  mkty<- "Mixed: Dominant & Co-dominant"
             else stop ("invalid type of marker at marker ", info.graph$names[y.n])
             LODScore<-info.graph$LOD[x.n, y.n]
-                
+
             ##information for message box (another classes)
             msg <- paste("Marker names: \n    ", info.graph$names[y.n], "\n    and \n    ", info.graph$names[x.n],
                          "\n\nMarker numbers:\n    ",mky.n," and ",mkx.n,
@@ -425,7 +397,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
             if(info.graph$types[x.n]=="A.B")  mktx<-"AA : BB (1:1)"
             else stop ("invalid type of marker at marker ", info.graph$names[x.n])
             if(info.graph$types[y.n]=="A.B")  mkty<-"AA : BB (1:1)"
-            else stop ("invalid type of marker at marker ", info.graph$names[y.n])  
+            else stop ("invalid type of marker at marker ", info.graph$names[y.n])
             LODScore<-info.graph$LOD[x.n, y.n]
             ##information for message box (another classes)
             msg <- paste("Marker names: \n    ", info.graph$names[y.n], "\n    and \n    ", info.graph$names[x.n],
@@ -435,7 +407,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
                          "\n\nLOD-Score: \n    ", format(LODScore, digits=2),
                          sep="")
         }
-        else stop("invalid type of cross") 
+        else stop("invalid type of cross")
         }
       else{
           if((substr(info.graph$types[x.n],1,2)=="D1" && substr(info.graph$types[y.n],1,2)=="D2") ||
@@ -450,7 +422,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
                 ##information for message box (class 'outcross')
                 msg <- paste("Marker names: \n    ", info.graph$names[y.n], "\n    and \n    ", info.graph$names[x.n],
                              "\n\nMarker numbers:\n    ",mky.n," and ",mkx.n,
-                             "\n\nMarker types: \n    ", info.graph$types[y.n], " and ", info.graph$types[x.n], 
+                             "\n\nMarker types: \n    ", info.graph$types[y.n], " and ", info.graph$types[x.n],
                              "\n\nTwo-point recombination fraction:\n    rf = ",format(info.graph$mat.rf[x.n, y.n], digits=4),
                              "\n\nLOD-Scores of the linkage phases:",
                              "\n    CC: ", round(info.graph$LOD$CC[x.n, y.n], digits=1),
@@ -467,7 +439,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
         else if(info.graph$types[x.n]=="A.H")  mktx<-"AA : AB (1:1)"
           else if(info.graph$types[x.n]=="M.X")  mktx<- "Mixed: Dominant & Co-dominant"
         else stop ("invalid type of marker at marker ", info.graph$names[x.n])
-              
+
               if(info.graph$types[y.n]=="A.H.B")  mkty<-"AA : AB : BB (1:2:1) "
         else if(info.graph$types[y.n]=="D.B")  mkty<-" Not BB : BB (3:1) "
         else if(info.graph$types[y.n]=="C.A")  mkty<-" Not AA : AA (3:1) "
@@ -476,11 +448,11 @@ draw.rf.inter<-function(info.graph, scale, cex){
         else stop ("invalid type of marker at marker ", info.graph$names[y.n])
 
               LODScore<-info.graph$LOD[x.n, y.n]
-              
+
               ##information for message box (another classes)
               msg <- paste("Marker names: \n    ", info.graph$names[y.n], "\n    and \n    ", info.graph$names[x.n],
                            "\n\nMarker numbers:\n    ",mky.n," and ",mkx.n,
-                           "\n\nMarker types: \n    ", mkty, "\n    and \n    ",  mktx, 
+                           "\n\nMarker types: \n    ", mkty, "\n    and \n    ",  mktx,
                            "\n\nTwo-point recombination fraction:\n    rf = ",format(info.graph$mat.rf[x.n, y.n], digits=4),
                            "\n\nLOD-Score: \n    ", format(LODScore, digits=2),
                            sep="")
@@ -490,22 +462,22 @@ draw.rf.inter<-function(info.graph, scale, cex){
               if(info.graph$types[x.n]=="A.B")  mktx<-"AA : BB (1:1)"
             else stop ("invalid type of marker at marker ", info.graph$names[x.n])
               if(info.graph$types[y.n]=="A.B")  mkty<-"AA : BB (1:1)"
-            else stop ("invalid type of marker at marker ", info.graph$names[y.n]) 
+            else stop ("invalid type of marker at marker ", info.graph$names[y.n])
               if(info.graph$LOD$CC[x.n, y.n] > info.graph$LOD$RR[x.n, y.n]) LODScore<-info.graph$LOD$CC[x.n, y.n]
               else LODScore<-info.graph$LOD$RR[x.n, y.n]
               ##information for message box (another classes)
               msg <- paste("Marker names: \n    ", info.graph$names[y.n], "\n    and \n    ", info.graph$names[x.n],
                            "\n\nMarker numbers:\n    ",mky.n," and ",mkx.n,
-                           "\n\nMarker types: \n    ", mkty, "\n    and \n    ",  mktx, 
+                           "\n\nMarker types: \n    ", mkty, "\n    and \n    ",  mktx,
                            "\n\nTwo-point recombination fraction:\n    rf = ",format(info.graph$mat.rf[x.n, y.n], digits=4),
                            "\n\nLOD-Score: \n    ", format(LODScore, digits=2),
-                           sep="") 
+                           sep="")
           }
-          else stop("invalid type of cross") 
+          else stop("invalid type of cross")
         }
       }
         mbval<- tkmessageBox(title="Labeling recombination fraction",message=msg,type="ok",icon="question")
-    }   
+    }
     }
     tt<-tktoplevel()
     tkwm.title(tt,"Click on a pixel to label it")

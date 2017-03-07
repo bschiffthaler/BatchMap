@@ -69,15 +69,6 @@
 ##'   groups <- group(all.mark)
 ##'   LG1 <- make.seq(groups,1)
 ##'   LG1.ug <- ug(LG1)
-##'
-##'   #F2 example
-##'   data(fake.f2.onemap)
-##'   twopt <- rf.2pts(fake.f2.onemap)
-##'   all.mark <- make.seq(twopt,"all")
-##'   groups <- group(all.mark)
-##'   LG1 <- make.seq(groups,1)
-##'   LG1.ug <- ug(LG1)
-##'   LG1.ug
 ##' }
 ##'
 ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)

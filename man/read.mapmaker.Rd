@@ -47,15 +47,8 @@ can contain phenotypic data, but it will not be used in the analysis.
 
   \dontrun{
     map_data <-read.mapmaker(dir="work_directory",file="data_file.txt")
-    #Checking 'fake.f2.onemap'
-    data(fake.f2.onemap)
-    names(fake.f2.onemap)
   }
 
-}
-\author{
-Adapted from Karl Broman (package \pkg{qtl}) by Marcelo Mollinari,
-\email{mmollina@usp.br}
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
@@ -67,9 +60,8 @@ linkage maps with MAPMAKER/EXP Version 3.0: a tutorial and reference
 manual. \emph{A Whitehead Institute for Biomedical Research Technical
 Report}.
 }
-\seealso{
-\code{fake.bc.onemap} and \code{fake.f2.onemap} directory in the
-package source.
+\author{
+Adapted from Karl Broman (package \pkg{qtl}) by Marcelo Mollinari,
+\email{mmollina@usp.br}
 }
 \keyword{IO}
-

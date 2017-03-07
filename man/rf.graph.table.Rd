@@ -61,37 +61,8 @@ data for that marker.
   LG1.rcd <- rcd(LG1)
   rf.graph.table(LG1.rcd, inter=FALSE)
 
-\dontrun{
-  ##Now, using interactive Tcl-Tk
-  rf.graph.table(LG1.rcd, scale=2, inter=TRUE)
-
-  ##F2 example
-  data(fake.f2.onemap)
-  twopt <- rf.2pts(fake.f2.onemap)
-  all.mark <- make.seq(twopt,"all")
-  groups <- group(all.mark)
-
-  ##"pre-allocate" an empty list of length groups$n.groups (3, in this case)
-  maps.list<-vector("list", groups$n.groups)
-
-  for(i in 1:groups$n.groups){
-    ##create linkage group i
-    LG.cur <- make.seq(groups,i)
-    ##ordering
-    map.cur<-order.seq(LG.cur, subset.search = "sample")
-    ##assign the map of the i-th group to the maps.list
-    maps.list[[i]]<-make.seq(map.cur, "force")
-  }
-  ##Plot LOD/recombination fraction matrices for each group
-  op <- par(mfrow = c(1, 3))
-  for(i in 1:groups$n.groups)
-    rf.graph.table(maps.list[[i]], axis.cex=.7, main=paste("Group", i),inter=FALSE)
-  par(op)
-}
-
 }
 \author{
 Marcelo Mollinari, \email{mmollina@gmail.com}
 }
 \keyword{utilities}
-

@@ -1,21 +1,12 @@
-Package: onemap
-Title: Software for constructing genetic maps in experimental crosses:
-    full-sib, RILs, F2 and backcrosses
-Version: 2.9.0
-Description: Analysis of molecular marker data from model (backcrosses,
-    F2 and recombinant inbred lines) and non-model systems (i. e.
-    outcrossing species). For the later, it allows statistical
-    analysis by simultaneously estimating linkage and linkage
-    phases (genetic map construction). All analysis are based on
-    multipoint approaches using hidden Markov models.
-Date: May, 2015
-Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
-        "gramarga@gmail.com"), person("Marcelo", "Mollinari", role =
-        c("aut", "cre"), email = "mmollina@usp.br"), person("Karl",
-        "Broman", role = "ctb", email = "kbroman@biostat.wisc.edu"),
-        person("Augusto", "Garcia", role = c("aut", "ctb"), email =
-        "augusto.garcia@usp.br"), person("Bastian", "Schiffthaler",
-        role = c("ctb"), email = "bastian.schiffthaler@umu.se"))
+Package: BatchMap
+Title: BatchMap software for the creation of high density 
+    linkage maps in outcrossing species
+Version: 1.0
+Description: Algorithms that build on the OneMap package to create linkage
+    maps from high density data in outcrossing species.
+Date: March 2017
+Authors@R: person("Bastian", "Schiffthaler", role = c("aut","cre"), 
+    email = "bastian.schiffthaler@umu.se")
 LinkingTo: Rcpp (>= 0.10.5), Rhtslib, zlibbioc, RcppArmadillo
 Depends:
     RcppArmadillo (>= 0.6.70),
@@ -24,10 +15,12 @@ Depends:
     R (>= 3.2.0)
 Imports:
     fields (>= 8.3-5),
-    reshape2 (>= 1.4.1)
+    reshape2 (>= 1.4.1),
+    Rcpp (>= 0.10.5),
+    methods
 Suggests:
-    qtl (>= 1.36-6),
-    knitr (>= 1.10)
+    knitr (>= 1.10),
+    rmarkdown
 VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL-3
@@ -35,7 +28,6 @@ URL: https://microasp.upsc.se/delhomme/onemap-devel
 BugReports: https://microasp.upsc.se/delhomme/onemap-devel/issues
 Maintainer: Bastian Schiffthaler<bastian.schiffthaler@umu.se>
 Repository: CRAN
-Packaged: 2013-09-09 16:55:07 UTC; mmollina
 NeedsCompilation: yes
 Date/Publication: 2013-09-09 20:03:53
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

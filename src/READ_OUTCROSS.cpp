@@ -118,7 +118,6 @@ SEXP READ_OUTCROSS(SEXP file)
   std::vector<unsigned short> segr_type_num;
   std::vector<unsigned short> geno;
   std::vector<std::string> markers;
-
   // Get nymber of markers, individuals and phenotypes
   unsigned long n_mar = 0;
   unsigned long n_ind = 0;
@@ -133,9 +132,11 @@ SEXP READ_OUTCROSS(SEXP file)
 
   std::string x;
 
-  ifs >> x;  std::cout << x << '\t'; n_ind = std::stoul(x);
-  ifs >> x;  std::cout << x << '\t'; n_mar = std::stoul(x);
-  ifs >> x;  std::cout << x << '\t'; n_phe = std::stoul(x);
+  ifs >> x; n_ind = std::stoul(x);
+  ifs >> x; n_mar = std::stoul(x);
+  ifs >> x; n_phe = std::stoul(x);
+  Rcpp::Rcout << "Reading data... ";
+  progressBar prog_bar(40, n_mar);
 
   bool first = true;
 
@@ -159,7 +160,7 @@ SEXP READ_OUTCROSS(SEXP file)
     if(line.at(0) == '*')
     {
       mcount++;
-      progressBar(Rcout, mcount, n_mar, 40);
+      prog_bar.update(mcount);
       if(mcount > n_mar) break; // We ignore phenotype information
       ss.ignore(1);
 

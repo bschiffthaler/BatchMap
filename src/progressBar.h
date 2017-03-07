@@ -1,31 +1,46 @@
+#pragma once
+
 #include <iostream>
-#include <iomanip>
 #include <string>
+#include <Rcpp.h>
+#include <cmath> //floor
 
-template <typename T, typename T2>
-void progressBar(std::ostream& out, T current, T2 max,
-                 unsigned short width)
+class progressBar {
+public:
+  progressBar(unsigned short width, unsigned long max, bool init = true) :
+  _printed(0),
+  _width(width),
+  _max(max),
+  _done(false)
+  {
+    if(init)
+      Rcpp::Rcout << "[";
+    else
+      _done = true;
+  }
+  void update(unsigned long current);
+private:
+  unsigned short _printed;
+  unsigned short _width;
+  unsigned long _max;
+  bool _done;
+};
+
+inline void progressBar::update(unsigned long current)
 {
-  std::string V = std::to_string(current);
-  std::string M = std::to_string(max);
-  float v = std::stof(V);
-  float m = std::stof(M);
-
-  float ratio = v/m;
-
-  unsigned short bars = static_cast<unsigned short>(width * ratio);
-  bars = bars > width ? 0 : bars;
-  std::cout << "\r\t[";
-  for(unsigned short i = 0; i < bars; i++)
+  float a = current;
+  float b = _max;
+  float r = a/b;
+  float w = _width;
+  unsigned short x = floor(w * r);
+  while(_printed < x && ! _done)
   {
-    std::cout << "#";
+    Rcpp::Rcout << "#";
+    _printed++;
   }
-  for(unsigned short i = 0; i < (width - bars); i++)
+  if(_printed >= _width && ! _done)
   {
-    std::cout << " ";
+    Rcpp::Rcout << "]\n";
+    _done = true;
   }
-  std::cout << std::setprecision(2) <<
-    std::setiosflags (std::ios::fixed) << "]\t" <<
-      (ratio * 100) << "%\t  ";
-
 }

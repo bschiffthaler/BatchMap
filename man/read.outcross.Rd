@@ -69,10 +69,6 @@ read.outcross(dir="work_directory",file="data_file.txt")
   }
 
 }
-\author{
-Adapted from Karl Broman (package \pkg{qtl}) by Gabriel R A
-Margarido, \email{gramarga@gmail.com}, later with additions from Luciano C Silva
-}
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
@@ -90,5 +86,8 @@ likelihood estimation of linkage and linkage phases in outcrossing species.
 \seealso{
 \code{example} directory in the package source.
 }
+\author{
+Adapted from Karl Broman (package \pkg{qtl}) by Gabriel R A
+Margarido, \email{gramarga@gmail.com}, later with additions from Luciano C Silva
+}
 \keyword{IO}
-

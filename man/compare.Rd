@@ -60,19 +60,9 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
   (markers.comp <- compare(markers))
   (markers.comp <- compare(markers,verbose=TRUE))
 
-  #F2 example
-  data(fake.f2.onemap)
-  twopt <- rf.2pts(fake.f2.onemap)
-  markers <- make.seq(twopt,c(17,26,29,30,44,46,55))
-  (markers.comp <- compare(markers))
-  (markers.comp <- compare(markers,verbose=TRUE))
-
 }
 
 
-}
-\author{
-Marcelo Mollinari, \email{mmollina@usp.br}
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
@@ -103,5 +93,7 @@ sex-specific differences. \emph{Genetical Research} 79: 85-96
 \code{\link[onemap]{marker.type}} for details about segregation
 types and \code{\link[onemap]{make.seq}}.
 }
+\author{
+Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{utilities}
-

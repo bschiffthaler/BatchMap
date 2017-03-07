@@ -76,25 +76,16 @@ rf.2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
               class = c("rf.2pts", "outcross"))
 }
 
-##' Print method for object class 'rf.2pts'
+
+##' Print twopoint test result
 ##'
-##' It shows the linkage groups as well as the unlinked markers.
+##' Generic print methods
 ##'
-##' @aliases print.rf.2pts
+##' @param x The input object
+##' @param mrk A marker position to print more detailed
+##' @param ... Not used
 ##'
-##' @param x an object of class \code{rf.2pts}.
-##'
-##' @param mrk a vector containing a pair of markers, so detailed
-##'     results of the two-point analysis will be printed for them.
-##'     Can be numeric or character strings indicating the
-##'     numbers/names corresponding to any markers in the input file.
-##'
-##' @param ... further arguments, passed to other methods. Currently ignored.
-##'
-##' @return \code{NULL}
-##' @keywords internal
-##' @export
-##'
+##' @method print rf.2pts
 print.rf.2pts <- function(x, mrk=NULL, ...) {
   ## checking for correct object
   if(!is(x, "rf.2pts"))

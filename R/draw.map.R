@@ -17,10 +17,10 @@
 
 
 ##' Draw a genetic map
-##' 
+##'
 ##' Provides a simple draw of a genetic map.
-##' 
-##' 
+##'
+##'
 ##' @param map.list a map, i.e. an object of class \code{sequence} with a
 ##' predefined order, linkage phases, recombination fraction and likelihood;
 ##' also it could be a list of maps.
@@ -35,7 +35,7 @@
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
 ##' @keywords rqtl
 ##' @examples
-##' 
+##'
 ##' \dontrun{
 ##'  #outcross example
 ##'   data(example.out)
@@ -47,28 +47,17 @@
 ##'    "rcd"), "force")
 ##'   draw.map(maps, grid=TRUE)
 ##'   draw.map(maps, grid=TRUE, horizontal=TRUE)
-##' 
-##'   #F2 example
-##'   data(fake.f2.onemap)
-##'   twopt<-rf.2pts(fake.f2.onemap)
-##'   lg<-group(make.seq(twopt, "all"))
-##'   maps<-vector("list", lg$n.groups)
-##'   for(i in 1:lg$n.groups)
-##'      maps[[i]]<- make.seq(order.seq(input.seq= make.seq(lg,i),twopt.alg =
-##'    "rcd"), "force")
-##'   draw.map(maps, grid=TRUE)
-##'   draw.map(maps, grid=TRUE, horizontal=TRUE)
-##' 
+##'
 ##' }
-##' 
+##'
 draw.map<-function(map.list, horizontal=FALSE, names=FALSE, grid=FALSE, cex.mrk=1, cex.grp=.75){
   ## checking for correct object
   if(!any(class(map.list)=="list" | class(map.list)=="sequence")) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")
-  
+
   ## if map.list is just a single chormosome, convert it  into a list
   if(class(map.list)=="sequence") map.list<-list(map.list)
   j<-1
-  
+
   ##converting to data.frame
   out<-data.frame()
   pos<-NULL #to satisfy codetools
@@ -86,9 +75,9 @@ draw.map<-function(map.list, horizontal=FALSE, names=FALSE, grid=FALSE, cex.mrk=
 
   ##Plotting region
   out.fake <-  data.frame(dist=rep(c(0, max(out$dist)),max(y)+2) , pos=c(0:(max(y)+1)))
-  
+
   if(horizontal==TRUE){
-    plot(out.fake, axes=FALSE, col=0, xlab="Distance (cM)", ylab="", main="Genetic Map") 
+    plot(out.fake, axes=FALSE, col=0, xlab="Distance (cM)", ylab="", main="Genetic Map")
     points(out[1:2], pch="|", cex=cex.mrk, xlab="Distance (cM)", ylab="", main="Genetic Map")
     axis(1, at = seq(from=0, to=10*round(max(x)/10), by=10) , labels=seq(from=0, to=10*round(max(x)/10), by=10) , cex.axis=.75)
     axis(2, y, paste("Group", rev(y)), lwd=0, las=2, cex.axis=cex.grp)

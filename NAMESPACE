@@ -1,12 +1,19 @@
-useDynLib(onemap)
+useDynLib(BatchMap)
 
 ## Import all packages listed as Imports or Depends
 import(ggplot2)
 import(RcppArmadillo)
 import(Rcpp)
+import(parallel)
 importFrom(fields, tim.colors)
 importFrom(fields, splint)
-
+importFrom("graphics", "Axis", "abline", "axis", "image", "layout",
+           "lines", "mtext", "par", "plot", "points", "text", "title")
+importFrom("methods", "is")
+importFrom("stats", "as.dist", "chisq.test", "cor", "cor.test", "dist",
+           "median", "na.omit", "qchisq", "sd")
+importFrom("utils", "flush.console", "head", "setTxtProgressBar",
+           "tail", "txtProgressBar")
 ## Export all names
 exportPattern(".")
 

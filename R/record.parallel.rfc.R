@@ -16,55 +16,6 @@
 ##                                                                     ##
 #######################################################################
 
-split_map_batches <- function(x, cores){
-  start <- 1
-  interval <- ceiling(length(x) / cores)
-  while(interval < 80){
-    cores = cores - 1
-    interval <- ceiling(length(x) / cores)
-    if(cores <= 0) stop("Mapping group < 80. No need to apply parallel record")
-  }
-  end <- interval
-  res <- list()
-  for(f in 1:cores){
-    if(f == cores){
-      if(length(start:end) < 80){
-        res[[f - 1]] <- c(res[[f - 1]], x[(start + 1):end])
-      } else {
-        res[[f]] <- x[start:end]
-      }
-    } else {
-      res[[f]] <- x[start:end]
-      start <- end
-      end <- end + interval
-      if(end > length(x)){ end <- length(x)}
-    }
-  }
-  return(res)
-}
-
-combine_map_batches <- function(x){
-  final <- NULL
-  for(f in 1:length(x)){
-    if(f == 1){
-      final$seq.num <- x[[f]]$seq.num
-      final$seq.phases <- x[[f]]$seq.phases
-      final$seq.rf <- x[[f]]$seq.rf
-      final$seq.like<- x[[f]]$seq.like
-    } else {
-      final$seq.num <- c(final$seq.num, x[[f]]$seq.num[-1])
-      final$seq.phases <- c(final$seq.phases, x[[f]]$seq.phases)
-      final$seq.rf <- c(final$seq.rf, x[[f]]$seq.rf)
-      final$seq.like<- final$seq.like + x[[f]]$seq.like
-    }
-    final$seq.like <- final$seq.like / length(x)
-    final$data.name <- x[[1]]$data.name
-    final$twopt <- x[[1]]$twopt
-    class(final)<-"sequence"
-  }
-  return(final)
-}
-
 ##' Recombination Counting and Ordering
 ##'
 ##' Implements the marker ordering algorithm \emph{Recombination Counting and
@@ -79,14 +30,6 @@ combine_map_batches <- function(x){
 ##' processes. An optimal choice for the \code{cores} argument is usually an even
 ##' divisor of \code{times}.
 ##'
-##' If \code{domap} is set to \code{TRUE}, a non-overlapping batch map is
-##' created after ordering is complete. This is also done in parallel using
-##' maximally \code{cores} parallel processes. Since especially the phase
-##' estiamtion in outcrossing populations relies on information that could be
-##' in another batch, the map should be considered very untrustworthy. See
-##' function \code{\link[onemap]{map_overlapping_batches}} for a much better
-##' (but slower) approximation.
-##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param times integer. Number of replicates of the RECORD procedure.
 ##' @param cores Number of parallel processes.
@@ -98,8 +41,6 @@ combine_map_batches <- function(x){
 ##' convergence.
 ##' @param useC Use the C implementation to get the matrix of recombination
 ##' fractions.
-##' @param domap Calculate a non-overalpping batch map. See details for more
-##' information.
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -133,21 +74,10 @@ combine_map_batches <- function(x){
 ##'   groups <- group(all.mark)
 ##'   LG1 <- make.seq(groups,1)
 ##'   LG1.rec <- record(LG1)
-##'
-##'   ##F2 example
-##'   data(fake.f2.onemap)
-##'   twopt <- rf.2pts(fake.f2.onemap)
-##'   all.mark <- make.seq(twopt,"all")
-##'   groups <- group(all.mark)
-##'   LG1 <- make.seq(groups,1)
-##'   LG1.rec <- record.parallel(LG1, cores = 4, times = 16)
-##'   LG1.rec
 ##' }
 ##'
 record.parallel <- function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
-                              tol=10E-5, useC = TRUE, domap = TRUE){
-  require(parallel)
-  require(RcppArmadillo)
+                            tol=10E-5, useC = TRUE){
   ## checking for correct object
   if(!any(class(input.seq)=="sequence")){
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
@@ -262,25 +192,8 @@ record.parallel <- function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
     result.new <- results.list[[min_count]]
   }
   ## end of RECORD algorithm
-  if(domap){
-    message("\norder obtained using RECORD algorithm:\n\n",
-            paste(input.seq$seq.num[result.new], collapse = " "),".\n\n",
-        "now calling map()\n\n")
-    batch <- split_map_batches(result.new, cores)
-    m <- mclapply(batch, mc.cores = length(batch), function(x){
-      s <- make.seq(get(input.seq$twopt),
-                    input.seq$seq.num[x],
-                    twopt=input.seq$twopt)
-      map(s)
-    })
-    final <- combine_map_batches(m)
-    return(final)
-  } else {
-    message("\norder obtained using RECORD algorithm:\n\n",
-          paste(input.seq$seq.num[result.new], collapse = " "),".\n\n",
-        "NOT calling map()\n\n")
-    return(result.new)
-  }
+  return(make.seq(get(input.seq$twopt), input.seq$seq.num[result.new],
+                  twopt = input.seq$twopt))
 }
 
 ##end of file

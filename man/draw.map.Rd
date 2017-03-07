@@ -42,17 +42,6 @@ Provides a simple draw of a genetic map.
   draw.map(maps, grid=TRUE)
   draw.map(maps, grid=TRUE, horizontal=TRUE)
 
-  #F2 example
-  data(fake.f2.onemap)
-  twopt<-rf.2pts(fake.f2.onemap)
-  lg<-group(make.seq(twopt, "all"))
-  maps<-vector("list", lg$n.groups)
-  for(i in 1:lg$n.groups)
-     maps[[i]]<- make.seq(order.seq(input.seq= make.seq(lg,i),twopt.alg =
-   "rcd"), "force")
-  draw.map(maps, grid=TRUE)
-  draw.map(maps, grid=TRUE, horizontal=TRUE)
-
 }
 
 }
@@ -60,4 +49,3 @@ Provides a simple draw of a genetic map.
 Marcelo Mollinari, \email{mmollina@usp.br}
 }
 \keyword{rqtl}
-

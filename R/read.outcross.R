@@ -234,6 +234,14 @@ read.outcross <- function (dir, file) {
             class = "outcross")
 }
 
+##' Print read.outcross result
+##'
+##' Generic print methods
+##'
+##' @param x The input object
+##' @param ... Not used
+##'
+##' @method print outcross
 print.outcross <- function (x, ...) {
   if (any(is.na(match(c("geno", "n.ind", "n.mar", "segr.type"),
                       names(x)))))

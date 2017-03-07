@@ -34,7 +34,10 @@
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
-##' @param verbose If \code{TRUE}, print tracing information.
+##' @param verbosity Controls verbosity of phase. Currently can only be set to
+##' "phase"
+##' @param phase.cores Number of parallel cores used to estimate linkage phases.
+##' Should not be higher than 4.
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}

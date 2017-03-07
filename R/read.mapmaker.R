@@ -19,26 +19,26 @@
 
 
 ##' Read data from a Mapmaker raw file
-##' 
+##'
 ##' Imports data from a Mapmaker raw file.
-##' 
+##'
 ##' For details about MAPMAKER files see \cite{Lincoln et al.} (1993). The
 ##' current version supports backcross, F2s and RIL populations. The file
 ##' can contain phenotypic data, but it will not be used in the analysis.
-##' 
+##'
 ##' @param dir directory where the input file is located.
 ##' @param file the name of the input file which contains the data to be read.
 ##' @return An object of class \code{onemap}, i.e., a list with the following
 ##' components: \item{geno}{a matrix with integers indicating the genotypes
 ##' read for each marker in \code{onemap} fashion. Each column contains data
 ##' for a marker and each row represents an individual.}
-##' 
+##'
 ##' \item{geno.mmk}{ a matrix with
 ##' integers indicating the genotypes read for each marker in
 ##' \code{MAPMAKER/EXP} fashion, i.e., 1, 2, 3: AA, AB, BB, respectively; 3, 4:
 ##' BB, not BB, respectively; 1, 5: AA, not AA, respectively. Each column
 ##' contains data for a marker and each row represents an individual.}
-##' 
+##'
 ##' \item{n.ind}{number of individuals.} \item{n.mar}{number of markers.}
 ##' \item{segr.type}{a vector with the segregation type of each marker, as
 ##' \code{strings}. Segregation types were adapted from outcross segregation
@@ -52,39 +52,34 @@
 ##' individual. Currently ignored.}
 ##' @author Adapted from Karl Broman (package \pkg{qtl}) by Marcelo Mollinari,
 ##' \email{mmollina@@usp.br}
-##' @seealso \code{fake.bc.onemap} and \code{fake.f2.onemap} directory in the
-##' package source.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43
-##' 
+##'
 ##' Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993) Constructing genetic
 ##' linkage maps with MAPMAKER/EXP Version 3.0: a tutorial and reference
 ##' manual. \emph{A Whitehead Institute for Biomedical Research Technical
 ##' Report}.
 ##' @keywords IO
 ##' @examples
-##' 
+##'
 ##'   \dontrun{
 ##'     map_data <-read.mapmaker(dir="work_directory",file="data_file.txt")
-##'     #Checking 'fake.f2.onemap'
-##'     data(fake.f2.onemap)
-##'     names(fake.f2.onemap)
 ##'   }
-##' 
-read.mapmaker<-function (dir, file) 
+##'
+read.mapmaker<-function (dir, file)
 {
     ## create file name
-    if (missing(file)) 
+    if (missing(file))
         stop("Missing file.")
     if (!missing(dir) && dir != "") {
         file <- file.path(dir, file)
     }
     ## count lines in rawfile
-    n.lines <- length(scan(file, what = character(), skip = 0, 
+    n.lines <- length(scan(file, what = character(), skip = 0,
                            nlines = 0, blank.lines.skip = FALSE,
                            quiet = TRUE, sep = "\n"))
-    ## begin reading/parsing the genotype data 
+    ## begin reading/parsing the genotype data
     cur.mar <- 0
     cur.phe <- 0
     NEW.symb <- c("1", "2", "3", "4", "5", NA)
@@ -92,23 +87,23 @@ read.mapmaker<-function (dir, file)
     flag <- 0
     for (i in 1:n.lines)
     {
-        a <- scan(file, what = character(), skip = i - 1, 
+        a <- scan(file, what = character(), skip = i - 1,
                   nlines = 1, blank.lines.skip = TRUE, quiet = TRUE)
-        if (length(a) == 0) 
+        if (length(a) == 0)
             next
-        if (length(grep("#", a[1])) != 0) 
+        if (length(grep("#", a[1])) != 0)
             next
         if (flag == 0) {
             flag <- 1
-            if (!is.na(match("intercross", a))) 
+            if (!is.na(match("intercross", a)))
                 type <- "f2"
-            else if (!is.na(match("backcross", a))) 
+            else if (!is.na(match("backcross", a)))
                 type <- "backcross"
-            else if (!is.na(match("self", a))) 
+            else if (!is.na(match("self", a)))
                 type <- "riself"
-            else if (!is.na(match("sib", a))) 
+            else if (!is.na(match("sib", a)))
                 type <- "risib"
-            else stop("File indicates invalid cross type: ", 
+            else stop("File indicates invalid cross type: ",
                       a[length(a)], ".")
         }
         else if (flag == 1) {
@@ -129,8 +124,8 @@ read.mapmaker<-function (dir, file)
                 std.symb <- substring(b, 3, 3)
                 wh <- rep(0, length(std.symb))
                 fixed <- rep(0, length(OLD.symb))
-                for (j in 1:length(std.symb)) if (std.symb[j] %in% 
-                                                  OLD.symb) 
+                for (j in 1:length(std.symb)) if (std.symb[j] %in%
+                                                  OLD.symb)
                                                   wh[j] <- match(std.symb[j], OLD.symb)
                 for (j in 1:length(std.symb)) if (wh[j] != 0) {
                                                   OLD.symb[wh[j]] <- infile.symb[j]
@@ -140,7 +135,7 @@ read.mapmaker<-function (dir, file)
                 if (any(temp > 1)) {
                     for (j in names(temp)[temp > 1]) {
                         o <- OLD.symb == j & fixed == 0
-                        if (any(o)) 
+                        if (any(o))
                             OLD.symb[o] <- paste(OLD.symb[o], "   ")
                     }
                 }
@@ -162,7 +157,7 @@ read.mapmaker<-function (dir, file)
                 cur.row <- 1
                 if (cur.mar > n.mar) { ## now reading phenotypes
                     cur.phe <- cur.phe + 1
-                    if (cur.phe > n.phe) 
+                    if (cur.phe > n.phe)
                         next
                     phenames[cur.phe] <- substring(a[1], 2)
                     if (length(a) > 1) {
@@ -176,15 +171,15 @@ read.mapmaker<-function (dir, file)
                         if (any(wh)) {
                             droppedasmissing <- unique(p[wh])
                             if (length(droppedasmissing) > 1) {
-                                themessage <- paste("The values", paste("\"", 
+                                themessage <- paste("The values", paste("\"",
                                                                         droppedasmissing, "\"", sep = "", collapse = " "))
-                                themessage <- paste(themessage, " for phenotype \"", 
+                                themessage <- paste(themessage, " for phenotype \"",
                                                     phenames[cur.phe], "\" were", sep = "")
                             }
                             else {
-                                themessage <- paste("The value \"", droppedasmissing, 
+                                themessage <- paste("The value \"", droppedasmissing,
                                                     "\" ", sep = "")
-                                themessage <- paste(themessage, " for phenotype \"", 
+                                themessage <- paste(themessage, " for phenotype \"",
                                                     phenames[cur.phe], "\" was", sep = "")
                             }
                             themessage <- paste(themessage, "interpreted as missing.")
@@ -201,12 +196,12 @@ read.mapmaker<-function (dir, file)
                         g <- paste(a[-1], collapse = "")
                         h <- g <- unlist(strsplit(g, ""))
                         for (j in seq(along = NEW.symb)) {
-                            if (any(h == OLD.symb[j])) 
+                            if (any(h == OLD.symb[j]))
                                 g[h == OLD.symb[j]] <- NEW.symb[j]
                         }
                         n <- length(g)
                         if(any(is.na(match(g,NEW.symb))))
-                            stop(paste("Invalid marker codification. Please check data for marker", marnames[cur.mar]), ".", sep="")           
+                            stop(paste("Invalid marker codification. Please check data for marker", marnames[cur.mar]), ".", sep="")
                         geno[cur.row + (0:(n - 1)), cur.mar] <- as.numeric(g)
                     }
                     else n <- 0
@@ -224,7 +219,7 @@ read.mapmaker<-function (dir, file)
                     g <- paste(a, collapse = "")
                     h <- g <- unlist(strsplit(g, ""))
                     for (j in seq(along = NEW.symb)) {
-                        if (any(h == OLD.symb[j])) 
+                        if (any(h == OLD.symb[j]))
                             g[h == OLD.symb[j]] <- NEW.symb[j]
                     }
                     n <- length(g)
@@ -236,7 +231,7 @@ read.mapmaker<-function (dir, file)
     }
     dimnames(geno) <- list(NULL, marnames)
     dimnames(pheno) <- list(NULL, phenames)
-    ## done reading the raw file     
+    ## done reading the raw file
     ## data coding in onemap style
     segr.type<-character(n.mar)
     segr.type.num<-numeric(n.mar)
@@ -253,7 +248,7 @@ read.mapmaker<-function (dir, file)
         segr.type[mkt==2 | mkt==3 | mkt==6]<-"A.H.B"
         segr.type[mkt==12]<-"C.A"
         segr.type[mkt==5]<-"D.B"
-        mkt.rest<-which(segr.type=="")   
+        mkt.rest<-which(segr.type=="")
         for(i in mkt.rest)
         {
             if(any(is.na(match(na.omit(unique(geno[,i])), 1:5))))
@@ -270,18 +265,18 @@ read.mapmaker<-function (dir, file)
         segr.type.num[segr.type=="A.H.B"]<-1
         segr.type.num[segr.type=="C.A"]<-2
         segr.type.num[segr.type=="D.B"]<-3
-        segr.type.num[segr.type=="M.X"]<-4    
-        geno[is.na(geno)]<-0    
+        segr.type.num[segr.type=="M.X"]<-4
+        geno[is.na(geno)]<-0
     }
     else if(type=="backcross"){
         cl <- c("onemap", "backcross")
         ##Verifying if there are up to two classes in bc data, ignoring NAs
         if(sum(!is.na(unique(as.vector(geno)))) > 2)
             stop("check data: there are more than 2 classes for backcross")
-        segr.type[]<-"A.H" 
+        segr.type[]<-"A.H"
         segr.type.num<-rep(NA,ncol(geno))
-        geno[is.na(geno)]<-0 
-        geno[geno==3]<-1 #coding for raw data entered as H and B 
+        geno[is.na(geno)]<-0
+        geno[geno==3]<-1 #coding for raw data entered as H and B
     }
     else if(type=="riself" || type=="risib"){
         if (type=="riself") cl <- c("onemap", "riself")
@@ -289,9 +284,9 @@ read.mapmaker<-function (dir, file)
         ##Verifying if there are up to two classes in ril data, ignoring NAs
         if(sum(!is.na(unique(as.vector(geno)))) > 2)
             stop("check data: there are more than 2 classes for ", type)
-        segr.type[]<-"A.B" 
+        segr.type[]<-"A.B"
         segr.type.num<-rep(NA,ncol(geno))
-        geno[is.na(geno)]<-0 
+        geno[is.na(geno)]<-0
         geno[geno==3]<-2 #coding as backcross
     }
     else

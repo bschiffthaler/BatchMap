@@ -12,7 +12,11 @@ map(input.seq, tol = 1e-04, verbosity = FALSE, phase.cores = 4)
 \item{tol}{tolerance for the C routine, i.e., the value used to evaluate
 convergence.}
 
-\item{verbose}{If \code{TRUE}, print tracing information.}
+\item{verbosity}{Controls verbosity of phase. Currently can only be set to
+"phase"}
+
+\item{phase.cores}{Number of parallel cores used to estimate linkage phases.
+Should not be higher than 4.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
@@ -54,10 +58,6 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
   map(markers)
 
 }
-\author{
-Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
-\email{gramarga@usp.br} and Marcelo Mollinari, \email{mmollina@gmail.com}
-}
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
@@ -82,5 +82,8 @@ sex-specific differences. \emph{Genetical Research} 79: 85-96
 \seealso{
 \code{\link[onemap]{make.seq}}
 }
+\author{
+Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
+\email{gramarga@usp.br} and Marcelo Mollinari, \email{mmollina@gmail.com}
+}
 \keyword{utilities}
-

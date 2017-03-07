@@ -52,4 +52,3 @@ groups <- group(all.mark)
 \seealso{
 \code{\link[onemap]{add.marker}}
 }
-

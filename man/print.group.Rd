@@ -2,23 +2,17 @@
 % Please edit documentation in R/group.R
 \name{print.group}
 \alias{print.group}
-\title{Show the results of grouping procedure}
+\title{Print group result}
 \usage{
 \method{print}{group}(x, detailed = TRUE, ...)
 }
 \arguments{
-\item{x}{an object of class onemap.segreg.test}
+\item{x}{The input object}
 
-\item{detailed}{logical. If \code{TRUE} the markers in each
-linkage group are printed.}
+\item{detailed}{Print detailed output}
 
-\item{...}{currently ignored}
-}
-\value{
-\code{NULL}
+\item{...}{Not used}
 }
 \description{
-It shows the linkage groups as well as the unlinked markers.
+Generic print methods
 }
-\keyword{internal}
-

@@ -65,20 +65,8 @@ constructed using the multipoint approach (function
   groups <- group(all.mark)
   LG3 <- make.seq(groups,3)
   LG3.ser <- seriation(LG3)
-
-  ##F2 example
-  data(fake.f2.onemap)
-  twopt <- rf.2pts(fake.f2.onemap)
-  all.mark <- make.seq(twopt,"all")
-  groups <- group(all.mark)
-  LG1 <- make.seq(groups,1)
-  LG1.ser <- seriation(LG1)
-  LG1.ser
 }
 
-}
-\author{
-Gabriel R A Margarido, \email{gramarga@gmail.com}
 }
 \references{
 Buetow, K. H. and Chakravarti, A. (1987) Multipoint gene
@@ -92,5 +80,7 @@ Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
 \seealso{
 \code{\link[onemap]{make.seq}}, \code{\link[onemap]{map}}
 }
+\author{
+Gabriel R A Margarido, \email{gramarga@gmail.com}
+}
 \keyword{utilities}
-
