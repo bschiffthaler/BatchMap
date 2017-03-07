@@ -55,7 +55,7 @@ RcppExport SEXP get_bins(SEXP geno_R, SEXP exact_R)
   b_vec[0]=1;
   std::vector<int> b(n_mar);
   std::fill(b.begin(), b.end(), 1);
-  int flag, l;
+  int flag = 0, l;
   if(exact)
   {
     for(int i = 0; i < n_mar; i++)
@@ -121,7 +121,7 @@ RcppExport SEXP get_bins(SEXP geno_R, SEXP exact_R)
 /*Check if x is contaibed in v. If yes, it returns its position in v; returns -1 owtherwise*/
 int check_occurrence(std::vector<int>& v, int x)
 {
-  for(int i = 0; i < v.size(); i++)
+  for(unsigned int i = 0; i < v.size(); i++)
     if(v[i]==x)
       return(i);
     return(-1);

@@ -6,18 +6,6 @@
 
 using namespace Rcpp;
 
-// flip_phases
-Rcpp::IntegerVector flip_phases(Rcpp::IntegerVector seq_type, Rcpp::IntegerVector phases);
-RcppExport SEXP BatchMap_flip_phases(SEXP seq_typeSEXP, SEXP phasesSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type seq_type(seq_typeSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type phases(phasesSEXP);
-    rcpp_result_gen = Rcpp::wrap(flip_phases(seq_type, phases));
-    return rcpp_result_gen;
-END_RCPP
-}
 // GET_RF_MAT_NO_LOD
 SEXP GET_RF_MAT_NO_LOD(SEXP seqnum, SEXP nmrk, SEXP CC, SEXP CR, SEXP RC, SEXP RR, SEXP minLOD, SEXP maxRF);
 RcppExport SEXP BatchMap_GET_RF_MAT_NO_LOD(SEXP seqnumSEXP, SEXP nmrkSEXP, SEXP CCSEXP, SEXP CRSEXP, SEXP RCSEXP, SEXP RRSEXP, SEXP minLODSEXP, SEXP maxRFSEXP) {
