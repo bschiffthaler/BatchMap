@@ -7,7 +7,7 @@ Description: Algorithms that build on the OneMap package to create linkage
 Date: March 2017
 Authors@R: person("Bastian", "Schiffthaler", role = c("aut","cre"), 
     email = "bastian.schiffthaler@umu.se")
-LinkingTo: Rcpp (>= 0.10.5), Rhtslib, zlibbioc, RcppArmadillo
+LinkingTo: Rcpp (>= 0.10.5), RcppArmadillo
 Depends:
     RcppArmadillo (>= 0.6.70),
     parallel (>= 3.2.3),
