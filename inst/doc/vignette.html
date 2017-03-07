@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Bastian Schiffthaler and Carolina Bernhardsson" />
+
+<meta name="date" content="2017-03-07" />
+
+<title>BatchMap algorithm for the creation of high density linkage maps in outcrossing species</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">BatchMap algorithm for the creation of high density linkage maps in outcrossing species</h1>
+<h4 class="author"><em>Bastian Schiffthaler and Carolina Bernhardsson</em></h4>
+<h4 class="date"><em>2017-03-07</em></h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In general, the reader is encouraged to go through the excellent documentation of the original OneMap package before going through this vignette. An up-to-date version can be found <a href="https://github.com/augusto-garcia/onemap/raw/master/inst/doc/Tutorial_Onemap_reduced_version.pdf">here</a>. The majority of the pipeline still works the same or very similar to the implementations in OneMap (also internally). For those already familiar with the original or those looking for a quick summary, feel free to go on.</p>
+<p>NOTE: BatchMap has been written specifically for use in outcrossing species. All OneMap functionality pertaining to back-crosses, f2, ril etc. has been removed for the sake of easier code maintenance. If your use case is not an outcrossing F1 population, turn back now.</p>
+</div>
+<div id="reading-data-into-r" class="section level2">
+<h2>Reading data into R</h2>
+<p>BatchMap keeps with the paradigm and format of the original OneMap data format, but includes a faster function for reading the input file <code>read.outcross2</code>. Further, BatchMap ignores all lines following the marker definitions (e.g. phenotypes) as all exploration beyond the construction of the linkage map is not intended to be handled by this package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressPackageStartupMessages</span>(<span class="kw">library</span>(BatchMap))
+
+input_file &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;example/sim2k.txt&quot;</span>,<span class="dt">package =</span> <span class="st">&quot;BatchMap&quot;</span>)
+outcross &lt;-<span class="st"> </span><span class="kw">read.outcross2</span>(input_file)</code></pre></div>
+<pre><code>## Reading data... [########################################]</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outcross</code></pre></div>
+<pre><code>##   This is an object of class 'outcross'
+##     No. individuals:    800 
+##     No. markers:        2279 
+##     Segregation types:
+##        B3.7: 575
+##        D1.10:    880
+##        D2.15:    824
+##     No. traits:         0</code></pre>
+</div>
+<div id="detecting-bins-and-resolving-them" class="section level2">
+<h2>Detecting bins and resolving them</h2>
+<p>High density marker data often has bins of identical markers, which cause problems when estimating recombination fractions, and can in the case of the BatchMap approach make the resulting map worse. OneMap provides functions to detect and resolve such bins. Note the <code>exact</code> option to <code>find.bins()</code>, which controls wether missing information should be considered when binning data:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bins &lt;-<span class="st"> </span><span class="kw">find.bins</span>(outcross, <span class="dt">exact =</span> <span class="ot">FALSE</span>)
+outcross_clean &lt;-<span class="st"> </span><span class="kw">create.data.bins</span>(outcross, bins)
+outcross_clean</code></pre></div>
+<pre><code>##   This is an object of class 'outcross'
+##     No. individuals:    800 
+##     No. markers:        2085 
+##     Segregation types:
+##        B3.7: 563
+##        D1.10:    797
+##        D2.15:    725
+##     No. traits:         0</code></pre>
+<p>Note the difference in the number of markers.</p>
+</div>
+<div id="calculating-the-twopoint-table" class="section level2">
+<h2>Calculating the twopoint table</h2>
+<p>The function <code>rf.2pts()</code> calculates the twopoint table for markers. Note that with very high density datasets, a lot of RAM can be required to hold the twopoint table. As a general rule, this datastructure will require <span class="math inline">\(M * M * 32\)</span> bytes, where <span class="math inline">\(M\)</span> is the number of markers. In our case, with a small dataset of 2,085 markers, we’ll need about 133Mb. A large dataset of 20,000 markers will need <strong>&gt;48Gb</strong>. This would be typically run on a server machine (e.g. see some cloud server providers).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">twopt_table &lt;-<span class="st"> </span><span class="kw">rf.2pts</span>(outcross_clean)</code></pre></div>
+<pre><code>## [Computing 2172570 recombination fractions:
+## 
+##  0%  .#######################################</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check the size</span>
+<span class="kw">format</span>(<span class="kw">object.size</span>(twopt_table),<span class="dt">units =</span> <span class="st">&quot;Mb&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;133.6 Mb&quot;</code></pre>
+</div>
+<div id="grouping" class="section level2">
+<h2>Grouping</h2>
+<p>In order to separate the data into linkage groups, we use the <code>group()</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">linkage_groups &lt;-<span class="st"> </span><span class="kw">group</span>(<span class="kw">make.seq</span>(<span class="dt">input.obj =</span> twopt_table, <span class="st">&quot;all&quot;</span>),
+                        <span class="dt">LOD =</span> <span class="dv">12</span>)</code></pre></div>
+<pre><code>##    Selecting markers: 
+##    group    1 
+##     ............................................................
+##     ............................................................
+##     .......................
+##    group    2 
+##     ............................................................
+##     ............................................................
+##     ...............................
+##    group    3 
+##     ............................................................
+##     ............................................................
+##     ............................
+##    group    4 
+##     ............................................................
+##     ............................................................
+##     ..............
+##    group    5 
+##     ............................................................
+##     ............................................................
+##     .........
+##    group    6 
+##     ............................................................
+##     ............................................................
+##     ..............
+##    group    7 
+##     ............................................................
+##     ............................................................
+##     .......
+##    group    8 
+##     ............................................................
+##     ............................................................
+##     ......................
+##    group    9 
+##     ............................................................
+##     ............................................................
+##     ......................
+##    group    10 
+##     ............................................................
+##     ............................................................
+##     ..........................
+##    group    11 
+##     ............................................................
+##     ............................................................
+##     ................
+##    group    12 
+##     ............................................................
+##     ............................................................
+##     ......................
+##    group    13 
+##     ............................................................
+##     ............................................................
+##     ......
+##    group    14 
+##     ............................................................
+##     ............................................................
+##     ..........................
+##    group    15 
+##     ............................................................
+##     ............................................................
+##     ...................</code></pre>
+</div>
+<div id="splittint-the-data-into-pseudo-testcrosses" class="section level2">
+<h2>Splittint the data into pseudo testcrosses</h2>
+<p>In order to calculate a map for each parent and then join them afterwards, we provide a function <code>pseudo.testcross.split()</code>, that creates a list of testcrosses. Each list element corresponds to a linkage group and a sequence for markers of type “D1.10” and one for markers of type “D2.15”. Both include all markers of other types.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">testcrosses &lt;-<span class="st"> </span><span class="kw">pseudo.testcross.split</span>(linkage_groups)
+testcrosses$LG1.d1<span class="fl">.10</span></code></pre></div>
+<pre><code>## 
+## Number of markers: 94
+## Markers in the sequence:
+## M2 M5 M7 M9 M14 M16 M32 M34 M37 M52 M56 M57 M60 M62 M72 M79 M84 M89 M100 
+## M113 M128 M126 M130 M136 M138 M143 M144 M151 M156 M157 M160 M161 M167 M174 
+## M186 M189 M197 M198 M199 M202 M203 M205 M206 M207 M211 M214 M218 M220 M227 
+## M231 M234 M237 M245 M246 M248 M249 M253 M254 M255 M263 M271 M274 M277 M279 
+## M280 M285 M290 M309 M312 M324 M335 M338 M351 M355 M360 M376 M377 M380 M385 
+## M391 M398 M406 M419 M425 M431 M435 M449 M459 M466 M484 M493 M495 M497 M498
+## 
+## Parameters not estimated.</code></pre>
+</div>
+<div id="ordering-sequences-in-parallel" class="section level2">
+<h2>Ordering sequences in parallel</h2>
+<p>Before the map is calculated using the EM model, the sequences need to be ordered by a heuristic. The RECORD algorithm usually performs very well and has desireable characteristics, which make it trivial to parallelize. We use the function <code>record.parallel()</code>, which takes a <code>sequence</code> as input and we replicate RECORD 10 times (see the <code>times</code> argument). We then pick the best of those replicates as our final order. Note that it is rare for <code>times &gt; 10</code> to yield any significant improvement. Finally, the <code>cores</code> argument defines how many of those RECORD replicates we can process in parallel. Set this to your computers number of CPUs (or maximally the number of the <code>times</code> argument).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ordered_sequences &lt;-<span class="st"> </span><span class="kw">lapply</span>(testcrosses, record.parallel, <span class="dt">times =</span> <span class="dv">10</span>, <span class="dt">cores =</span> <span class="dv">4</span>)</code></pre></div>
+</div>
+<div id="creating-the-batchmaps" class="section level2">
+<h2>Creating the BatchMaps</h2>
+<p>With the sequences neatly ordered, we can now go ahead with creating BatchMaps. For this, we define an overall batch size as well as an overlap size and let the function <code>pick.batch.sizes()</code> decide on the final size in order to split batches evenly. The <code>around</code> argument to the function defines how much smaller or larger the batch size is allowed to be in order to create evenly sized batches. We will work with linkage group 1 from here on to save time:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">LG1_d1<span class="fl">.10</span> &lt;-<span class="st"> </span>ordered_sequences$LG1.d1<span class="fl">.10</span>
+LG1_d2<span class="fl">.15</span> &lt;-<span class="st"> </span>ordered_sequences$LG1.d2<span class="fl">.15</span>
+batch_size_LG1_d1<span class="fl">.10</span> &lt;-<span class="st"> </span><span class="kw">pick.batch.sizes</span>(LG1_d1<span class="fl">.10</span>, 
+                                         <span class="dt">size =</span> <span class="dv">50</span>, 
+                                         <span class="dt">overlap =</span> <span class="dv">30</span>, 
+                                         <span class="dt">around =</span> <span class="dv">10</span>)
+batch_size_LG1_d2<span class="fl">.15</span> &lt;-<span class="st"> </span><span class="kw">pick.batch.sizes</span>(LG1_d2<span class="fl">.15</span>, 
+                                         <span class="dt">size =</span> <span class="dv">50</span>, 
+                                         <span class="dt">overlap =</span> <span class="dv">30</span>, 
+                                         <span class="dt">around =</span> <span class="dv">10</span>)
+<span class="kw">c</span>(batch_size_LG1_d1<span class="fl">.10</span>, batch_size_LG1_d2<span class="fl">.15</span>)</code></pre></div>
+<pre><code>## [1] 52 52</code></pre>
+<p>Now all that’s left to do is to call <code>map.overlapping.batches()</code>. This function has a great deal of options. For now, take away that <code>phase.cores</code> controls the number of parallel threads used to estimate the correct linkage phase between a pair of markers. As there are no more than four possible phases, this should never exceed four. The <code>size</code> and <code>overlap</code> arguments should match the output of <code>pick.batch.sizes()</code> with the given overlap. The <code>verbosity</code> option can be set to output different types of progress reports.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map_LG1_d1<span class="fl">.10</span> &lt;-<span class="st"> </span><span class="kw">map.overlapping.batches</span>(<span class="dt">input.seq =</span> LG1_d1<span class="fl">.10</span>,
+                                         <span class="dt">size =</span> batch_size_LG1_d1<span class="fl">.10</span>,
+                                         <span class="dt">phase.cores =</span> <span class="dv">4</span>,
+                                         <span class="dt">overlap =</span> <span class="dv">30</span>)
+
+map_LG1_d2<span class="fl">.15</span> &lt;-<span class="st"> </span><span class="kw">map.overlapping.batches</span>(<span class="dt">input.seq =</span> LG1_d2<span class="fl">.15</span>,
+                                         <span class="dt">size =</span> batch_size_LG1_d2<span class="fl">.15</span>,
+                                         <span class="dt">phase.cores =</span> <span class="dv">4</span>,
+                                         <span class="dt">overlap =</span> <span class="dv">30</span>)</code></pre></div>
+<p>The result of <code>map.overlapping.batches()</code> has a data member <code>$Map</code>, which corresponds to the final map:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map_LG1_d1<span class="fl">.10</span>$Map</code></pre></div>
+<pre><code>## 
+## Printing map:
+## 
+## Markers           Position           Parent 1       Parent 2
+## 
+##   1 M2                0.00           a |  | b       a |  | b 
+##   3 M5                0.52           a |  | b       a |  | a 
+##   4 M7                1.03           a |  | b       a |  | a 
+##   5 M9                1.40           a |  | b       a |  | a 
+##   6 M14               2.83           b |  | a       b |  | a 
+##   7 M16               3.14           b |  | a       a |  | a 
+##   9 M32               6.52           a |  | b       a |  | a 
+##  10 M34               7.44           a |  | b       a |  | b 
+##  11 M37               8.34           a |  | b       a |  | a 
+##  13 M52              12.18           a |  | b       a |  | b 
+##  15 M57              12.78           b |  | a       a |  | b 
+##  14 M56              12.78           b |  | a       a |  | a 
+##  17 M62              14.42           a |  | b       b |  | a 
+##  16 M60              14.42           b |  | a       a |  | a 
+##  21 M72              16.44           a |  | b       a |  | b 
+##  24 M84              18.69           b |  | a       a |  | a 
+##  25 M89              19.26           a |  | b       a |  | a 
+##  22 M79              19.84           b |  | a       a |  | b 
+##  26 M100             21.78           a |  | b       a |  | a 
+##  30 M113             25.55           a |  | b       a |  | a 
+##  37 M136             27.72           b |  | a       a |  | b 
+##  34 M130             27.72           b |  | a       a |  | a 
+##  33 M126             28.75           b |  | a       b |  | a 
+##  32 M128             28.75           a |  | b       a |  | b 
+##  38 M138             29.58           b |  | a       a |  | a 
+##  41 M144             31.19           b |  | a       a |  | a 
+##  40 M143             31.19           a |  | b       a |  | a 
+##  42 M151             32.59           a |  | b       b |  | a 
+##  45 M156             33.32           b |  | a       a |  | b 
+##  46 M157             33.55           a |  | b       b |  | a 
+##  47 M160             33.65           b |  | a       a |  | a 
+##  48 M161             33.65           a |  | b       b |  | a 
+##  49 M167             34.42           b |  | a       a |  | a 
+##  50 M174             35.22           b |  | a       a |  | b 
+##  51 M186             38.89           b |  | a       b |  | a 
+##  52 M189             39.08           b |  | a       b |  | a 
+##  55 M197             39.84           a |  | b       a |  | a 
+##  57 M199             40.35           a |  | b       b |  | a 
+##  56 M198             40.46           a |  | b       a |  | b 
+##  58 M202             40.75           a |  | b       a |  | a 
+##  61 M206             41.68           b |  | a       b |  | a 
+##  60 M205             41.68           b |  | a       a |  | b 
+##  62 M207             41.70           b |  | a       a |  | a 
+##  59 M203             41.77           b |  | a       a |  | a 
+##  63 M211             42.68           a |  | b       a |  | b 
+##  64 M214             43.44           b |  | a       a |  | a 
+##  65 M218             44.49           b |  | a       a |  | a 
+##  66 M220             45.13           b |  | a       b |  | a 
+##  69 M227             46.46           b |  | a       a |  | a 
+##  70 M231             46.95           b |  | a       a |  | a 
+##  71 M234             48.38           a |  | b       a |  | b 
+##  72 M237             49.03           b |  | a       b |  | a 
+##  76 M248             51.40           b |  | a       a |  | a 
+##  74 M245             51.40           a |  | b       a |  | a 
+##  75 M246             51.54           a |  | b       a |  | a 
+##  77 M249             51.68           b |  | a       a |  | a 
+##  78 M253             52.39           b |  | a       b |  | a 
+##  79 M254             52.93           b |  | a       a |  | a 
+##  80 M255             53.21           a |  | b       b |  | a 
+##  82 M263             53.96           a |  | b       a |  | a 
+##  83 M271             55.21           b |  | a       a |  | a 
+##  84 M274             56.04           b |  | a       a |  | b 
+##  85 M277             56.12           a |  | b       b |  | a 
+##  86 M279             56.33           b |  | a       a |  | a 
+##  87 M280             56.76           b |  | a       b |  | a 
+##  88 M285             57.41           b |  | a       a |  | a 
+##  89 M290             58.83           b |  | a       a |  | a 
+##  93 M309             60.82           b |  | a       a |  | a 
+##  94 M312             61.29           b |  | a       a |  | a 
+##  97 M324             63.75           b |  | a       a |  | b 
+## 100 M335             64.76           b |  | a       b |  | a 
+## 102 M338             66.32           b |  | a       b |  | a 
+## 103 M351             69.50           a |  | b       a |  | a 
+## 104 M355             69.67           a |  | b       a |  | a 
+## 106 M360             71.40           b |  | a       a |  | a 
+## 111 M376             73.56           b |  | a       b |  | a 
+## 112 M377             73.67           a |  | b       a |  | b 
+## 121 M391             76.17           b |  | a       a |  | a 
+## 117 M385             77.34           b |  | a       b |  | a 
+## 114 M380             77.92           a |  | b       a |  | a 
+## 125 M398             80.35           b |  | a       a |  | b 
+## 126 M406             82.26           b |  | a       a |  | a 
+## 129 M419             84.13           b |  | a       b |  | a 
+## 130 M425             84.47           a |  | b       a |  | a 
+## 131 M431             85.58           a |  | b       a |  | a 
+## 132 M435             86.20           b |  | a       b |  | a 
+## 133 M449             88.78           a |  | b       a |  | a 
+## 136 M466             89.78           a |  | b       b |  | a 
+## 134 M459             89.92           b |  | a       a |  | a 
+## 137 M484             95.22           a |  | b       a |  | a 
+## 139 M493             96.49           b |  | a       a |  | b 
+## 143 M498             97.00           a |  | b       b |  | a 
+## 141 M495             97.00           a |  | b       b |  | a 
+## 142 M497             97.00           b |  | a       a |  | b 
+## 
+## 94 markers            log-likelihood: -7978.444</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map_LG1_d2<span class="fl">.15</span>$Map</code></pre></div>
+<pre><code>## 
+## Printing map:
+## 
+## Markers           Position           Parent 1       Parent 2
+## 
+##   2 M4                0.00           a |  | a       a |  | b 
+##   1 M2                0.27           a |  | b       a |  | b 
+##   6 M14               3.14           b |  | a       b |  | a 
+##   8 M22               4.75           a |  | a       a |  | b 
+##  10 M34               7.50           a |  | b       a |  | b 
+##  12 M38               8.34           a |  | a       a |  | b 
+##  13 M52              12.40           a |  | b       a |  | b 
+##  15 M57              12.98           b |  | a       a |  | b 
+##  17 M62              14.39           a |  | b       b |  | a 
+##  19 M69              15.55           a |  | a       a |  | b 
+##  20 M71              15.55           a |  | a       b |  | a 
+##  18 M66              15.79           a |  | a       a |  | b 
+##  21 M72              16.98           a |  | b       a |  | b 
+##  22 M79              19.04           b |  | a       a |  | b 
+##  23 M80              19.68           a |  | a       a |  | b 
+##  27 M102             22.50           a |  | a       b |  | a 
+##  28 M109             23.72           a |  | a       b |  | a 
+##  29 M110             24.04           a |  | a       a |  | b 
+##  31 M114             25.36           a |  | a       a |  | b 
+##  32 M128             26.92           a |  | b       a |  | b 
+##  33 M126             26.92           b |  | a       b |  | a 
+##  35 M131             27.22           a |  | a       a |  | b 
+##  36 M133             27.67           a |  | a       b |  | a 
+##  37 M136             28.24           b |  | a       a |  | b 
+##  39 M140             28.90           a |  | a       a |  | b 
+##  42 M151             30.97           a |  | b       b |  | a 
+##  43 M152             30.97           a |  | a       a |  | b 
+##  44 M153             31.21           a |  | a       a |  | b 
+##  45 M156             31.59           b |  | a       a |  | b 
+##  46 M157             31.83           a |  | b       b |  | a 
+##  48 M161             31.95           a |  | b       b |  | a 
+##  50 M174             33.54           b |  | a       a |  | b 
+##  51 M186             37.19           b |  | a       b |  | a 
+##  52 M189             37.38           b |  | a       b |  | a 
+##  54 M192             37.90           a |  | a       a |  | b 
+##  53 M191             38.05           a |  | a       b |  | a 
+##  57 M199             38.77           a |  | b       b |  | a 
+##  56 M198             38.85           a |  | b       a |  | b 
+##  61 M206             40.12           b |  | a       b |  | a 
+##  60 M205             40.12           b |  | a       a |  | b 
+##  63 M211             41.03           a |  | b       a |  | b 
+##  67 M221             43.13           a |  | a       b |  | a 
+##  68 M222             43.31           a |  | a       b |  | a 
+##  66 M220             43.31           b |  | a       b |  | a 
+##  71 M234             46.41           a |  | b       a |  | b 
+##  72 M237             47.36           b |  | a       b |  | a 
+##  73 M240             48.08           a |  | a       b |  | a 
+##  78 M253             50.68           b |  | a       b |  | a 
+##  80 M255             51.54           a |  | b       b |  | a 
+##  81 M261             53.15           a |  | a       b |  | a 
+##  84 M274             54.22           b |  | a       a |  | b 
+##  85 M277             54.33           a |  | b       b |  | a 
+##  87 M280             55.00           b |  | a       b |  | a 
+##  90 M297             57.11           a |  | a       a |  | b 
+##  91 M300             57.55           a |  | a       b |  | a 
+##  92 M305             57.94           a |  | a       a |  | b 
+##  95 M314             59.87           a |  | a       b |  | a 
+##  96 M319             61.01           a |  | a       a |  | b 
+##  98 M325             61.88           a |  | a       a |  | b 
+##  97 M324             62.06           b |  | a       a |  | b 
+##  99 M332             62.87           a |  | a       a |  | b 
+## 100 M335             63.03           b |  | a       b |  | a 
+## 101 M337             63.54           a |  | a       a |  | b 
+## 102 M338             64.57           b |  | a       b |  | a 
+## 105 M358             68.16           a |  | a       a |  | b 
+## 107 M363             70.08           a |  | a       b |  | a 
+## 109 M373             70.83           a |  | a       a |  | b 
+## 108 M371             70.83           a |  | a       b |  | a 
+## 110 M375             71.38           a |  | a       a |  | b 
+## 112 M377             71.96           a |  | b       a |  | b 
+## 111 M376             72.04           b |  | a       b |  | a 
+## 113 M379             73.19           a |  | a       b |  | a 
+## 115 M382             73.54           a |  | a       b |  | a 
+## 117 M385             74.26           b |  | a       b |  | a 
+## 116 M384             74.26           a |  | a       b |  | a 
+## 118 M386             74.26           a |  | a       a |  | b 
+## 119 M387             74.56           a |  | a       a |  | b 
+## 120 M388             75.01           a |  | a       b |  | a 
+## 122 M395             76.05           a |  | a       a |  | b 
+## 123 M396             76.33           a |  | a       b |  | a 
+## 125 M398             76.85           b |  | a       a |  | b 
+## 124 M397             76.85           a |  | a       b |  | a 
+## 127 M413             79.93           a |  | a       a |  | b 
+## 128 M414             80.63           a |  | a       b |  | a 
+## 129 M419             81.16           b |  | a       b |  | a 
+## 132 M435             82.97           b |  | a       b |  | a 
+## 136 M466             86.69           a |  | b       b |  | a 
+## 135 M461             86.69           a |  | a       b |  | a 
+## 142 M497             93.35           b |  | a       a |  | b 
+## 141 M495             93.35           a |  | b       b |  | a 
+## 143 M498             93.35           a |  | b       b |  | a 
+## 138 M491             93.52           a |  | a       b |  | a 
+## 139 M493             93.87           b |  | a       a |  | b 
+## 140 M494             94.17           a |  | a       b |  | a 
+## 
+## 94 markers            log-likelihood: -7785.366</code></pre>
+<p>The maps were simulated to be 100cM, which we come very close to. However, the markers in the simulated map are also ordered by their name, so M1 -&gt; M2 -&gt; M3 et cetera. We can spot some errors in the results, which can be improved in the next section.</p>
+</div>
+<div id="batchmap-with-ripple-to-improve-order" class="section level2">
+<h2>BatchMap with ripple to improve order</h2>
+<p>As we saw at the end of the previous section, the markers still have some order error. While we can probably never recover the true map, we can expend resources (CPU time) to improve the current order. To do this, we can supply an ordering function to <code>map.overlapping.batches()</code> using the <code>fun.ord</code> argument. Currently there exists an umbrella function called <code>ripple.ord()</code> that should be supplied to this argument. This function will go through sliding windows within each batch and test alternative orders according to a given rule set. If an order improves the map likelihood, it is kept. The default and recommended ruleset is called “one”, and will test each <strong>pairwise</strong> marker swap within a window. Further, a number of alternative orders can be considered in parallel. This is controlled by the <code>ripple.cores</code> argument. Note that the total number of threads used, will be <code>ripple.cores</code> * <code>phase.cores</code>.</p>
+<p>How many cores will I need?</p>
+<p>Depending on the rule set and window size that <code>ripple.ord()</code> uses, the number of comparisons can be calculated. Let the <span class="math inline">\(w\)</span> be the window size:</p>
+<ul>
+<li>“one”: <span class="math inline">\(\frac{w * (w + 1)}{2}\)</span></li>
+<li>“all”: <span class="math inline">\(\frac{w!}{2}\)</span></li>
+</ul>
+<p>The rule set “random” can be supplied with the number of desired alternative orders. Let’s consider a window size of 4 for our dataset. We will need to test <span class="math inline">\(\frac{4 * 5}{2} = 10\)</span> alternative order per window. On a machine with 16 threads available, a good combination would be <code>phase.cores=3</code> and <code>ripple.cores=5</code>, as often no more than two phases are plausible and even considered in the model. I am writing this vignette on a laptop with four cores available, which I will all use for <code>ripple.cores</code>, setting <code>phase.cores</code> to one. The rule set used by <code>ripple.ord()</code> is controlled by the <code>method</code> argument, the window size by the <code>ws</code> argument. Even with only about 100 markers, this function can take some time, it is advised you don’t run it here.:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rip_LG1_d1<span class="fl">.10</span> &lt;-<span class="st"> </span><span class="kw">map.overlapping.batches</span>(<span class="dt">input.seq =</span> LG1_d1<span class="fl">.10</span>,
+                                         <span class="dt">size =</span> batch_size_LG1_d1<span class="fl">.10</span>,
+                                         <span class="dt">phase.cores =</span> <span class="dv">1</span>,
+                                         <span class="dt">overlap =</span> <span class="dv">30</span>,
+                                         <span class="dt">fun.order =</span> ripple.ord,
+                                         <span class="dt">ripple.cores =</span> <span class="dv">4</span>,
+                                         <span class="dt">method =</span> <span class="st">&quot;one&quot;</span>,
+                                         <span class="dt">min.tries =</span> <span class="dv">1</span>,
+                                         <span class="dt">ws =</span> <span class="dv">4</span>)</code></pre></div>
+<p>We can evaluate the number of mistakes in the order, because the true order is known in the simulated dataset:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">err_rate &lt;-<span class="st"> </span>function(seq)
+{
+  <span class="co"># Get the marker position</span>
+  s_num &lt;-<span class="st"> </span>seq$seq.num
+  <span class="co"># If the sequence is reverse, turn it around</span>
+  if(<span class="kw">cor</span>(s_num, <span class="dv">1</span>:<span class="kw">length</span>(s_num)) &lt;<span class="st"> </span><span class="dv">0</span>)
+    s_num &lt;-<span class="st"> </span><span class="kw">rev</span>(s_num)
+  <span class="co"># Get the number of misorders and divide by the total length</span>
+  <span class="kw">sum</span>(<span class="kw">order</span>(s_num) -<span class="st"> </span><span class="dv">1</span>:<span class="kw">length</span>(s_num) !=<span class="st"> </span><span class="dv">0</span>) /<span class="st"> </span><span class="kw">length</span>(s_num)
+}
+
+<span class="kw">c</span>(<span class="st">&quot;BatchMap&quot;</span> =<span class="st"> </span><span class="kw">err_rate</span>(map_LG1_d1<span class="fl">.10</span>$Map),
+  <span class="st">&quot;RippleBatchMap&quot;</span> =<span class="st"> </span><span class="kw">err_rate</span>(rip_LG1_d1<span class="fl">.10</span>$Map))</code></pre></div>
+<pre><code>## [1] 0.3723404 0.2234043</code></pre>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
