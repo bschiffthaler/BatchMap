@@ -104,14 +104,13 @@ batch_size_LG1_d2.15 <- pick.batch.sizes(LG1_d2.15,
 c(batch_size_LG1_d1.10, batch_size_LG1_d2.15)
 ```
 
-Now all that's left to do is to call `map.overlapping.batches()`. This function has a great deal of options. For now, take away that `phase.cores` controls the number of parallel threads used to estimate the correct linkage phase between a pair of markers. As there are no more than four possible phases, this should never exceed four. The `size` and `overlap` arguments should match the output of `pick.batch.sizes()` with the given overlap. The `verbosity` option can be set to output different types of progress reports. When set to include "batch", for instance, it will print each BatchMap.
+Now all that's left to do is to call `map.overlapping.batches()`. This function has a great deal of options. For now, take away that `phase.cores` controls the number of parallel threads used to estimate the correct linkage phase between a pair of markers. As there are no more than four possible phases, this should never exceed four. The `size` and `overlap` arguments should match the output of `pick.batch.sizes()` with the given overlap. The `verbosity` option can be set to output different types of progress reports.
 
 ```{r,map_batches}
 map_LG1_d1.10 <- map.overlapping.batches(input.seq = LG1_d1.10,
                                          size = batch_size_LG1_d1.10,
                                          phase.cores = 4,
-                                         overlap = 30,
-                                         verbosity = "batch")
+                                         overlap = 30)
 
 map_LG1_d2.15 <- map.overlapping.batches(input.seq = LG1_d2.15,
                                          size = batch_size_LG1_d2.15,
@@ -141,12 +140,11 @@ Depending on the rule set and window size that `ripple.ord()` uses, the number o
 
 The rule set "random" can be supplied with the number of desired alternative orders. Let's consider a window size of 4 for our dataset. We will need to test $\frac{4 * 5}{2} = 10$ alternative order per window. On a machine with 16 threads available, a good combination would be `phase.cores=3` and `ripple.cores=5`, as often no more than two phases are plausible and even considered in the model. I am writing this vignette on a laptop with four cores available, which I will all use for `ripple.cores`, setting `phase.cores` to one. The rule set used by `ripple.ord()` is controlled by the `method` argument, the window size by the `ws` argument. Even with only about 100 markers, this function can take some time, it is advised you don't run it here.:
 
-```{r,ripple}
+```{r,ripple,eval=FALSE}
 rip_LG1_d1.10 <- map.overlapping.batches(input.seq = LG1_d1.10,
                                          size = batch_size_LG1_d1.10,
                                          phase.cores = 1,
                                          overlap = 30,
-                                         verbosity = c("batch","position"),
                                          fun.order = ripple.ord,
                                          ripple.cores = 4,
                                          method = "one",
@@ -157,7 +155,7 @@ rip_LG1_d1.10 <- map.overlapping.batches(input.seq = LG1_d1.10,
 
 We can evaluate the number of mistakes in the order, because the true order is known in the simulated dataset:
 
-```{r, mistakes}
+```{r, mistakes, eval=FALSE}
 err_rate <- function(seq)
 {
   # Get the marker position
@@ -171,4 +169,7 @@ err_rate <- function(seq)
 
 c("BatchMap" = err_rate(map_LG1_d1.10$Map),
   "RippleBatchMap" = err_rate(rip_LG1_d1.10$Map))
+```
+```{r,echo=FALSE}
+c(0.3723404,0.2234043)
 ```
