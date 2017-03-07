@@ -145,8 +145,8 @@ generate_one <- function(input.seq, p, ws, no_reverse)
 ##' Unless you are absolutely sure why, you should use "likelihood".
 #' @return An object of class \code{sequence} that is the best order for the
 #' re-ordered window within the input sequence.
-ripple.window <- function(input.seq, ws=4, tol=10E-4, phase.cores = 4,
-                          ripple.cores = 4, start = 1, verbosity = NULL,
+ripple.window <- function(input.seq, ws=4, tol=10E-4, phase.cores = 1,
+                          ripple.cores = 1, start = 1, verbosity = NULL,
                           type = "one", n = NULL, pref = NULL,
                           no_reverse = TRUE, optimize = "likelihood") {
 
@@ -311,8 +311,8 @@ ripple.window <- function(input.seq, ws=4, tol=10E-4, phase.cores = 4,
 ##' Unless you are absolutely sure why, you should use "likelihood".
 #' @return An object of class \code{sequence} that is the best order for the
 #' re-ordered input sequence.
-ripple.ord <- function(input.seq, ws = 4, tol = 10E-4, phase.cores = 4,
-                       ripple.cores = 4, method = "one", n = NULL,
+ripple.ord <- function(input.seq, ws = 4, tol = 10E-4, phase.cores = 1,
+                       ripple.cores = 1, method = "one", n = NULL,
                        pref = "neutral", start = 1, verbosity = NULL,
                        batches = NULL, no_reverse = TRUE, optimize = "likelihood")
 {

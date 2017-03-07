@@ -145,7 +145,7 @@ pick.batch.sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' @keywords utilities
 ##'
 map.overlapping.batches <- function(input.seq, size = 50, overlap = 15,
-                        fun.order = NULL, phase.cores = 4,
+                        fun.order = NULL, phase.cores = 1,
                         ripple.cores = 1, verbosity = NULL, max.dist = Inf,
                         ws = 4, increase.every = 4, max.tries = 10,
                         min.tries = 0, seeds = NULL, optimize = "likelihood",

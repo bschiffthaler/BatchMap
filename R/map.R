@@ -86,7 +86,7 @@
 ##'   markers <- make.seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
 ##'   map(markers)
 ##'
-map <- function(input.seq,tol=10E-5, verbosity=FALSE, phase.cores = 4)
+map <- function(input.seq,tol=10E-5, verbosity=FALSE, phase.cores = 1)
 {
   ## checking for correct object
   if(!("sequence" %in% class(input.seq)))

@@ -45,10 +45,9 @@
 using namespace std;
 using namespace Rcpp;
 
-RcppExport SEXP get_bins(SEXP geno_R, SEXP exact_R, SEXP barWidth_R)
+RcppExport SEXP get_bins(SEXP geno_R, SEXP exact_R)
 {
   int exact = Rcpp::as<int>(exact_R);
-  int barWidth = Rcpp::as<int>(barWidth_R);
   Rcpp::NumericMatrix geno = Rcpp::as<Rcpp::NumericMatrix>(geno_R);
   int n_mar = geno.ncol();
   int n_ind = geno.nrow();

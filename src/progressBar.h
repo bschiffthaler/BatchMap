@@ -11,7 +11,8 @@ public:
   _printed(0),
   _width(width),
   _max(max),
-  _done(false)
+  _done(false),
+  _printed_end(false)
   {
     if(init)
       Rcpp::Rcout << "[";
@@ -19,11 +20,14 @@ public:
       _done = true;
   }
   void update(unsigned long current);
+  bool printed_end() {return _printed_end;}
+  void print_end();
 private:
   unsigned short _printed;
   unsigned short _width;
   unsigned long _max;
   bool _done;
+  bool _printed_end;
 };
 
 inline void progressBar::update(unsigned long current)
@@ -35,12 +39,19 @@ inline void progressBar::update(unsigned long current)
   unsigned short x = floor(w * r);
   while(_printed < x && ! _done)
   {
-    Rcpp::Rcout << "#";
+    unsigned int rperc = (r * 100);
+    Rcpp::Rcout << "." << rperc << "%.";
     _printed++;
   }
   if(_printed >= _width && ! _done)
   {
     Rcpp::Rcout << "]\n";
     _done = true;
+    _printed_end = true;
   }
+}
+
+inline void progressBar::print_end()
+{
+  Rcpp::Rcout << "]\n";
 }

@@ -21,7 +21,7 @@ NOTE: BatchMap has been written specifically for use in outcrossing species. All
 
 BatchMap keeps with the paradigm and format of the original OneMap data format, but includes a faster function for reading the input file `read.outcross2`. Further, BatchMap ignores all lines following the marker definitions (e.g. phenotypes) as all exploration beyond the construction of the linkage map is not intended to be handled by this package.
 
-```{r,reading_data}
+```{r,reading_data, eval=FALSE}
 suppressPackageStartupMessages(library(BatchMap))
 
 input_file <- system.file("example/sim2k.txt",package = "BatchMap")
@@ -37,7 +37,7 @@ BatchMap approach make the resulting map worse. OneMap provides functions to
 detect and resolve such bins. Note the `exact` option to `find.bins()`, which
 controls wether missing information should be considered when binning data:
 
-```{r,resolve_bins}
+```{r,resolve_bins, eval=FALSE}
 bins <- find.bins(outcross, exact = FALSE)
 outcross_clean <- create.data.bins(outcross, bins)
 outcross_clean
@@ -52,7 +52,7 @@ with very high density datasets, a lot of RAM can be required to hold the
 twopoint table. As a general rule, this datastructure will require $M * M * 32$ bytes, where $M$ is the number of markers. In our case, with a small 
 dataset of 2,085 markers, we'll need about 133Mb. A large dataset of 20,000 markers will need **>48Gb**. This would be typically run on a server machine (e.g. see some cloud server providers).
 
-```{r,twopoints}
+```{r,twopoints, eval=FALSE}
 twopt_table <- rf.2pts(outcross_clean)
 # Check the size
 format(object.size(twopt_table),units = "Mb")
@@ -62,7 +62,7 @@ format(object.size(twopt_table),units = "Mb")
 
 In order to separate the data into linkage groups, we use the `group()` function:
 
-```{r,group}
+```{r,group, eval=FALSE}
 linkage_groups <- group(make.seq(input.obj = twopt_table, "all"),
                         LOD = 12)
 ```
@@ -73,7 +73,7 @@ linkage_groups <- group(make.seq(input.obj = twopt_table, "all"),
 In order to calculate a map for each parent and then join them afterwards, we
 provide a function `pseudo.testcross.split()`, that creates a list of testcrosses. Each list element corresponds to a linkage group and a sequence for markers of type "D1.10" and one for markers of type "D2.15". Both include all markers of other types.
 
-```{r,split}
+```{r,split, eval=FALSE}
 testcrosses <- pseudo.testcross.split(linkage_groups)
 testcrosses$LG1.d1.10
 ```
@@ -82,15 +82,15 @@ testcrosses$LG1.d1.10
 
 Before the map is calculated using the EM model, the sequences need to be ordered by a heuristic. The RECORD algorithm usually performs very well and has desireable characteristics, which make it trivial to parallelize. We use the function `record.parallel()`, which takes a `sequence` as input and we replicate RECORD 10 times (see the `times` argument). We then pick the best of those replicates as our final order. Note that it is rare for `times > 10` to yield any significant improvement. Finally, the `cores` argument defines how many of those RECORD replicates we can process in parallel. Set this to your computers number of CPUs (or maximally the number of the `times` argument).
 
-```{r,record}
-ordered_sequences <- lapply(testcrosses, record.parallel, times = 10, cores = 4)
+```{r,record, eval=FALSE}
+ordered_sequences <- lapply(testcrosses, record.parallel, times = 10, cores = 1)
 ```
 
 ## Creating the BatchMaps
 
 With the sequences neatly ordered, we can now go ahead with creating BatchMaps. For this, we define an overall batch size as well as an overlap size and let the function `pick.batch.sizes()` decide on the final size in order to split batches evenly. The `around` argument to the function defines how much smaller or larger the batch size is allowed to be in order to create evenly sized batches. We will work with linkage group 1 from here on to save time:
 
-```{r,pick_bs}
+```{r,pick_bs, eval=FALSE}
 LG1_d1.10 <- ordered_sequences$LG1.d1.10
 LG1_d2.15 <- ordered_sequences$LG1.d2.15
 batch_size_LG1_d1.10 <- pick.batch.sizes(LG1_d1.10, 
@@ -106,23 +106,17 @@ c(batch_size_LG1_d1.10, batch_size_LG1_d2.15)
 
 Now all that's left to do is to call `map.overlapping.batches()`. This function has a great deal of options. For now, take away that `phase.cores` controls the number of parallel threads used to estimate the correct linkage phase between a pair of markers. As there are no more than four possible phases, this should never exceed four. The `size` and `overlap` arguments should match the output of `pick.batch.sizes()` with the given overlap. The `verbosity` option can be set to output different types of progress reports.
 
-```{r,map_batches}
+```{r,map_batches, eval=FALSE}
 map_LG1_d1.10 <- map.overlapping.batches(input.seq = LG1_d1.10,
                                          size = batch_size_LG1_d1.10,
-                                         phase.cores = 4,
-                                         overlap = 30)
-
-map_LG1_d2.15 <- map.overlapping.batches(input.seq = LG1_d2.15,
-                                         size = batch_size_LG1_d2.15,
-                                         phase.cores = 4,
+                                         phase.cores = 1,
                                          overlap = 30)
 ```
 
 The result of `map.overlapping.batches()` has a data member `$Map`, which corresponds to the final map:
 
-```{r, print_maps}
+```{r, print_maps, eval=FALSE}
 map_LG1_d1.10$Map
-map_LG1_d2.15$Map
 ```
 
 The maps were simulated to be 100cM, which we come very close to. However, the markers in the simulated map are also ordered by their name, so M1 -> M2 -> M3 et cetera. We can spot some errors in the results, which can be improved in the next section.

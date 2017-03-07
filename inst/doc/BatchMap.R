@@ -1,58 +1,52 @@
-## ----reading_data--------------------------------------------------------
-suppressPackageStartupMessages(library(BatchMap))
+## ----reading_data, eval=FALSE--------------------------------------------
+#  suppressPackageStartupMessages(library(BatchMap))
+#  
+#  input_file <- system.file("example/sim2k.txt",package = "BatchMap")
+#  outcross <- read.outcross2(input_file)
+#  outcross
 
-input_file <- system.file("example/sim2k.txt",package = "BatchMap")
-outcross <- read.outcross2(input_file)
-outcross
+## ----resolve_bins, eval=FALSE--------------------------------------------
+#  bins <- find.bins(outcross, exact = FALSE)
+#  outcross_clean <- create.data.bins(outcross, bins)
+#  outcross_clean
 
-## ----resolve_bins--------------------------------------------------------
-bins <- find.bins(outcross, exact = FALSE)
-outcross_clean <- create.data.bins(outcross, bins)
-outcross_clean
+## ----twopoints, eval=FALSE-----------------------------------------------
+#  twopt_table <- rf.2pts(outcross_clean)
+#  # Check the size
+#  format(object.size(twopt_table),units = "Mb")
 
-## ----twopoints-----------------------------------------------------------
-twopt_table <- rf.2pts(outcross_clean)
-# Check the size
-format(object.size(twopt_table),units = "Mb")
+## ----group, eval=FALSE---------------------------------------------------
+#  linkage_groups <- group(make.seq(input.obj = twopt_table, "all"),
+#                          LOD = 12)
 
-## ----group---------------------------------------------------------------
-linkage_groups <- group(make.seq(input.obj = twopt_table, "all"),
-                        LOD = 12)
+## ----split, eval=FALSE---------------------------------------------------
+#  testcrosses <- pseudo.testcross.split(linkage_groups)
+#  testcrosses$LG1.d1.10
 
-## ----split---------------------------------------------------------------
-testcrosses <- pseudo.testcross.split(linkage_groups)
-testcrosses$LG1.d1.10
+## ----record, eval=FALSE--------------------------------------------------
+#  ordered_sequences <- lapply(testcrosses, record.parallel, times = 10, cores = 1)
 
-## ----record--------------------------------------------------------------
-ordered_sequences <- lapply(testcrosses, record.parallel, times = 10, cores = 4)
+## ----pick_bs, eval=FALSE-------------------------------------------------
+#  LG1_d1.10 <- ordered_sequences$LG1.d1.10
+#  LG1_d2.15 <- ordered_sequences$LG1.d2.15
+#  batch_size_LG1_d1.10 <- pick.batch.sizes(LG1_d1.10,
+#                                           size = 50,
+#                                           overlap = 30,
+#                                           around = 10)
+#  batch_size_LG1_d2.15 <- pick.batch.sizes(LG1_d2.15,
+#                                           size = 50,
+#                                           overlap = 30,
+#                                           around = 10)
+#  c(batch_size_LG1_d1.10, batch_size_LG1_d2.15)
 
-## ----pick_bs-------------------------------------------------------------
-LG1_d1.10 <- ordered_sequences$LG1.d1.10
-LG1_d2.15 <- ordered_sequences$LG1.d2.15
-batch_size_LG1_d1.10 <- pick.batch.sizes(LG1_d1.10, 
-                                         size = 50, 
-                                         overlap = 30, 
-                                         around = 10)
-batch_size_LG1_d2.15 <- pick.batch.sizes(LG1_d2.15, 
-                                         size = 50, 
-                                         overlap = 30, 
-                                         around = 10)
-c(batch_size_LG1_d1.10, batch_size_LG1_d2.15)
+## ----map_batches, eval=FALSE---------------------------------------------
+#  map_LG1_d1.10 <- map.overlapping.batches(input.seq = LG1_d1.10,
+#                                           size = batch_size_LG1_d1.10,
+#                                           phase.cores = 1,
+#                                           overlap = 30)
 
-## ----map_batches---------------------------------------------------------
-map_LG1_d1.10 <- map.overlapping.batches(input.seq = LG1_d1.10,
-                                         size = batch_size_LG1_d1.10,
-                                         phase.cores = 4,
-                                         overlap = 30)
-
-map_LG1_d2.15 <- map.overlapping.batches(input.seq = LG1_d2.15,
-                                         size = batch_size_LG1_d2.15,
-                                         phase.cores = 4,
-                                         overlap = 30)
-
-## ---- print_maps---------------------------------------------------------
-map_LG1_d1.10$Map
-map_LG1_d2.15$Map
+## ---- print_maps, eval=FALSE---------------------------------------------
+#  map_LG1_d1.10$Map
 
 ## ----ripple,eval=FALSE---------------------------------------------------
 #  rip_LG1_d1.10 <- map.overlapping.batches(input.seq = LG1_d1.10,

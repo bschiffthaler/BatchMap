@@ -82,7 +82,7 @@
 ##'   seeded.map(markers, seeds = c(4,2))
 ##'
 ##'
-seeded.map <- function(input.seq, tol=10E-5, phase.cores = 4,
+seeded.map <- function(input.seq, tol=10E-5, phase.cores = 1,
                        seeds, verbosity = NULL)
 {
   ## checking for correct object

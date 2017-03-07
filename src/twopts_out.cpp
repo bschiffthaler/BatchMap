@@ -61,8 +61,8 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
                       int n_ind, bool verbose)
 {
   int n_mar=((int)geno.size()/n_ind), k1, k2;
-  //Rcout << n_mar << " markers input.\n";
-  int chunk=((n_mar*n_mar)-n_mar)/20, ct1=0, ct2=1, a1, a2, a3;
+  //Rcout << n_mar << " markers input.\n"; int ct2=1;
+  int chunk=((n_mar*n_mar)-n_mar)/20, ct1=0, a1, a2, a3;
   NumericMatrix n(5,5);
   NumericVector r(8);
   NumericVector d1d2 =  NumericVector::create(0.25, 0.25, 0.25, 0.25, 0.00, 0.00, 0.00, 0.00);
@@ -73,13 +73,12 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
   NumericMatrix rm(4,n_mar);
   NumericMatrix lm(4,n_mar);
   unsigned long n_mar_ul = n_mar;
-  progressBar prog_bar(40, ((n_mar_ul*n_mar_ul)-n_mar_ul)/2, verbose);
   if(mrk < 0)
   {
     if(verbose && n_mar > 100)
-      Rcpp::Rcout << "Computing " << ((n_mar*n_mar)-n_mar)/2 << " recombination fractions:\n\n" << "\t0%\t.";
+      Rcpp::Rcout << "Computing " << ((n_mar*n_mar)-n_mar)/2 << " recombination fractions:\n\n";
     else if(verbose==1)
-      Rcpp::Rcout << "Computing " << ((n_mar*n_mar)-n_mar)/2 << " recombination fractions ... \n";
+      Rcpp::Rcout << "Computing " << ((n_mar*n_mar)-n_mar)/2 << " recombination fractions:\n\n";
     a1=0;
     a2=n_mar-1;
   }
@@ -88,6 +87,9 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
     a1=mrk;
     a2=mrk+1;
   }
+
+  progressBar prog_bar(40, ((n_mar_ul*n_mar_ul)-n_mar_ul)/2, verbose);
+
   for(int i=a1; i < a2; i++)
   {
     if(mrk < 0){
@@ -394,9 +396,10 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
       }
     }
   }
+  if(! prog_bar.printed_end())
+    prog_bar.print_end();
   if(mrk < 0)
   {
-    if(verbose && n_mar > 100) Rcpp::Rcout << "\n";
     List z = List::create(wrap(r1), wrap(r2), wrap(r3), wrap(r4));
     return(z);
   }
