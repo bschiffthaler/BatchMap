@@ -48,7 +48,7 @@ function(rcmb) {
 ##' @param type Indicates the function that should be used, which can be
 ##' \code{"kosambi"} or \code{"haldane"}
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
-##' @seealso \code{\link[onemap]{kosambi}} and \code{\link[onemap]{haldane}}
+##' @seealso \code{\link[BatchMap]{kosambi}} and \code{\link[BatchMap]{haldane}}
 ##' @references Haldane, J. B. S. (1919) The combination of linkage values and
 ##' the calculation of distance between the loci of linked factors.
 ##' \emph{Journal of Genetics} 8: 299-309.

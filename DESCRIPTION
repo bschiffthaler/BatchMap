@@ -4,19 +4,17 @@ Title: Software for the Creation of High Density
 Version: 1.0.0.0
 Description: Algorithms that build on the OneMap package to create linkage
     maps from high density data in outcrossing species in reasonable timeframes.
-Date: March 2017
+Date: 2017-03-07
 Authors@R: person("Bastian", "Schiffthaler", role = c("aut","cre"), 
     email = "bastian.schiffthaler@umu.se")
-LinkingTo: Rcpp (>= 0.10.5), RcppArmadillo
+LinkingTo: Rcpp (>= 0.10.5), RcppArmadillo (>= 0.7.700)
 Depends:
-    RcppArmadillo (>= 0.6.70),
     parallel (>= 3.2.3),
     ggplot2 (>= 1.0.1),
     R (>= 3.2.0)
 Imports:
     fields (>= 8.3-5),
     reshape2 (>= 1.4.1),
-    Rcpp (>= 0.10.5),
     methods
 Suggests:
     knitr (>= 1.10),

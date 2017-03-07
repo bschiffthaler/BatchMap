@@ -29,7 +29,7 @@
 #'
 #' @return an object of class \code{onemap}.
 #' @author Marcelo Mollinari, \email{mmollina@@usp.br}
-#' @seealso \code{\link[onemap]{find.bins}}
+#' @seealso \code{\link[BatchMap]{find.bins}}
 #' @keywords bins dimension reduction
 #' @examples
 #'  \dontrun{

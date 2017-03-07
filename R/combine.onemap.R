@@ -52,8 +52,8 @@
 ##' matrix with phenotypic values. Each column contains data for a trait and
 ##' each row represents an individual.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{\link[onemap]{read.onemap}} and
-##' \code{\link[onemap]{read.mapmaker}}.
+##' @seealso \code{\link[BatchMap]{read.onemap}} and
+##' \code{\link[BatchMap]{read.mapmaker}}.
 ##' @references Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
 ##' Constructing genetic linkage maps with MAPMAKER/EXP Version 3.0: a tutorial
 ##' and reference manual. \emph{A Whitehead Institute for Biomedical Research

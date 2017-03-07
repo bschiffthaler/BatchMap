@@ -54,7 +54,7 @@
 ##' 2-point analyses.}
 ##' @author Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
 ##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com}
-##' @seealso \code{\link[onemap]{make.seq}}
+##' @seealso \code{\link[BatchMap]{make.seq}}
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43

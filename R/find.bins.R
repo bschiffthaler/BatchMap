@@ -38,7 +38,7 @@
 ##' \item{n.ind}{number individuals} \item{exact.search}{logical; indicates if
 ##' the search was performed with the argument \code{exact=TRUE} or \code{exact=FALSE}}
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
-##' @seealso \code{\link[onemap]{create.data.bins}}
+##' @seealso \code{\link[BatchMap]{create.data.bins}}
 ##' @keywords bins dimension reduction
 ##' @examples
 ##'  \dontrun{

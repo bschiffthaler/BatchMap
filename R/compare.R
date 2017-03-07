@@ -52,8 +52,8 @@
 ##' the raw data.} \item{twopt}{name of the object of class \code{rf.2pts} with
 ##' the 2-point analyses.}
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
-##' @seealso \code{\link[onemap]{marker.type}} for details about segregation
-##' types and \code{\link[onemap]{make.seq}}.
+##' @seealso \code{\link[BatchMap]{marker.type}} for details about segregation
+##' types and \code{\link[BatchMap]{make.seq}}.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43

@@ -38,7 +38,7 @@
 ##'
 ##' After determining the order with \emph{Seriation}, the final map is
 ##' constructed using the multipoint approach (function
-##' \code{\link[onemap]{map}}).
+##' \code{\link[BatchMap]{map}}).
 ##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param LOD minimum LOD-Score threshold used when constructing the pairwise
@@ -60,7 +60,7 @@
 ##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 ##' 2-point analyses.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{\link[onemap]{make.seq}}, \code{\link[onemap]{map}}
+##' @seealso \code{\link[BatchMap]{make.seq}}, \code{\link[BatchMap]{map}}
 ##' @references Buetow, K. H. and Chakravarti, A. (1987) Multipoint gene
 ##' mapping using seriation. I. General methods. \emph{American Journal of
 ##' Human Genetics} 41: 180-188.

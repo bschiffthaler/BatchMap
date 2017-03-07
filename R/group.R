@@ -49,8 +49,8 @@
 ##'     is assigned.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com} and
 ##'     Marcelo Mollinari, \email{mmollina@@usp.br}
-##' @seealso \code{\link[onemap]{rf.2pts}} and
-##'     \code{\link[onemap]{make.seq}}
+##' @seealso \code{\link[BatchMap]{rf.2pts}} and
+##'     \code{\link[BatchMap]{make.seq}}
 ##' @references Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
 ##'     Constructing genetic linkage maps with MAPMAKER/EXP Version
 ##'     3.0: a tutorial and reference manual. \emph{A Whitehead

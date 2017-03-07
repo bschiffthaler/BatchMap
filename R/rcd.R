@@ -40,7 +40,7 @@
 ##' repeated as long as markers can be added to the chain.}
 ##'
 ##' After determining the order with \emph{RCD}, the final map is constructed
-##' using the multipoint approach (function \code{\link[onemap]{map}}).
+##' using the multipoint approach (function \code{\link[BatchMap]{map}}).
 ##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param LOD minimum LOD-Score threshold used when constructing the pairwise
@@ -62,7 +62,7 @@
 ##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 ##' 2-point analyses.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{\link[onemap]{make.seq}}, \code{\link[onemap]{map}}
+##' @seealso \code{\link[BatchMap]{make.seq}}, \code{\link[BatchMap]{map}}
 ##' @references Basten, C. J., Weir, B. S. and Zeng, Z.-B. (2005) \emph{QTL
 ##' Cartographer Version 1.17: A Reference Manual and Tutorial for QTL
 ##' Mapping}.

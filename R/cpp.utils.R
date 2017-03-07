@@ -62,11 +62,11 @@ est_rf_out<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
 ##'     represent individuals.
 ##'
 ##' @param type a vector indicating the type of marker. For more
-##'     information see \code{\link[onemap]{read.onemap}}
+##'     information see \code{\link[BatchMap]{read.onemap}}
 ##'
 ##' @param phase a vector indicating the linkage phases between
 ##'     markers. For more information see
-##'     \code{\link[onemap]{make.seq}}
+##'     \code{\link[BatchMap]{make.seq}}
 ##'
 ##' @param rf.vec a vector containing the recombination fraction
 ##'     initial values

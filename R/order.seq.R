@@ -80,7 +80,7 @@
 ##' \code{THRES-1}. The latter calculations take longer, but usually are able
 ##' to map more markers.
 ##' \code{try.seq} step is displayed. See \code{Details} section in
-##' \code{\link[onemap]{try.seq}} function.
+##' \code{\link[BatchMap]{try.seq}} function.
 ##' @param wait the minimum time interval in seconds to display the diagnostic
 ##' graphic for each \code{try.seq} step. Defaults to 0.00
 ##' @param tol tolerance number for the C routine, i.e., the value used to
@@ -98,8 +98,8 @@
 ##' 2-point analyses.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@usp.br} and Marcelo
 ##' Mollinari, \email{mmollina@@gmail.com}
-##' @seealso \code{\link[onemap]{make.seq}}, \code{\link[onemap]{compare}} and
-##' \code{\link[onemap]{try.seq}}.
+##' @seealso \code{\link[BatchMap]{make.seq}}, \code{\link[BatchMap]{compare}} and
+##' \code{\link[BatchMap]{try.seq}}.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43

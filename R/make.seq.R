@@ -69,8 +69,8 @@
 ##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 ##' 2-point analyses.}
 ##' @author Gabriel Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{\link[onemap]{compare}}, \code{\link[onemap]{try.seq}},
-##' \code{\link[onemap]{order.seq}} and \code{\link[onemap]{map}}.
+##' @seealso \code{\link[BatchMap]{compare}}, \code{\link[BatchMap]{try.seq}},
+##' \code{\link[BatchMap]{order.seq}} and \code{\link[BatchMap]{map}}.
 ##' @references Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M.
 ##' J., Lincoln, S. E. and Newburg, L. (1987) MAPMAKER: An interactive computer
 ##' package for constructing primary genetic linkage maps of experimental and

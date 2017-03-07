@@ -37,7 +37,7 @@
 ##' representation of the \code{LOD} vector (see \code{Value}
 ##' section). The red triangle indicates the best position where the
 ##' new marker \code{mrk} should be placed; iii) the right bottom
-##' figure is the non-interactive \code{\link[onemap]{rf.graph.table}}
+##' figure is the non-interactive \code{\link[BatchMap]{rf.graph.table}}
 ##' function for the new genetic map. It plots a matrix of pairwise
 ##' recombination fractions (under the diagonal) and LOD Scores (upper
 ##' the diagonal) using a color scale.
@@ -75,8 +75,8 @@
 ##'
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
 ##'
-##' @seealso \code{\link[onemap]{make.seq}} and
-##'     \code{\link[onemap]{compare}}.
+##' @seealso \code{\link[BatchMap]{make.seq}} and
+##'     \code{\link[BatchMap]{compare}}.
 ##'
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S.,
 ##'     Yandell, B.  (2008) \emph{qtl: Tools for analyzing QTL

@@ -38,7 +38,7 @@
 ##' @return Nothing is returned. Segregation types of all markers in the
 ##' sequence are displayed on the screen.
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{\link[onemap]{make.seq}}
+##' @seealso \code{\link[BatchMap]{make.seq}}
 ##' @references Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)
 ##' Simultaneous maximum likelihood estimation of linkage and linkage phases in
 ##' outcrossing species. \emph{Theoretical Population Biology} 61: 349-363.

@@ -49,7 +49,7 @@ generate.overlapping.batches <- function(input.seq, size = 50, overlap = 15,
 ##' Picking optimal batch size values
 ##'
 ##' Suggest an optimal batch size value for use in
-##' \code{\link[onemap]{map.overlapping.batches}}
+##' \code{\link[BatchMap]{map.overlapping.batches}}
 ##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param size The center size around which an optimum is to be searched
@@ -59,7 +59,7 @@ generate.overlapping.batches <- function(input.seq, size = 50, overlap = 15,
 ##' @return An integer value for the size which most evenly divides batches. In
 ##' case of ties, bigger batch sizes are preferred.
 ##' @author Bastian Schiffthaler, \email{bastian.schiffthaler@umu.se}
-##' @seealso \code{\link[onemap]{map.overlapping.batches}}
+##' @seealso \code{\link[BatchMap]{map.overlapping.batches}}
 ##'
 ##' @keywords utilities
 ##' @examples
@@ -93,7 +93,7 @@ pick.batch.sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' recombination fractions and phasing. Further the user has the option of
 ##' setting \code{fun.order} to a function that tries different orders and
 ##' iteratively reorders markers to improve the map. See
-##' \code{\link[onemap]{ripple.ord}} for such an implementation. The ordering
+##' \code{\link[BatchMap]{ripple.ord}} for such an implementation. The ordering
 ##' function is triggered at least \code{min.tries} times per batch, or as
 ##' long as a batch has two markers with a distance greater than
 ##' \code{max.dist}.
@@ -102,7 +102,7 @@ pick.batch.sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' @param size The center size around which an optimum is to be searched
 ##' @param overlap The desired overlap between batches
 ##' @param fun.order A function that is applied to each batch to improve
-##' marker order. See \code{\link[onemap]{ripple.ord}}
+##' marker order. See \code{\link[BatchMap]{ripple.ord}}
 ##' @param phase.cores The number of parallel processes to use when estimating
 ##' the phase of a marker. (Should be no more than 4)
 ##' @param ripple.cores The number of parallel processes to use when calculating
@@ -140,7 +140,7 @@ pick.batch.sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' 2-point analyses.} Secondly \code{batches}, a list of \code{Map}s for each
 ##' of the batches.
 ##' @author Bastian Schiffthaler, \email{bastian.schiffthaler@umu.se}
-##' @seealso \code{\link[onemap]{pick.batch.sizes}}, \code{\link[onemap]{map}}
+##' @seealso \code{\link[BatchMap]{pick.batch.sizes}}, \code{\link[BatchMap]{map}}
 ##'
 ##' @keywords utilities
 ##'

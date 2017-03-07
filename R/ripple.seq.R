@@ -37,9 +37,9 @@
 ##'     text output to suggest alternative orders.
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com} and
 ##'     Marcelo Mollinari, \email{mmollina@@usp.br}
-##' @seealso \code{\link[onemap]{make.seq}},
-##'     \code{\link[onemap]{compare}}, \code{\link[onemap]{try.seq}}
-##'     and \code{\link[onemap]{order.seq}}.
+##' @seealso \code{\link[BatchMap]{make.seq}},
+##'     \code{\link[BatchMap]{compare}}, \code{\link[BatchMap]{try.seq}}
+##'     and \code{\link[BatchMap]{order.seq}}.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43

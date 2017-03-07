@@ -43,7 +43,7 @@
 ##' \code{"D1.9"}, \code{"D1.10"}, \code{"D1.11"}, \code{"D1.12"},
 ##' \code{"D1.13"}, \code{"D2.14"}, \code{"D2.15"}, \code{"D2.16"},
 ##' \code{"D2.17"} or \code{"D2.18"} (without quotes), for full-sibs [see
-##' \code{\link[onemap]{marker.type}} and \cite{Wu et al.} (2002) for details].
+##' \code{\link[BatchMap]{marker.type}} and \cite{Wu et al.} (2002) for details].
 ##' Other cross types have special marker types: \code{"A.H"} for backcrosses;
 ##' \code{"A.H.B"} for F2 intercrosses; and \code{"A.B"} for recombinant inbred
 ##' lines.
@@ -93,7 +93,7 @@
 ##' values. Each column contains data for a trait and each row represents an
 ##' individual.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{\link[onemap]{combine.onemap}} and the \code{example}
+##' @seealso \code{\link[BatchMap]{combine.onemap}} and the \code{example}
 ##' directory in the package source.
 ##' @references Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
 ##' Constructing genetic linkage maps with MAPMAKER/EXP Version 3.0: a tutorial

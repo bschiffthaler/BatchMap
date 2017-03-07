@@ -55,7 +55,7 @@
 ##' 2-point analyses.}
 ##' @author Original implementation: Marcelo Mollinari, \email{mmollina@@usp.br},
 ##' Parallel version: Bastian Schiffthaler, \email{bastian.schiffthaler@umu.se}
-##' @seealso \code{\link[onemap]{make.seq}} and \code{\link[onemap]{map}}
+##' @seealso \code{\link[BatchMap]{make.seq}} and \code{\link[BatchMap]{map}}
 ##' @references Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
 ##' A. A. F. (2009) Evaluation of algorithms used to order markers on genetics
 ##' maps. \emph{Heredity} 103: 494-502.

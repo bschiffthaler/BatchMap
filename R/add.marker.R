@@ -47,7 +47,7 @@
 ##'
 ##'  @author Marcelo Mollinari, \email{mmollina@@usp.br}
 ##'
-##' @seealso \code{\link[onemap]{drop.marker}}
+##' @seealso \code{\link[BatchMap]{drop.marker}}
 ##' 
 ##' @examples
 ##' data(example.out)

@@ -29,7 +29,7 @@
 ##' recombination fractions between markers.
 ##'
 ##' After determining the order with \emph{UG}, the final map is constructed
-##' using the multipoint approach (function \code{\link[onemap]{map}}).
+##' using the multipoint approach (function \code{\link[BatchMap]{map}}).
 ##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param LOD minimum LOD-Score threshold used when constructing the pairwise
@@ -51,7 +51,7 @@
 ##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 ##' 2-point analyses.}
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
-##' @seealso \code{\link[onemap]{make.seq}}, \code{\link[onemap]{map}}
+##' @seealso \code{\link[BatchMap]{make.seq}}, \code{\link[BatchMap]{map}}
 ##' @references Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
 ##' A. A. F. (2009) Evaluation of algorithms used to order markers on genetics
 ##' maps. \emph{Heredity} 103: 494-502.

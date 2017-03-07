@@ -52,7 +52,7 @@
 ##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com}.
 ##' Modified to use seeded phases by Bastian Schiffthaler
 ##' \email{bastian.schiffthaler@umu.se}
-##' @seealso \code{\link[onemap]{make.seq}}
+##' @seealso \code{\link[BatchMap]{make.seq}}
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43
