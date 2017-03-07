@@ -1,6 +1,6 @@
 #######################################################################
 ##                                                                     ##
-## Package: onemap                                                     ##
+## Package: BatchMap                                                     ##
 ##                                                                     ##
 ## File: compare.R                                                     ##
 ## Contains: compare, print.compare                                    ##

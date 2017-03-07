@@ -1,6 +1,6 @@
 #######################################################################
 ##                                                                     #
-## Package: onemap                                                     #
+## Package: BatchMap                                                     #
 ##                                                                     #
 ## File: add.marker.R                                                  #
 ## Contains: add.marker                                                #

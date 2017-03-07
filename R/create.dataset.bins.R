@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: create.dataset.bins.R                                         #
 # Contains: select.data.bins                                          #

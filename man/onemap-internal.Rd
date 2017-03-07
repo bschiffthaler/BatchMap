@@ -10,9 +10,6 @@
 \alias{compare.outcross}
 \alias{Cindex}
 \alias{diplo}
-\alias{draw.order}
-\alias{draw.rf.inter}
-\alias{draw.try}
 \alias{est_rf_out}
 \alias{flip_phases}
 \alias{generate_all}
@@ -29,7 +26,6 @@
 \alias{perm.pars}
 \alias{perm.tot}
 \alias{phases}
-\alias{plotFunction.out}
 \alias{READ_OUTCROSS}
 \alias{rem.amb.ph}
 \alias{return.geno}
@@ -57,9 +53,6 @@ comb.ger(f)
 compare.outcross(input.seq, n.best, tol, verbose)
 Cindex(order,r)
 diplo(w, seq.num, seq.phases)
-draw.order(map.input)
-draw.rf.inter(info.graph, scale, cex)
-draw.try(base.input, try.input, pos=NULL)
 est_rf_out(geno, mrk, seg_type, nind, verbose)
 generate_all(input.seq, p, ws)
 generate_one(input.seq, p, ws, no_reverse)
@@ -72,12 +65,11 @@ get_vec_rf_out(input.seq, LOD, max.rf, min.LOD, acum)
 perm.pars(v)
 perm.tot(v)
 phases(input.seq, LOD=0, max.rf=0.50)
-plotFunction.out(info.graph, cex, main)
 predict_time(batches, ws, timings)
 rem.amb.ph(M,w,seq.num)
 return.geno(segr.type, link.phases)
 ser.ord(r,i)
-try.seq.outcross(input.seq, mrk, tol, draw.try, pos, verbose)
+try.seq.outcross(input.seq, mrk, tol, pos, verbose)
 \method{print}{compare}(x, \dots)
 \method{print}{onemap}(x, \dots)
 \method{print}{onemap.bin}(x, \dots)

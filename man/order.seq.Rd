@@ -7,8 +7,7 @@ functions}
 \usage{
 order.seq(input.seq, n.init = 5, subset.search = c("twopt", "sample"),
   subset.n.try = 30, subset.THRES = 3, twopt.alg = c("rec", "rcd", "ser",
-  "ug"), THRES = 3, touchdown = FALSE, draw.try = FALSE, wait = 0,
-  tol = 0.1)
+  "ug"), THRES = 3, touchdown = FALSE, wait = 0, tol = 0.1)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -40,9 +39,7 @@ section.}
 step is run only once, with the value of \code{THRES}. If \code{TRUE},
 \code{try.seq} runs with \code{THRES} and then once more, with
 \code{THRES-1}. The latter calculations take longer, but usually are able
-to map more markers.}
-
-\item{draw.try}{if \code{TRUE}, a diagnostic graphic for each
+to map more markers.
 \code{try.seq} step is displayed. See \code{Details} section in
 \code{\link[onemap]{try.seq}} function.}
 

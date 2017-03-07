@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: combine.onemap.R                                              #
 # Contains: combine.onemap                                            #

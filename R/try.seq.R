@@ -1,9 +1,9 @@
 #######################################################################
 ##                                                                     ##
-## Package: onemap                                                     ##
+## Package: BatchMap                                                     ##
 ##                                                                     ##
 ## File: try.seq.R                                                     ##
-## Contains: try.seq, print.try, draw.try                              ##
+## Contains: try.seq, print.try                                        ##
 ##                                                                     ##
 ## Written by Marcelo Mollinari                                        ##
 ## copyright (c) 2009, Marcelo Mollinari                               ##
@@ -52,9 +52,6 @@
 ##'
 ##' @param tol tolerance for the C routine, i.e., the value used to
 ##'     evaluate convergence.
-##'
-##' @param draw.try if \code{TRUE}, a diagnostic graphic is
-##'     displayed. See \code{Details} section.
 ##'
 ##' @param pos defines in which position the new marker \code{mrk}
 ##'     should be placed for the diagnostic graphic. If \code{NULL}
@@ -126,17 +123,16 @@
 ##'
 ##' }
 ##'
-try.seq<-function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE)
+try.seq<-function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 {
   return(try.seq.outcross(input.seq=input.seq,
                           mrk=mrk, tol=tol,
-                          draw.try=draw.try,
                           pos=pos, verbose=verbose))
 }
 
 ## Try to map a marker into every possible position between markers
 ## in a given map (for outcrosses)
-try.seq.outcross<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE)
+try.seq.outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 {
     ## checking for correct objects
     if(!any(class(input.seq)=="sequence"))
@@ -310,9 +306,6 @@ try.seq.outcross<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,ver
 
                                         # calculate LOD-Scores (best linkage phase combination for each position)
     LOD <- (best.seq-max(best.seq))/log(10)
-    if(draw.try==TRUE){
-        draw.try(input.seq, structure(list(ord=ord, LOD=LOD, try.ord=try.ord, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "try"), pos=pos)
-    }
     structure(list(ord=ord, LOD=LOD, try.ord=try.ord, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "try")
 }
 
@@ -407,59 +400,4 @@ print.try <- function(x,j=NULL,...) {
       cat(paste(rep("-",max(2,size1)+5+7*(n.phase)),collapse=""),"\n")
   }
 }
-
-
-
-draw.try<-function(base.input, try.input, pos=NULL){
-    layout(matrix(c(2,1,2,3),2,2), heights = c(1,2.5))
-    base.dist<-cumsum(c(0, kosambi(base.input$seq.rf)))
-    base.input.len<-length(base.dist)
-    try.dist<-c(-1, base.dist[-base.input.len]+kosambi(base.input$seq.rf)/2, base.dist[base.input.len]+1)
-    op<-par(mar=c(5,7,7,2), cex=.75)
-    plot(x=try.dist, try.input$LOD, typ="l", xlab="Frame", ylab="LOD", axes=FALSE)
-    abline(v=try.dist, lty=2, lwd=.5)
-    op<-par(mar=c(5,7,7,2), cex=.75, xpd=TRUE)
-    text(x=try.dist, y=rep(max(abs(try.input$LOD))/5,length(try.dist)), labels=1:length(try.dist), cex=.7)
-    text(x=try.dist[1]-(max(try.dist)/40), y=max(abs(try.input$LOD))/5 ,"Position",  adj=c(1,0.5))
-    text(x=try.dist[1]-(max(try.dist)/40), y=max(abs(try.input$LOD))/10 ,"Distance",  adj=c(1,0.05))
-    axis(2)
-    axis(3, at=round(base.dist,1), lwd.ticks = .5, cex.axis=.75, las=2)
-    par(op)
-    if(is.null(pos)){
-        op<-par(xpd=TRUE)
-        points(try.dist[which.max(try.input$LOD)],0, pch=17, col=2, cex=1.5)
-        new.map<-make.seq(try.input,which.max(try.input$LOD))
-        new.dist<-cumsum(c(0, kosambi(new.map$seq.rf)))
-        new.dist.len<-length(new.dist)
-        plot(x=new.dist, rep(1,new.dist.len), pch="|", xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(get(try.input$data.name,pos=1)$geno)[try.input$try.ord[1,1]],")", sep=""))
-        axis(1, at=round(new.dist,1), lwd.ticks = .75, cex.axis=.75, las=2)
-        text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7, srt=90)
-        points(new.dist[which.max(try.input$LOD)],1.5, col=2, cex=1.5, pch=25, bg = 2)
-        text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
-        text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
-        par(op)
-    }
-  else{
-      op<-par(xpd=TRUE, las=2)
-      points(try.dist[pos],0, pch=17, col=2, cex=1.5)
-      new.map<-make.seq(try.input,pos)
-      new.dist<-cumsum(c(0, kosambi(new.map$seq.rf)))
-      new.dist.len<-length(new.dist)
-      plot(x=new.dist, rep(1,new.dist.len), xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(get(try.input$data.name,pos=1)$geno)[try.input$try.ord[1,1]],")", sep=""))
-      axis(1, at=round(new.dist,1), lwd.ticks = .75, cex.axis=.75, las=2)
-      text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7, srt=90)
-      points(new.dist[pos], 1.5, col=2, cex=1.5, pch=25, bg = 2)
-      text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
-      text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
-      par(op)
-  }
-    rf.graph.table(input.seq=new.map,
-                   axis.cex = 0.75,
-                   main ="",
-                   inter = FALSE,
-                   mrk.names = TRUE,
-                   colorkey = FALSE)
-    title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
-}
-
-                                        # end of file
+# end of file

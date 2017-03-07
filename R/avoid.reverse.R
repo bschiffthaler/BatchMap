@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: avoid.reverse.R                                               #
 # Contains: avoid.reverse                                             #

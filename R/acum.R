@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: acum.R                                                        #
 # Contains: acum                                                      #

@@ -1,12 +1,13 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: order.seq.R                                                   #
-# Contains: order.seq, print.order, draw.order                        #
+# Contains: order.seq, print.order                                    #
 #                                                                     #
 # Written by Gabriel R A Margarido & Marcelo Mollinari                #
 # copyright (c) 2009, Gabriel R A Margarido & Marcelo Mollinari       #
+# Modified by Bastian Schiffthaler                                    #
 #                                                                     #
 # First version: 02/27/2009                                           #
 # Last update: 01/14/2016                                             #
@@ -78,7 +79,6 @@
 ##' \code{try.seq} runs with \code{THRES} and then once more, with
 ##' \code{THRES-1}. The latter calculations take longer, but usually are able
 ##' to map more markers.
-##' @param draw.try if \code{TRUE}, a diagnostic graphic for each
 ##' \code{try.seq} step is displayed. See \code{Details} section in
 ##' \code{\link[onemap]{try.seq}} function.
 ##' @param wait the minimum time interval in seconds to display the diagnostic
@@ -145,7 +145,7 @@
 ##'
 order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
                       subset.n.try=30, subset.THRES=3, twopt.alg= c("rec", "rcd", "ser", "ug"),
-                      THRES=3, touchdown=FALSE, draw.try=FALSE, wait=0, tol=10E-2) {
+                      THRES=3, touchdown=FALSE, wait=0, tol=10E-2) {
   ## checking for correct objects
   if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(n.init < 2) stop("'n.init' must be greater than or equal to 2")
@@ -156,7 +156,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     warning("'wait' should not be < 0!")
     wait<-0
   }
-  if(draw.try == FALSE) wait<-0
+  wait<-0
   if(length(input.seq$seq.num) <= n.init) {
     ## in this case, only the 'compare' function is used
     cat("   Length of sequence ",deparse(substitute(input.seq))," is less than n.init \n   Returning the best order using compare function:\n")
@@ -185,7 +185,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
   input.seq2 <- make.seq(seq.ord,1)
   cat ("\n\nRunning try algorithm\n")
   for (i in (n.init+1):length(input.seq$seq.num)){
-    time.elapsed<-system.time(seq.ord <- try.seq(input.seq2,input.seq$seq.num[seq.work[i]],tol=tol, draw.try=draw.try))[3]
+    time.elapsed<-system.time(seq.ord <- try.seq(input.seq2,input.seq$seq.num[seq.work[i]],tol=tol))[3]
     if(time.elapsed < wait)
       Sys.sleep(wait - time.elapsed)
     if(all(seq.ord$LOD[-which(seq.ord$LOD==max(seq.ord$LOD))[1]] < -THRES))
@@ -202,7 +202,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     ## here, a second round of the 'try' algorithm is performed, if requested
     cat("\n\n\nTrying to map remaining markers with LOD threshold ",THRES-1,"\n")
     for (i in mrk.unpos) {
-      time.elapsed<-system.time(seq.ord <- try.seq(input.seq2,i,tol=tol, draw.try=draw.try))[3]
+      time.elapsed<-system.time(seq.ord <- try.seq(input.seq2,i,tol=tol))[3]
       if(time.elapsed < wait)
         Sys.sleep(wait - time.elapsed)
       if(all(seq.ord$LOD[-which(seq.ord$LOD==max(seq.ord$LOD))[1]] < (-THRES+1)))
@@ -235,7 +235,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     which.order <- order(apply(LOD.unpos,1,function(x) max(x[-which(x==0)[1]])))
 
     for (i in mrk.unpos[which.order]) {
-      time.elapsed<-system.time(seq.ord <- try.seq(input.seq3,i,tol,draw.try=draw.try))[3]
+      time.elapsed<-system.time(seq.ord <- try.seq(input.seq3,i,tol))[3]
       if(time.elapsed < wait)
         Sys.sleep(wait - time.elapsed)
       input.seq3 <- make.seq(seq.ord,which(seq.ord$LOD==0)[sample(sum(seq.ord$LOD==0))[1]])
@@ -244,8 +244,6 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
   cat("\nEstimating final genetic map using tol = 10E-5.\n\n")
   input.seq2<-map(input.seq2, tol=10E-5)
   input.seq3<-map(input.seq3, tol=10E-5)
-  if (draw.try == TRUE)
-    draw.order(input.seq3)
   structure(list(ord=input.seq2, mrk.unpos=mrk.unpos, LOD.unpos=LOD.unpos, THRES=THRES,
                  ord.all=input.seq3, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "order")
 }
@@ -304,18 +302,4 @@ print.order <- function(x,...) {
   }
 }
 
-draw.order<-function(map.input){
-  layout(matrix(c(1,2),2,1), heights = c(.8,2.5))
-  op<-par(mar=c(6,5,4,2), cex=.75, xpd=TRUE)
-  new.dist<-cumsum(c(0, kosambi(map.input$seq.rf)))
-  new.dist.len<-length(new.dist)
-  plot(x=new.dist, rep(1,new.dist.len), xlab="", ylab="", axes=FALSE, type="n", main="Final Genetic Map")
-  text(new.dist, y=rep(1,length(new.dist)), labels=map.input$seq.num, cex=.7)
-  axis(1, at=round(new.dist,1), lwd.ticks = .75, cex.axis=.7, las=2)
-  text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
-  text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
-  par(op)
-  rf.graph.table(map.input, inter=FALSE, axis.cex = .75, main="", colorkey = FALSE, mrk.names = TRUE)
-  title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
-}
 ## end of file

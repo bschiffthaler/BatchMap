@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: map.func.R                                                    #
 # Contains: haldane, kosambi, set.map.fun                             #

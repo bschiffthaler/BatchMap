@@ -1,9 +1,9 @@
 #######################################################################
 ##                                                                     ##
-## Package: onemap                                                     ##
+## Package: BatchMap                                                   ##
 ##                                                                     ##
-## File: record.R                                                      ##
-## Contains: record                                                    ##
+## File: record.parallel.rfc.R                                         ##
+## Contains: record.parallel                                           ##
 ##                                                                     ##
 ## Written by Marcelo Mollinari                                        ##
 ## copyright (c) 2007-9, Marcelo Mollinari                             ##
@@ -107,7 +107,7 @@ record.parallel <- function(input.seq, times=10, cores=10, LOD=0, max.rf=0.5,
     all.perm<-perm.pars(1:3)
     m.old<-Inf
     for(k in 1:nrow(all.perm)){
-      m.new<-COUNT(X, all.perm[k,])
+      m.new<-CCOUNT(X, all.perm[k,])
       if(m.new < m.old)
       {
         result.new <- all.perm[k,]; m.old<-m.new

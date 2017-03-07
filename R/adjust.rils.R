@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: adjust.rils.R                                                 #
 # Contains: adjust.rf.ril                                             #

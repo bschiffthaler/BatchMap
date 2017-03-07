@@ -1,6 +1,6 @@
 #######################################################################
 ##                                                                     ##
-## Package: onemap                                                     ##
+## Package: BatchMap                                                     ##
 ##                                                                     ##
 ## File: seriation.R                                                   ##
 ## Contains: seriation, ser.ord, Cindex                                ##

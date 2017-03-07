@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: comb.ger.R                                                    #
 # Contains: comb, comb.ger, diplo, rem.amb.ph                         #

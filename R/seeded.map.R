@@ -1,3 +1,19 @@
+#######################################################################
+##                                                                     ##
+## Package: BatchMap                                                     ##
+##                                                                     ##
+## File: seeded.map.R                                                  ##
+## Contains: seeded.map                                                ##
+##                                                                     ##
+## Written by Bastian Schiffthaler                                     ##
+## copyright (c) 2017 Bastian Schiffthaler                             ##
+##                                                                     ##
+##                                                                     ##
+## First version: 07/03/2017                                           ##
+## License: GNU General Public License version 2 (June, 1991) or later ##
+##                                                                     ##
+#######################################################################
+
 ##' Construct the linkage map for a sequence of markers after seeding phases
 ##'
 ##' Estimates the multipoint log-likelihood, linkage phases and recombination

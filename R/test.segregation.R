@@ -1,6 +1,6 @@
 #######################################################################
 ##                                                                     ##
-## Package: onemap                                                     ##
+## Package: BatchMap                                                     ##
 ##                                                                     ##
 ## File: test.segregation.R                                            ##
 ## Contains: test.segregation.of.a.marker,                             ##

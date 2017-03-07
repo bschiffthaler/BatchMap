@@ -5,8 +5,7 @@
 \title{Try to map a marker into every possible position between markers
 in a given map}
 \usage{
-try.seq(input.seq, mrk, tol = 0.1, draw.try = FALSE, pos = NULL,
-  verbose = FALSE)
+try.seq(input.seq, mrk, tol = 0.1, pos = NULL, verbose = FALSE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence} with a
@@ -17,9 +16,6 @@ input file.}
 
 \item{tol}{tolerance for the C routine, i.e., the value used to
 evaluate convergence.}
-
-\item{draw.try}{if \code{TRUE}, a diagnostic graphic is
-displayed. See \code{Details} section.}
 
 \item{pos}{defines in which position the new marker \code{mrk}
 should be placed for the diagnostic graphic. If \code{NULL}

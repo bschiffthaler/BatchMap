@@ -1,6 +1,6 @@
 #########################################################################
 ##                                                                     ##
-## Package: onemap                                                     ##
+## Package: BatchMap                                                     ##
 ##                                                                     ##
 ## File: rf.2pts.R                                                     ##
 ## Contains: rf.2pts, print.rf.2pts                                    ##

@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: get_rf.R                                                      #
 # Contains: get_mat_rf_in, get_vec_rf_in, get_mat_rf_out,             #

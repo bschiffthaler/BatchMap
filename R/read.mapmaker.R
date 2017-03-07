@@ -1,6 +1,6 @@
 #########################################################################
 ##                                                                      #
-##  Package: onemap                                                     #
+##  Package: BatchMap                                                     #
 ##                                                                      #
 ##  File: read.mapmaker.R                                               #
 ##  Contains: read.mapmaker                                             #

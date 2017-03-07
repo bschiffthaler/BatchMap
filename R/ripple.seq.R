@@ -1,6 +1,6 @@
 ########################################################################
 ##                                                                     #
-## Package: onemap                                                     #
+## Package: BatchMap                                                     #
 ##                                                                     #
 ## File: ripple.seq.R                                                  #
 ## Contains: ripple.seq                                                #

@@ -1,6 +1,6 @@
 #######################################################################
 ##                                                                     ##
-## Package: onemap                                                     ##
+## Package: BatchMap                                                     ##
 ##                                                                     ##
 ## File: map.R                                                         ##
 ## Contains: map                                                       ##
@@ -8,8 +8,10 @@
 ## Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  ##
 ## copyright (c) 2009, Gabriel R A Margarido                           ##
 ##                                                                     ##
+## Modified by Bastian Schiffthaler                                    ##
+##                                                                     ##
 ## First version: 02/27/2009                                           ##
-## Last update: 01/14/2016                                             ##
+## Last update: 07/03/2017                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #######################################################################

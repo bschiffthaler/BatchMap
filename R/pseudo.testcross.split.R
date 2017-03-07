@@ -1,3 +1,19 @@
+#######################################################################
+##                                                                     ##
+## Package: BatchMap                                                     ##
+##                                                                     ##
+## File: pseudo.testcross.split.R                                      ##
+## Contains: pseudo.testcross.split                                    ##
+##                                                                     ##
+## Written by Bastian Schiffthaler                                     ##
+## copyright (c) 2017 Bastian Schiffthaler                             ##
+##                                                                     ##
+##                                                                     ##
+## First version: 07/03/2017                                           ##
+## License: GNU General Public License version 2 (June, 1991) or later ##
+##                                                                     ##
+#######################################################################
+
 ##' Split a dataset into parent-specific subsets
 ##'
 ##' In order to create a map using the pseudo-testcross approach, the

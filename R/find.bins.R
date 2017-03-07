@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: find.bins.R                                                   #
 # Contains: find.bins, print.onemap.bin                               #

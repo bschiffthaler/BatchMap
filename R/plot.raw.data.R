@@ -1,6 +1,6 @@
 #########################################################################
 ##                                                                     ##
-## Package: onemap                                                     ##
+## Package: BatchMap                                                     ##
 ##                                                                     ##
 ## File: plot.raw.data.R                                               ##
 ## Contains: plot.onemap, create.dataframe.for.plot.outcross,          ##
@@ -201,6 +201,7 @@ create.dataframe.for.plot.outcross <- function(x) {
 ##' g <- plot.by.segreg.type(example.out)
 ##' ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 ##'
+##' @method plot by.segreg.type
 ##' @export
 plot.by.segreg.type <- function(x, subcateg=TRUE, ...) {
     # Create a dataframe, indicating the category and subcategory

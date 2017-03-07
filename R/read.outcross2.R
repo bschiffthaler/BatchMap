@@ -1,3 +1,19 @@
+#######################################################################
+##                                                                     ##
+## Package: BatchMap                                                     ##
+##                                                                     ##
+## File: read.outcross2.R                                              ##
+## Contains: read.outcross2                                            ##
+##                                                                     ##
+## Written by Bastian Schiffthaler                                     ##
+## copyright (c) 2017 Bastian Schiffthaler                             ##
+##                                                                     ##
+##                                                                     ##
+## First version: 07/03/2017                                           ##
+## License: GNU General Public License version 2 (June, 1991) or later ##
+##                                                                     ##
+#######################################################################
+
 ##' Read data from a full-sib progeny (outcrossing populations)
 ##'
 ##' This version implements the \code{read.outcross} function in a faster

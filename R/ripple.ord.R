@@ -1,3 +1,20 @@
+#######################################################################
+##                                                                     ##
+## Package: BatchMap                                                     ##
+##                                                                     ##
+## File: ripple.ord                                                    ##
+## Contains: generate_all, generate_rand, generate_one, ripple.window, ##
+##           ripple.ord                                                ##
+##                                                                     ##
+## Written by Bastian Schiffthaler                                     ##
+## copyright (c) 2017 Bastian Schiffthaler                             ##
+##                                                                     ##
+##                                                                     ##
+## First version: 07/03/2017                                           ##
+## License: GNU General Public License version 2 (June, 1991) or later ##
+##                                                                     ##
+#######################################################################
+
 generate_all <- function(input.seq, p, ws)
 {
   all.ord <- t(apply(perm.tot(input.seq$seq.num[p:(p+ws-1)]),1,function(x){

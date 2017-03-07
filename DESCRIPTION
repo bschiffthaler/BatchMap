@@ -1,7 +1,7 @@
 Package: BatchMap
 Title: BatchMap software for the creation of high density 
     linkage maps in outcrossing species
-Version: 1.0
+Version: 1.0.0.0
 Description: Algorithms that build on the OneMap package to create linkage
     maps from high density data in outcrossing species.
 Date: March 2017

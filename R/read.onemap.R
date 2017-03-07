@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: read.onemap.R                                                 #
 # Contains: read.onemap, print.onemap                                 #

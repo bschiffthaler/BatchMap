@@ -1,6 +1,6 @@
 #######################################################################
 ##                                                                     #
-## Package: onemap                                                     #
+## Package: BatchMap                                                     #
 ##                                                                     #
 ## File: drop.marker.R                                                 #
 ## Contains: drop.marker                                               #

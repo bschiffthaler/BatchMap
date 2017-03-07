@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: make.seq.R                                                    #
 # Contains: make.seq, print.sequence                                  #

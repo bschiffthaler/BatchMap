@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # zzz.R                                                               #
 # Contains: .onemapEnv                                                #
@@ -16,4 +16,8 @@
 
 .onemapEnv <- new.env()
 assign(".map.fun",  "kosambi", envir = .onemapEnv)
+globalVariables(c("Type", "segr.type","ind",
+                  "variable","value","labels.OM",
+                  "Marker","p.value","mkt.wrg",
+                  "link.phases"))
 # end of file

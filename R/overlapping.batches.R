@@ -1,3 +1,20 @@
+#######################################################################
+##                                                                     ##
+## Package: BatchMap                                                     ##
+##                                                                     ##
+## File: overlapping.batches.R                                         ##
+## Contains: map.overlapping.batches, generate.overlapping.batches,    ##
+##          pick.batch.sizes                                           ##
+##                                                                     ##
+## Written by Bastian Schiffthaler                                     ##
+## copyright (c) 2017 Bastian Schiffthaler                             ##
+##                                                                     ##
+##                                                                     ##
+## First version: 07/03/2017                                           ##
+## License: GNU General Public License version 2 (June, 1991) or later ##
+##                                                                     ##
+#######################################################################
+
 generate.overlapping.batches <- function(input.seq, size = 50, overlap = 15,
                                          silent = FALSE)
 {

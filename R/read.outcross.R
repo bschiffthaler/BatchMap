@@ -1,6 +1,6 @@
 #######################################################################
 #                                                                     #
-# Package: onemap                                                     #
+# Package: BatchMap                                                     #
 #                                                                     #
 # File: read.outcross.R                                               #
 # Contains: read.outcross, print.outcross                             #
@@ -242,6 +242,7 @@ read.outcross <- function (dir, file) {
 ##' @param ... Not used
 ##'
 ##' @method print outcross
+##' @export
 print.outcross <- function (x, ...) {
   if (any(is.na(match(c("geno", "n.ind", "n.mar", "segr.type"),
                       names(x)))))
