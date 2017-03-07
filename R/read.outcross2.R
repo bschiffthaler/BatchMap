@@ -41,7 +41,7 @@
 ##'   }
 read.outcross2 <- function(infile)
 {
-  X <- READ_OUTCROSS(infile)
+  X <- READ_OUTCROSS(path.expand(infile))
   m <- matrix(X$geno,ncol = X$n.mar)
   colnames(m) <- X$marker
   l <- list(geno = m, n.ind = X$n.ind, n.mar = X$n.mar,

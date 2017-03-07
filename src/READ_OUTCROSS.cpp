@@ -5,7 +5,6 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <wordexp.h>
 #include "progressBar.h"
 
 // [[Rcpp::plugins(cpp11)]]s
@@ -125,10 +124,7 @@ SEXP READ_OUTCROSS(SEXP file)
 
   std::string inf = as<std::string>(file);
 
-  wordexp_t inf_exp;
-  wordexp(inf.c_str(), &inf_exp, 0);
-
-  std::ifstream ifs(inf_exp.we_wordv[0], std::ios::in);
+  std::ifstream ifs(inf.c_str(), std::ios::in);
 
   std::string x;
 
