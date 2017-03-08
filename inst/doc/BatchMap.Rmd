@@ -68,7 +68,7 @@ linkage_groups <- group(make.seq(input.obj = twopt_table, "all"),
 ```
 
 
-## Splittint the data into pseudo testcrosses
+## Splitting the data into pseudo testcrosses
 
 In order to calculate a map for each parent and then join them afterwards, we
 provide a function `pseudo.testcross.split()`, that creates a list of testcrosses. Each list element corresponds to a linkage group and a sequence for markers of type "D1.10" and one for markers of type "D2.15". Both include all markers of other types.
