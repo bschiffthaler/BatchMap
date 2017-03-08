@@ -3,8 +3,6 @@ useDynLib(BatchMap, .registration = TRUE)
 ## Import all packages listed as Imports or Depends
 import(ggplot2)
 import(parallel)
-importFrom(fields, tim.colors)
-importFrom(fields, splint)
 importFrom("graphics", "Axis", "abline", "axis", "image", "layout",
            "lines", "mtext", "par", "plot", "points", "text", "title")
 importFrom("methods", "is")
