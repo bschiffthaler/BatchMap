@@ -4,8 +4,8 @@
 \alias{ripple.window}
 \title{Update linkage map with alternative orders at a given position}
 \usage{
-ripple.window(input.seq, ws = 4, tol = 0.001, phase.cores = 4,
-  ripple.cores = 4, start = 1, verbosity = NULL, type = "one",
+ripple.window(input.seq, ws = 4, tol = 0.001, phase.cores = 1,
+  ripple.cores = 1, start = 1, verbosity = NULL, type = "one",
   n = NULL, pref = NULL, no_reverse = TRUE, optimize = "likelihood")
 }
 \arguments{

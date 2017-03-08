@@ -46,7 +46,7 @@ Simultaneous maximum likelihood estimation of linkage and linkage phases in
 outcrossing species. \emph{Theoretical Population Biology} 61: 349-363.
 }
 \seealso{
-\code{\link[onemap]{make.seq}}
+\code{\link[BatchMap]{make.seq}}
 }
 \author{
 Gabriel R A Margarido, \email{gramarga@gmail.com}

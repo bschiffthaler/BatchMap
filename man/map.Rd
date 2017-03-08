@@ -4,7 +4,7 @@
 \alias{map}
 \title{Construct the linkage map for a sequence of markers}
 \usage{
-map(input.seq, tol = 1e-04, verbosity = FALSE, phase.cores = 4)
+map(input.seq, tol = 1e-04, verbosity = FALSE, phase.cores = 1)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -80,7 +80,7 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
-\code{\link[onemap]{make.seq}}
+\code{\link[BatchMap]{make.seq}}
 }
 \author{
 Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,

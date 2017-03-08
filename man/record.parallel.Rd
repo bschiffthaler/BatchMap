@@ -4,8 +4,8 @@
 \alias{record.parallel}
 \title{Recombination Counting and Ordering}
 \usage{
-record.parallel(input.seq, times = 10, cores = 10, LOD = 0,
-  max.rf = 0.5, tol = 1e-04, useC = TRUE)
+record.parallel(input.seq, times = 10, cores = 1, LOD = 0, max.rf = 0.5,
+  tol = 1e-04, useC = TRUE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -77,7 +77,7 @@ novel method for ordering loci on a genetic linkage map. \emph{Theoretical
 and Applied Genetics} 112: 30-40.
 }
 \seealso{
-\code{\link[onemap]{make.seq}} and \code{\link[onemap]{map}}
+\code{\link[BatchMap]{make.seq}} and \code{\link[BatchMap]{map}}
 }
 \author{
 Original implementation: Marcelo Mollinari, \email{mmollina@usp.br},

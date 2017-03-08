@@ -37,8 +37,9 @@
 ##' representation of the \code{LOD} vector (see \code{Value}
 ##' section). The red triangle indicates the best position where the
 ##' new marker \code{mrk} should be placed; iii) the right bottom
-##' figure is the non-interactive \code{\link[BatchMap]{rf.graph.table}}
-##' function for the new genetic map. It plots a matrix of pairwise
+##' figure is the non-interactive \code{rf.graph.table}
+##' function for the new genetic map (deprecated in BatchMap).
+##' It plots a matrix of pairwise
 ##' recombination fractions (under the diagonal) and LOD Scores (upper
 ##' the diagonal) using a color scale.
 ##'

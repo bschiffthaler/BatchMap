@@ -23,7 +23,7 @@ Kosambi, D. D. (1944) The estimation of map distance from recombination
 values. \emph{Annuaire of Eugenetics} 12: 172-175.
 }
 \seealso{
-\code{\link[onemap]{kosambi}} and \code{\link[onemap]{haldane}}
+\code{\link[BatchMap]{kosambi}} and \code{\link[BatchMap]{haldane}}
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}

@@ -90,8 +90,8 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
-\code{\link[onemap]{marker.type}} for details about segregation
-types and \code{\link[onemap]{make.seq}}.
+\code{\link[BatchMap]{marker.type}} for details about segregation
+types and \code{\link[BatchMap]{make.seq}}.
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}

@@ -44,7 +44,7 @@ segregation type, which may be: \code{"A.1"}, \code{"A.2"}, \code{"A.3"},
 \code{"D1.9"}, \code{"D1.10"}, \code{"D1.11"}, \code{"D1.12"},
 \code{"D1.13"}, \code{"D2.14"}, \code{"D2.15"}, \code{"D2.16"},
 \code{"D2.17"} or \code{"D2.18"} (without quotes) [see
-\code{\link[onemap]{marker.type}} and \cite{Wu et al.} (2002) for details].
+\code{\link[BatchMap]{marker.type}} and \cite{Wu et al.} (2002) for details].
 
 After the segregation type comes the genotype data for the
 corresponding marker. Depending on the segregation type, genotypes may be

@@ -41,7 +41,7 @@ Within each bin, the pairwise recombination fraction between markers is zero.
 
 }
 \seealso{
-\code{\link[onemap]{create.data.bins}}
+\code{\link[BatchMap]{create.data.bins}}
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}

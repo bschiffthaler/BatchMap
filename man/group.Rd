@@ -61,8 +61,8 @@ Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
     Institute for Biomedical Research Technical Report}.
 }
 \seealso{
-\code{\link[onemap]{rf.2pts}} and
-    \code{\link[onemap]{make.seq}}
+\code{\link[BatchMap]{rf.2pts}} and
+    \code{\link[BatchMap]{make.seq}}
 }
 \author{
 Gabriel R A Margarido, \email{gramarga@gmail.com} and

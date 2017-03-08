@@ -12,11 +12,11 @@ est_map_hmm_out(geno, type, phase, rf.vec = NULL, verbose = TRUE,
 represent individuals.}
 
 \item{type}{a vector indicating the type of marker. For more
-information see \code{\link[onemap]{read.onemap}}}
+information see \code{\link[BatchMap]{read.onemap}}}
 
 \item{phase}{a vector indicating the linkage phases between
 markers. For more information see
-\code{\link[onemap]{make.seq}}}
+\code{\link[BatchMap]{make.seq}}}
 
 \item{rf.vec}{a vector containing the recombination fraction
 initial values}

@@ -57,7 +57,7 @@ between and at the end of the base map. Actually, it is a graphic
 representation of the \code{LOD} vector (see \code{Value}
 section). The red triangle indicates the best position where the
 new marker \code{mrk} should be placed; iii) the right bottom
-figure is the non-interactive \code{\link[onemap]{rf.graph.table}}
+figure is the non-interactive \code{\link[BatchMap]{rf.graph.table}}
 function for the new genetic map. It plots a matrix of pairwise
 recombination fractions (under the diagonal) and LOD Scores (upper
 the diagonal) using a color scale.
@@ -109,8 +109,8 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage
     79: 85-96
 }
 \seealso{
-\code{\link[onemap]{make.seq}} and
-    \code{\link[onemap]{compare}}.
+\code{\link[BatchMap]{make.seq}} and
+    \code{\link[BatchMap]{compare}}.
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}

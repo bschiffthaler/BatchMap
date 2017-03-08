@@ -41,7 +41,7 @@ step is run only once, with the value of \code{THRES}. If \code{TRUE},
 \code{THRES-1}. The latter calculations take longer, but usually are able
 to map more markers.
 \code{try.seq} step is displayed. See \code{Details} section in
-\code{\link[onemap]{try.seq}} function.}
+\code{\link[BatchMap]{try.seq}} function.}
 
 \item{wait}{the minimum time interval in seconds to display the diagnostic
 graphic for each \code{try.seq} step. Defaults to 0.00}
@@ -143,8 +143,8 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
-\code{\link[onemap]{make.seq}}, \code{\link[onemap]{compare}} and
-\code{\link[onemap]{try.seq}}.
+\code{\link[BatchMap]{make.seq}}, \code{\link[BatchMap]{compare}} and
+\code{\link[BatchMap]{try.seq}}.
 }
 \author{
 Gabriel R A Margarido, \email{gramarga@usp.br} and Marcelo

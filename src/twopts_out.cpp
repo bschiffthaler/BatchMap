@@ -396,7 +396,7 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
       }
     }
   }
-  if(! prog_bar.printed_end())
+  if(! prog_bar.printed_end() && verbose)
     prog_bar.print_end();
   if(mrk < 0)
   {

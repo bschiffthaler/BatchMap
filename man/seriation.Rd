@@ -53,7 +53,7 @@ process - please, consider using another ordering algorithm}.
 
 After determining the order with \emph{Seriation}, the final map is
 constructed using the multipoint approach (function
-\code{\link[onemap]{map}}).
+\code{\link[BatchMap]{map}}).
 }
 \examples{
 
@@ -78,7 +78,7 @@ Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
 \emph{Heredity} 103: 494-502.
 }
 \seealso{
-\code{\link[onemap]{make.seq}}, \code{\link[onemap]{map}}
+\code{\link[BatchMap]{make.seq}}, \code{\link[BatchMap]{map}}
 }
 \author{
 Gabriel R A Margarido, \email{gramarga@gmail.com}

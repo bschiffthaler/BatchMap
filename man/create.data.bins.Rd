@@ -32,7 +32,7 @@ amount of missing data among those on the bin.
 
 }
 \seealso{
-\code{\link[onemap]{find.bins}}
+\code{\link[BatchMap]{find.bins}}
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}

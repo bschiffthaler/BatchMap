@@ -58,7 +58,7 @@ segregation type, which may be: \code{"A.1"}, \code{"A.2"}, \code{"A.3"},
 \code{"D1.9"}, \code{"D1.10"}, \code{"D1.11"}, \code{"D1.12"},
 \code{"D1.13"}, \code{"D2.14"}, \code{"D2.15"}, \code{"D2.16"},
 \code{"D2.17"} or \code{"D2.18"} (without quotes), for full-sibs [see
-\code{\link[onemap]{marker.type}} and \cite{Wu et al.} (2002) for details].
+\code{\link[BatchMap]{marker.type}} and \cite{Wu et al.} (2002) for details].
 Other cross types have special marker types: \code{"A.H"} for backcrosses;
 \code{"A.H.B"} for F2 intercrosses; and \code{"A.B"} for recombinant inbred
 lines.
@@ -106,7 +106,7 @@ likelihood estimation of linkage and linkage phases in outcrossing species.
 \emph{Theoretical Population Biology} 61: 349-363.
 }
 \seealso{
-\code{\link[onemap]{combine.onemap}} and the \code{example}
+\code{\link[BatchMap]{combine.onemap}} and the \code{example}
 directory in the package source.
 }
 \author{

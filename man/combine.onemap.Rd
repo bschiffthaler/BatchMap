@@ -64,8 +64,8 @@ likelihood estimation of linkage and linkage phases in outcrossing species.
 \emph{Theoretical Population Biology} 61: 349-363.
 }
 \seealso{
-\code{\link[onemap]{read.onemap}} and
-\code{\link[onemap]{read.mapmaker}}.
+\code{\link[BatchMap]{read.onemap}} and
+\code{\link[BatchMap]{read.mapmaker}}.
 }
 \author{
 Gabriel R A Margarido, \email{gramarga@gmail.com}

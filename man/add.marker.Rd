@@ -50,5 +50,5 @@ groups <- group(all.mark)
 
 }
 \seealso{
-\code{\link[onemap]{drop.marker}}
+\code{\link[BatchMap]{drop.marker}}
 }

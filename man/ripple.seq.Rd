@@ -73,9 +73,9 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
-\code{\link[onemap]{make.seq}},
-    \code{\link[onemap]{compare}}, \code{\link[onemap]{try.seq}}
-    and \code{\link[onemap]{order.seq}}.
+\code{\link[BatchMap]{make.seq}},
+    \code{\link[BatchMap]{compare}}, \code{\link[BatchMap]{try.seq}}
+    and \code{\link[BatchMap]{order.seq}}.
 }
 \author{
 Gabriel R A Margarido, \email{gramarga@gmail.com} and

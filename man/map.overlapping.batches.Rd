@@ -5,7 +5,7 @@
 \title{Mapping overlapping batches}
 \usage{
 map.overlapping.batches(input.seq, size = 50, overlap = 15,
-  fun.order = NULL, phase.cores = 4, ripple.cores = 1, verbosity = NULL,
+  fun.order = NULL, phase.cores = 1, ripple.cores = 1, verbosity = NULL,
   max.dist = Inf, ws = 4, increase.every = 4, max.tries = 10,
   min.tries = 0, seeds = NULL, optimize = "likelihood", ...)
 }
@@ -17,7 +17,7 @@ map.overlapping.batches(input.seq, size = 50, overlap = 15,
 \item{overlap}{The desired overlap between batches}
 
 \item{fun.order}{A function that is applied to each batch to improve
-marker order. See \code{\link[onemap]{ripple.ord}}}
+marker order. See \code{\link[BatchMap]{ripple.ord}}}
 
 \item{phase.cores}{The number of parallel processes to use when estimating
 the phase of a marker. (Should be no more than 4)}
@@ -78,13 +78,13 @@ which carry information forward in order to more accurately estimate
 recombination fractions and phasing. Further the user has the option of
 setting \code{fun.order} to a function that tries different orders and
 iteratively reorders markers to improve the map. See
-\code{\link[onemap]{ripple.ord}} for such an implementation. The ordering
+\code{\link[BatchMap]{ripple.ord}} for such an implementation. The ordering
 function is triggered at least \code{min.tries} times per batch, or as
 long as a batch has two markers with a distance greater than
 \code{max.dist}.
 }
 \seealso{
-\code{\link[onemap]{pick.batch.sizes}}, \code{\link[onemap]{map}}
+\code{\link[BatchMap]{pick.batch.sizes}}, \code{\link[BatchMap]{map}}
 }
 \author{
 Bastian Schiffthaler, \email{bastian.schiffthaler@umu.se}

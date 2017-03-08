@@ -22,7 +22,7 @@ case of ties, bigger batch sizes are preferred.
 }
 \description{
 Suggest an optimal batch size value for use in
-\code{\link[onemap]{map.overlapping.batches}}
+\code{\link[BatchMap]{map.overlapping.batches}}
 }
 \examples{
 
@@ -33,7 +33,7 @@ Suggest an optimal batch size value for use in
 
 }
 \seealso{
-\code{\link[onemap]{map.overlapping.batches}}
+\code{\link[BatchMap]{map.overlapping.batches}}
 }
 \author{
 Bastian Schiffthaler, \email{bastian.schiffthaler@umu.se}

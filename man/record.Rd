@@ -47,7 +47,7 @@ a matrix with recombination fractions between markers.
 
 After determining the order with \emph{RECORD}, the final map is
 constructed using the multipoint approach (function
-\code{\link[onemap]{map}}).
+\code{\link[BatchMap]{map}}).
 }
 \examples{
 
@@ -72,7 +72,7 @@ novel method for ordering loci on a genetic linkage map. \emph{Theoretical
 and Applied Genetics} 112: 30-40.
 }
 \seealso{
-\code{\link[onemap]{make.seq}} and \code{\link[onemap]{map}}
+\code{\link[BatchMap]{make.seq}} and \code{\link[BatchMap]{map}}
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}

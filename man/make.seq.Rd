@@ -92,8 +92,8 @@ package for constructing primary genetic linkage maps of experimental and
 natural populations. \emph{Genomics} 1: 174-181.
 }
 \seealso{
-\code{\link[onemap]{compare}}, \code{\link[onemap]{try.seq}},
-\code{\link[onemap]{order.seq}} and \code{\link[onemap]{map}}.
+\code{\link[BatchMap]{compare}}, \code{\link[BatchMap]{try.seq}},
+\code{\link[BatchMap]{order.seq}} and \code{\link[BatchMap]{map}}.
 }
 \author{
 Gabriel Margarido, \email{gramarga@gmail.com}

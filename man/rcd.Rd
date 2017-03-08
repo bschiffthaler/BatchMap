@@ -56,7 +56,7 @@ is statistically significant at a prespecified level. This process is
 repeated as long as markers can be added to the chain.}
 
 After determining the order with \emph{RCD}, the final map is constructed
-using the multipoint approach (function \code{\link[onemap]{map}}).
+using the multipoint approach (function \code{\link[BatchMap]{map}}).
 }
 \examples{
 
@@ -84,7 +84,7 @@ Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
 \emph{Heredity} 103: 494-502.
 }
 \seealso{
-\code{\link[onemap]{make.seq}}, \code{\link[onemap]{map}}
+\code{\link[BatchMap]{make.seq}}, \code{\link[BatchMap]{map}}
 }
 \author{
 Gabriel R A Margarido, \email{gramarga@gmail.com}

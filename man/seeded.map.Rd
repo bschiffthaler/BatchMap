@@ -4,7 +4,7 @@
 \alias{seeded.map}
 \title{Construct the linkage map for a sequence of markers after seeding phases}
 \usage{
-seeded.map(input.seq, tol = 1e-04, phase.cores = 4, seeds,
+seeded.map(input.seq, tol = 1e-04, phase.cores = 1, seeds,
   verbosity = NULL)
 }
 \arguments{
@@ -81,7 +81,7 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
-\code{\link[onemap]{make.seq}}
+\code{\link[BatchMap]{make.seq}}
 }
 \author{
 Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,

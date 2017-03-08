@@ -44,7 +44,7 @@ that the best order is always found. The only requirement is a matrix with
 recombination fractions between markers.
 
 After determining the order with \emph{UG}, the final map is constructed
-using the multipoint approach (function \code{\link[onemap]{map}}).
+using the multipoint approach (function \code{\link[BatchMap]{map}}).
 }
 \examples{
 
@@ -68,7 +68,7 @@ Tan, Y. and Fu, Y. (2006) A novel method for estimating linkage maps.
 \emph{Genetics} 173: 2383-2390.
 }
 \seealso{
-\code{\link[onemap]{make.seq}}, \code{\link[onemap]{map}}
+\code{\link[BatchMap]{make.seq}}, \code{\link[BatchMap]{map}}
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}
