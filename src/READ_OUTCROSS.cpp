@@ -131,7 +131,7 @@ SEXP READ_OUTCROSS(SEXP file)
   ifs >> x; n_ind = std::stoul(x);
   ifs >> x; n_mar = std::stoul(x);
   ifs >> x; n_phe = std::stoul(x);
-  Rcpp::Rcout << "Reading data... ";
+  Rcpp::Rcout << "Reading data...\n";
   progressBar prog_bar(40, n_mar);
 
   bool first = true;
