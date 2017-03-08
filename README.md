@@ -1,4 +1,3 @@
-
 # BatchMap - A parallel implementation of the OneMap R package for fast computation of F1 linkage maps in outcrossing species
 
 BatchMap is a fork of the [OneMap](https://github.com/augusto-garcia/onemap) software package for the construction of linkage maps.
@@ -29,11 +28,11 @@ install_github("bschiffthaler/BatchMap")
 
 ## Note for Windows users
 
-Windows is currently not able to parallelize R code using the `parallel` package. It is therefore **highly** recommended to use the 
+Windows is currently not able to parallelize R code using the `parallel` package. It is therefore **highly** recommended to use the docker container [here](https://hub.docker.com/r/bschiffthaler/batchmap/).
 
 ## Vignette - tutorial
 
-After installation, you can read the user tutorial ('vignette') [here]().
+After installation, you can read the user tutorial ('vignette') [here](https://s3-eu-west-1.amazonaws.com/bschiffthaler/BatchMap.html).
 
 ## Citation
 
