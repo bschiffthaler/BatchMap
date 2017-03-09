@@ -34,6 +34,13 @@ Windows is currently not able to parallelize R code using the `parallel` package
 
 After installation, you can read the user tutorial ('vignette') [here](https://s3-eu-west-1.amazonaws.com/bschiffthaler/BatchMap.html).
 
+## Simulated experimental data is available at
+
+* [Sim7.5k](https://s3-eu-west-1.amazonaws.com/bschiffthaler/BatchMap_sim_data/sim7.5k.txt)
+* [Sim10k](https://s3-eu-west-1.amazonaws.com/bschiffthaler/BatchMap_sim_data/sim10k.txt)
+* [Sim15k](https://s3-eu-west-1.amazonaws.com/bschiffthaler/BatchMap_sim_data/sim15k.txt)
+* [Sim20k](https://s3-eu-west-1.amazonaws.com/bschiffthaler/BatchMap_sim_data/sim20k.txt)
+
 ## Citation
 
 This software depends whole-heartedly on the work done by all original and current authors of OneMap. We therefore ask you to cite both OneMap and BatchMap if you find BatchMap useful in your research.

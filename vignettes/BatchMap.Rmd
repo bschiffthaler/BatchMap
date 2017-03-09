@@ -9,22 +9,29 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r,load_cache,echo=FALSE}
+# To speed up vignette building, we load some cached results here
+load(system.file("example/cached.results.RData",package = "BatchMap"))
+```
+
 ## Introduction
 
 In general, the reader is encouraged to go through the excellent documentation
 of the original OneMap package before going through this vignette. An 
 up-to-date version can be found [here](https://github.com/augusto-garcia/onemap/raw/master/inst/doc/Tutorial_Onemap_reduced_version.pdf). The majority of the pipeline still works the same or very similar to the implementations in OneMap (also internally). For those already familiar with the original or those looking for a quick summary, feel free to go on.
 
-NOTE: BatchMap has been written specifically for use in outcrossing species. All OneMap functionality pertaining to back-crosses, f2, ril etc. has been removed for the sake of easier code maintenance. If your use case is not an outcrossing F1 population, turn back now.
+NOTE: BatchMap has been written specifically for use in outcrossing species. All OneMap functionality pertaining to back-crosses, f2, ril etc. has been removed for the sake of easier code maintenance. If your use case is not an outcrossing F1 population, turn back now (and use OneMap instead).
 
 ## Reading data into R
+
+Disclaimer: Due to the processing times being rather long for a tutorial the results of `record.parallel` and `map.overlapping.batches` are cached. Since there are some random factors involved in the map creation, you might get slightly different results should you choose to run this yourself. I could have used a small toy dataset, but I wanted to show this use case on real (well... simulated) data of at least two hundred markers per LG. Now on to the good part.
 
 BatchMap keeps with the paradigm and format of the original OneMap data format, but includes a faster function for reading the input file `read.outcross2`. Further, BatchMap ignores all lines following the marker definitions (e.g. phenotypes) as all exploration beyond the construction of the linkage map is not intended to be handled by this package.
 
 ```{r,reading_data, eval=TRUE}
 suppressPackageStartupMessages(library(BatchMap))
 
-input_file <- system.file("example/sim2k.txt",package = "BatchMap")
+input_file <- system.file("example/sim7.5k.txt.gz",package = "BatchMap")
 outcross <- read.outcross2(input_file)
 outcross
 ```
@@ -50,7 +57,7 @@ Note the difference in the number of markers.
 The function `rf.2pts()` calculates the twopoint table for markers. Note that
 with very high density datasets, a lot of RAM can be required to hold the 
 twopoint table. As a general rule, this datastructure will require $M * M * 32$ bytes, where $M$ is the number of markers. In our case, with a small 
-dataset of 2,085 markers, we'll need about 133Mb. A large dataset of 20,000 markers will need **>48Gb**. This would be typically run on a server machine (e.g. see some cloud server providers).
+dataset of 1890 markers, we'll need about 109Mb. A large dataset of 20,000 markers will need **>48Gb**. This would be typically run on a server machine (e.g. see some cloud server providers).
 
 ```{r,twopoints, eval=TRUE}
 twopt_table <- rf.2pts(outcross_clean)
@@ -75,14 +82,15 @@ provide a function `pseudo.testcross.split()`, that creates a list of testcrosse
 
 ```{r,split, eval=TRUE}
 testcrosses <- pseudo.testcross.split(linkage_groups)
-testcrosses$LG1.d1.10
+testcrosses$LG1.d2.15
 ```
 
 ## Ordering sequences in parallel
 
 Before the map is calculated using the EM model, the sequences need to be ordered by a heuristic. The RECORD algorithm usually performs very well and has desireable characteristics, which make it trivial to parallelize. We use the function `record.parallel()`, which takes a `sequence` as input and we replicate RECORD 10 times (see the `times` argument). We then pick the best of those replicates as our final order. Note that it is rare for `times > 10` to yield any significant improvement. Finally, the `cores` argument defines how many of those RECORD replicates we can process in parallel. Set this to your computers number of CPUs (or maximally the number of the `times` argument).
 
-```{r,record, eval=TRUE}
+```{r,record, eval=FALSE}
+# The result of this function is cached
 ordered_sequences <- lapply(testcrosses, record.parallel, times = 10, cores = 1)
 ```
 
@@ -106,10 +114,11 @@ c(batch_size_LG1_d1.10, batch_size_LG1_d2.15)
 
 Now all that's left to do is to call `map.overlapping.batches()`. This function has a great deal of options. For now, take away that `phase.cores` controls the number of parallel threads used to estimate the correct linkage phase between a pair of markers. As there are no more than four possible phases, this should never exceed four. The `size` and `overlap` arguments should match the output of `pick.batch.sizes()` with the given overlap. The `verbosity` option can be set to output different types of progress reports.
 
-```{r,map_batches, eval=TRUE}
+```{r,map_batches, eval=FALSE}
+# The result of this function is cached
 map_LG1_d1.10 <- map.overlapping.batches(input.seq = LG1_d1.10,
                                          size = batch_size_LG1_d1.10,
-                                         phase.cores = 1,
+                                         phase.cores = 4,
                                          overlap = 30)
 ```
 
@@ -129,18 +138,19 @@ How many cores will I need?
 
 Depending on the rule set and window size that `ripple.ord()` uses, the number of comparisons can be calculated. Let the $w$ be the window size:
 
-- "one": $\frac{w * (w + 1)}{2}$
+- "one": $\frac{ (w - 1) * (w  - 2)}{2}$
 - "all": $\frac{w!}{2}$
 
-The rule set "random" can be supplied with the number of desired alternative orders. Let's consider a window size of 4 for our dataset. We will need to test $\frac{4 * 5}{2} = 10$ alternative order per window. On a machine with 16 threads available, a good combination would be `phase.cores=3` and `ripple.cores=5`, as often no more than two phases are plausible and even considered in the model. I am writing this vignette on a laptop with four cores available, which I will all use for `ripple.cores`, setting `phase.cores` to one. The rule set used by `ripple.ord()` is controlled by the `method` argument, the window size by the `ws` argument. Even with only about 100 markers, this function can take some time, it is advised you don't run it here.:
+The rule set "random" can be supplied with the number of desired alternative orders. Let's consider a window size of 4 for our dataset. We will need to test $\frac{3 * 2}{2} = 6$ alternative order per window. On a machine with 16 threads available, a good combination would be `phase.cores=3` and `ripple.cores=6`. This comes to a maximum of 18 threads, but on average less are going to be used as often no more than two phases are plausible and even considered in the model. I am writing this vignette on a laptop with four cores available, which I will all use for `ripple.cores`, setting `phase.cores` to one. The rule set used by `ripple.ord()` is controlled by the `method` argument, the window size by the `ws` argument. Even with only about 100 markers, this function can take some time, it is advised you don't run it here.:
 
 ```{r,ripple,eval=FALSE}
+# The result of this function is cached
 rip_LG1_d1.10 <- map.overlapping.batches(input.seq = LG1_d1.10,
                                          size = batch_size_LG1_d1.10,
-                                         phase.cores = 1,
+                                         phase.cores = 4,
                                          overlap = 30,
                                          fun.order = ripple.ord,
-                                         ripple.cores = 4,
+                                         ripple.cores = 10,
                                          method = "one",
                                          min.tries = 1,
                                          ws = 4)
@@ -149,7 +159,7 @@ rip_LG1_d1.10 <- map.overlapping.batches(input.seq = LG1_d1.10,
 
 We can evaluate the number of mistakes in the order, because the true order is known in the simulated dataset:
 
-```{r, mistakes, eval=FALSE}
+```{r, mistakes, eval=TRUE}
 err_rate <- function(seq)
 {
   # Get the marker position
@@ -163,7 +173,4 @@ err_rate <- function(seq)
 
 c("BatchMap" = err_rate(map_LG1_d1.10$Map),
   "RippleBatchMap" = err_rate(rip_LG1_d1.10$Map))
-```
-```{r,echo=FALSE}
-c(0.3723404,0.2234043)
 ```

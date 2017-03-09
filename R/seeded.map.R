@@ -118,6 +118,7 @@ seeded.map <- function(input.seq, tol=10E-5, phase.cores = 1,
     Ph.Init <- comb.ger(phase.init)
     phases <- mclapply(1:nrow(Ph.Init),
                        mc.cores = min(nrow(Ph.Init),phase.cores),
+                       mc.allow.recursive = TRUE,
                        function(j) {
                          ## call to 'map' function with predefined linkage phases
                          map(make.seq(get(input.seq$twopt),

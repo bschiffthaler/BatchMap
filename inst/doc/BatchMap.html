@@ -12,7 +12,7 @@
 
 <meta name="author" content="Bastian Schiffthaler and Carolina Bernhardsson" />
 
-<meta name="date" content="2017-03-08" />
+<meta name="date" content="2017-03-09" />
 
 <title>BatchMap algorithm for the creation of high density linkage maps in outcrossing species</title>
 
@@ -70,21 +70,22 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">BatchMap algorithm for the creation of high density linkage maps in outcrossing species</h1>
 <h4 class="author"><em>Bastian Schiffthaler and Carolina Bernhardsson</em></h4>
-<h4 class="date"><em>2017-03-08</em></h4>
+<h4 class="date"><em>2017-03-09</em></h4>
 
 
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>In general, the reader is encouraged to go through the excellent documentation of the original OneMap package before going through this vignette. An up-to-date version can be found <a href="https://github.com/augusto-garcia/onemap/raw/master/inst/doc/Tutorial_Onemap_reduced_version.pdf">here</a>. The majority of the pipeline still works the same or very similar to the implementations in OneMap (also internally). For those already familiar with the original or those looking for a quick summary, feel free to go on.</p>
-<p>NOTE: BatchMap has been written specifically for use in outcrossing species. All OneMap functionality pertaining to back-crosses, f2, ril etc. has been removed for the sake of easier code maintenance. If your use case is not an outcrossing F1 population, turn back now.</p>
+<p>NOTE: BatchMap has been written specifically for use in outcrossing species. All OneMap functionality pertaining to back-crosses, f2, ril etc. has been removed for the sake of easier code maintenance. If your use case is not an outcrossing F1 population, turn back now (and use OneMap instead).</p>
 </div>
 <div id="reading-data-into-r" class="section level2">
 <h2>Reading data into R</h2>
+<p>Disclaimer: Due to the processing times being rather long for a tutorial the results of <code>record.parallel</code> and <code>map.overlapping.batches</code> are cached. Since there are some random factors involved in the map creation, you might get slightly different results should you choose to run this yourself. I could have used a small toy dataset, but I wanted to show this use case on real (well… simulated) data of at least two hundred markers per LG. Now on to the good part.</p>
 <p>BatchMap keeps with the paradigm and format of the original OneMap data format, but includes a faster function for reading the input file <code>read.outcross2</code>. Further, BatchMap ignores all lines following the marker definitions (e.g. phenotypes) as all exploration beyond the construction of the linkage map is not intended to be handled by this package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressPackageStartupMessages</span>(<span class="kw">library</span>(BatchMap))
 
-input_file &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;example/sim2k.txt&quot;</span>,<span class="dt">package =</span> <span class="st">&quot;BatchMap&quot;</span>)
+input_file &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;example/sim7.5k.txt.gz&quot;</span>,<span class="dt">package =</span> <span class="st">&quot;BatchMap&quot;</span>)
 outcross &lt;-<span class="st"> </span><span class="kw">read.outcross2</span>(input_file)</code></pre></div>
 <pre><code>## Reading data...
 ## 0%                                    100%
@@ -93,11 +94,11 @@ outcross &lt;-<span class="st"> </span><span class="kw">read.outcross2</span>(in
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outcross</code></pre></div>
 <pre><code>##   This is an object of class 'outcross'
 ##     No. individuals:    800 
-##     No. markers:        2279 
+##     No. markers:        2368 
 ##     Segregation types:
-##        B3.7: 575
-##        D1.10:    880
-##        D2.15:    824
+##        B3.7: 639
+##        D1.10:    843
+##        D2.15:    886
 ##     No. traits:         0</code></pre>
 </div>
 <div id="detecting-bins-and-resolving-them" class="section level2">
@@ -108,26 +109,26 @@ outcross_clean &lt;-<span class="st"> </span><span class="kw">create.data.bins</
 outcross_clean</code></pre></div>
 <pre><code>##   This is an object of class 'outcross'
 ##     No. individuals:    800 
-##     No. markers:        2085 
+##     No. markers:        1890 
 ##     Segregation types:
-##        B3.7: 563
-##        D1.10:    797
-##        D2.15:    725
+##        B3.7: 581
+##        D1.10:    628
+##        D2.15:    681
 ##     No. traits:         0</code></pre>
 <p>Note the difference in the number of markers.</p>
 </div>
 <div id="calculating-the-twopoint-table" class="section level2">
 <h2>Calculating the twopoint table</h2>
-<p>The function <code>rf.2pts()</code> calculates the twopoint table for markers. Note that with very high density datasets, a lot of RAM can be required to hold the twopoint table. As a general rule, this datastructure will require <span class="math inline">\(M * M * 32\)</span> bytes, where <span class="math inline">\(M\)</span> is the number of markers. In our case, with a small dataset of 2,085 markers, we’ll need about 133Mb. A large dataset of 20,000 markers will need <strong>&gt;48Gb</strong>. This would be typically run on a server machine (e.g. see some cloud server providers).</p>
+<p>The function <code>rf.2pts()</code> calculates the twopoint table for markers. Note that with very high density datasets, a lot of RAM can be required to hold the twopoint table. As a general rule, this datastructure will require <span class="math inline">\(M * M * 32\)</span> bytes, where <span class="math inline">\(M\)</span> is the number of markers. In our case, with a small dataset of 1890 markers, we’ll need about 109Mb. A large dataset of 20,000 markers will need <strong>&gt;48Gb</strong>. This would be typically run on a server machine (e.g. see some cloud server providers).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">twopt_table &lt;-<span class="st"> </span><span class="kw">rf.2pts</span>(outcross_clean)</code></pre></div>
-<pre><code>## Computing 2172570 recombination fractions:
+<pre><code>## Computing 1785105 recombination fractions:
 ## 
 ## 0%                                    100%
 ## [----------------------------------------]
 ## [########################################]</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check the size</span>
 <span class="kw">format</span>(<span class="kw">object.size</span>(twopt_table),<span class="dt">units =</span> <span class="st">&quot;Mb&quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;133.6 Mb&quot;</code></pre>
+<pre><code>## [1] &quot;109.8 Mb&quot;</code></pre>
 </div>
 <div id="grouping" class="section level2">
 <h2>Grouping</h2>
@@ -138,85 +139,78 @@ outcross_clean</code></pre></div>
 ##    group    1 
 ##     ............................................................
 ##     ............................................................
-##     .......................
+##     ............................................................
+##     ............................................................
+##     ............................................................
+##     ............................................................
+##     ......................................................
 ##    group    2 
 ##     ............................................................
 ##     ............................................................
-##     ...............................
+##     ............................................................
+##     ............................................................
+##     ............................................................
+##     ......................................................
 ##    group    3 
 ##     ............................................................
 ##     ............................................................
-##     ............................
+##     ............................................................
+##     ............................................................
+##     ............................................................
+##     ............................................................
+##     ...................
 ##    group    4 
 ##     ............................................................
 ##     ............................................................
-##     ..............
+##     ............................................................
+##     ............................................................
+##     ............................................................
+##     .......................................................
 ##    group    5 
 ##     ............................................................
 ##     ............................................................
-##     .........
-##    group    6 
 ##     ............................................................
 ##     ............................................................
-##     ..............
-##    group    7 
 ##     ............................................................
 ##     ............................................................
-##     .......
-##    group    8 
-##     ............................................................
-##     ............................................................
-##     ......................
-##    group    9 
-##     ............................................................
-##     ............................................................
-##     ......................
-##    group    10 
-##     ............................................................
-##     ............................................................
-##     ..........................
-##    group    11 
-##     ............................................................
-##     ............................................................
-##     ................
-##    group    12 
-##     ............................................................
-##     ............................................................
-##     ......................
-##    group    13 
-##     ............................................................
-##     ............................................................
-##     ......
-##    group    14 
-##     ............................................................
-##     ............................................................
-##     ..........................
-##    group    15 
-##     ............................................................
-##     ............................................................
-##     ...................</code></pre>
+##     ............................</code></pre>
 </div>
 <div id="splitting-the-data-into-pseudo-testcrosses" class="section level2">
 <h2>Splitting the data into pseudo testcrosses</h2>
 <p>In order to calculate a map for each parent and then join them afterwards, we provide a function <code>pseudo.testcross.split()</code>, that creates a list of testcrosses. Each list element corresponds to a linkage group and a sequence for markers of type “D1.10” and one for markers of type “D2.15”. Both include all markers of other types.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">testcrosses &lt;-<span class="st"> </span><span class="kw">pseudo.testcross.split</span>(linkage_groups)
-testcrosses$LG1.d1<span class="fl">.10</span></code></pre></div>
+testcrosses$LG1.d2<span class="fl">.15</span></code></pre></div>
 <pre><code>## 
-## Number of markers: 94
+## Number of markers: 273
 ## Markers in the sequence:
-## M2 M5 M7 M9 M14 M16 M32 M34 M37 M52 M56 M57 M60 M62 M72 M79 M84 M89 M100 
-## M113 M128 M126 M130 M136 M138 M143 M144 M151 M156 M157 M160 M161 M167 M174 
-## M186 M189 M197 M198 M199 M202 M203 M205 M206 M207 M211 M214 M218 M220 M227 
-## M231 M234 M237 M245 M246 M248 M249 M253 M254 M255 M263 M271 M274 M277 M279 
-## M280 M285 M290 M309 M312 M324 M335 M338 M351 M355 M360 M376 M377 M380 M385 
-## M391 M398 M406 M419 M425 M431 M435 M449 M459 M466 M484 M493 M495 M497 M498
+## M2 M3 M5 M8 M16 M18 M21 M27 M34 M36 M37 M40 M42 M45 M46 M50 M53 M52 M54 
+## M55 M67 M68 M70 M72 M77 M86 M89 M92 M95 M106 M114 M127 M134 M136 M138 M139 
+## M142 M144 M145 M151 M152 M153 M161 M192 M199 M201 M233 M235 M236 M242 M245 
+## M250 M253 M256 M263 M270 M271 M276 M277 M279 M282 M287 M288 M293 M305 M316 
+## M317 M322 M323 M330 M329 M331 M333 M336 M342 M344 M354 M355 M367 M372 M387 
+## M389 M394 M399 M406 M416 M429 M426 M438 M447 M450 M463 M460 M462 M464 M477 
+## M487 M494 M497 M501 M512 M514 M517 M518 M521 M522 M526 M528 M530 M532 M537 
+## M552 M553 M565 M566 M576 M579 M590 M599 M602 M606 M608 M612 M613 M622 M624 
+## M657 M667 M682 M683 M686 M690 M694 M695 M710 M711 M712 M717 M727 M731 M736 
+## M739 M741 M758 M764 M768 M770 M772 M785 M781 M789 M800 M803 M809 M816 M817 
+## M821 M825 M830 M831 M837 M838 M848 M850 M865 M866 M873 M876 M882 M884 M886 
+## M887 M891 M893 M895 M899 M908 M919 M920 M930 M940 M942 M946 M947 M962 M963 
+## M966 M968 M970 M982 M985 M987 M989 M990 M993 M1008 M1010 M1018 M1028 M1036 
+## M1035 M1058 M1060 M1061 M1072 M1074 M1076 M1082 M1108 M1109 M1110 M1112 
+## M1116 M1118 M1120 M1121 M1122 M1124 M1129 M1131 M1132 M1157 M1162 M1177 
+## M1186 M1200 M1205 M1206 M1237 M1241 M1247 M1255 M1260 M1261 M1267 M1268 
+## M1271 M1273 M1276 M1278 M1283 M1284 M1291 M1298 M1306 M1314 M1315 M1318 
+## M1323 M1333 M1334 M1336 M1337 M1339 M1341 M1355 M1359 M1360 M1362 M1366 
+## M1367 M1410 M1418 M1426 M1430 M1451 M1454 M1457 M1459 M1461 M1467 M1492 
+## M1494
 ## 
 ## Parameters not estimated.</code></pre>
 </div>
 <div id="ordering-sequences-in-parallel" class="section level2">
 <h2>Ordering sequences in parallel</h2>
 <p>Before the map is calculated using the EM model, the sequences need to be ordered by a heuristic. The RECORD algorithm usually performs very well and has desireable characteristics, which make it trivial to parallelize. We use the function <code>record.parallel()</code>, which takes a <code>sequence</code> as input and we replicate RECORD 10 times (see the <code>times</code> argument). We then pick the best of those replicates as our final order. Note that it is rare for <code>times &gt; 10</code> to yield any significant improvement. Finally, the <code>cores</code> argument defines how many of those RECORD replicates we can process in parallel. Set this to your computers number of CPUs (or maximally the number of the <code>times</code> argument).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ordered_sequences &lt;-<span class="st"> </span><span class="kw">lapply</span>(testcrosses, record.parallel, <span class="dt">times =</span> <span class="dv">10</span>, <span class="dt">cores =</span> <span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The result of this function is cached</span>
+ordered_sequences &lt;-<span class="st"> </span><span class="kw">lapply</span>(testcrosses, record.parallel, <span class="dt">times =</span> <span class="dv">10</span>, <span class="dt">cores =</span> <span class="dv">1</span>)</code></pre></div>
 </div>
 <div id="creating-the-batchmaps" class="section level2">
 <h2>Creating the BatchMaps</h2>
@@ -232,115 +226,299 @@ batch_size_LG1_d2<span class="fl">.15</span> &lt;-<span class="st"> </span><span
                                          <span class="dt">overlap =</span> <span class="dv">30</span>, 
                                          <span class="dt">around =</span> <span class="dv">10</span>)
 <span class="kw">c</span>(batch_size_LG1_d1<span class="fl">.10</span>, batch_size_LG1_d2<span class="fl">.15</span>)</code></pre></div>
-<pre><code>## [1] 52 52</code></pre>
+<pre><code>## [1] 44 53</code></pre>
 <p>Now all that’s left to do is to call <code>map.overlapping.batches()</code>. This function has a great deal of options. For now, take away that <code>phase.cores</code> controls the number of parallel threads used to estimate the correct linkage phase between a pair of markers. As there are no more than four possible phases, this should never exceed four. The <code>size</code> and <code>overlap</code> arguments should match the output of <code>pick.batch.sizes()</code> with the given overlap. The <code>verbosity</code> option can be set to output different types of progress reports.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map_LG1_d1<span class="fl">.10</span> &lt;-<span class="st"> </span><span class="kw">map.overlapping.batches</span>(<span class="dt">input.seq =</span> LG1_d1<span class="fl">.10</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The result of this function is cached</span>
+map_LG1_d1<span class="fl">.10</span> &lt;-<span class="st"> </span><span class="kw">map.overlapping.batches</span>(<span class="dt">input.seq =</span> LG1_d1<span class="fl">.10</span>,
                                          <span class="dt">size =</span> batch_size_LG1_d1<span class="fl">.10</span>,
-                                         <span class="dt">phase.cores =</span> <span class="dv">1</span>,
+                                         <span class="dt">phase.cores =</span> <span class="dv">4</span>,
                                          <span class="dt">overlap =</span> <span class="dv">30</span>)</code></pre></div>
 <p>The result of <code>map.overlapping.batches()</code> has a data member <code>$Map</code>, which corresponds to the final map:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">map_LG1_d1<span class="fl">.10</span>$Map</code></pre></div>
 <pre><code>## 
 ## Printing map:
 ## 
-## Markers           Position           Parent 1       Parent 2
+## Markers            Position           Parent 1       Parent 2
 ## 
-##   1 M2                0.00           a |  | b       a |  | b 
-##   3 M5                0.52           a |  | b       a |  | a 
-##   4 M7                1.03           a |  | b       a |  | a 
-##   5 M9                1.40           a |  | b       a |  | a 
-##   6 M14               2.83           b |  | a       b |  | a 
-##   7 M16               3.14           b |  | a       a |  | a 
-##   9 M32               6.52           a |  | b       a |  | a 
-##  10 M34               7.44           a |  | b       a |  | b 
-##  11 M37               8.34           a |  | b       a |  | a 
-##  13 M52              12.18           a |  | b       a |  | b 
-##  15 M57              12.78           b |  | a       a |  | b 
-##  14 M56              12.78           b |  | a       a |  | a 
-##  17 M62              14.42           a |  | b       b |  | a 
-##  16 M60              14.42           b |  | a       a |  | a 
-##  21 M72              16.44           a |  | b       a |  | b 
-##  24 M84              18.69           b |  | a       a |  | a 
-##  25 M89              19.26           a |  | b       a |  | a 
-##  22 M79              19.84           b |  | a       a |  | b 
-##  26 M100             21.78           a |  | b       a |  | a 
-##  30 M113             25.55           a |  | b       a |  | a 
-##  37 M136             27.72           b |  | a       a |  | b 
-##  34 M130             27.72           b |  | a       a |  | a 
-##  33 M126             28.75           b |  | a       b |  | a 
-##  32 M128             28.75           a |  | b       a |  | b 
-##  38 M138             29.58           b |  | a       a |  | a 
-##  41 M144             31.19           b |  | a       a |  | a 
-##  40 M143             31.19           a |  | b       a |  | a 
-##  42 M151             32.59           a |  | b       b |  | a 
-##  45 M156             33.32           b |  | a       a |  | b 
-##  46 M157             33.55           a |  | b       b |  | a 
-##  47 M160             33.65           b |  | a       a |  | a 
-##  48 M161             33.65           a |  | b       b |  | a 
-##  49 M167             34.42           b |  | a       a |  | a 
-##  50 M174             35.22           b |  | a       a |  | b 
-##  51 M186             38.88           b |  | a       b |  | a 
-##  52 M189             39.08           b |  | a       b |  | a 
-##  55 M197             39.84           a |  | b       a |  | a 
-##  57 M199             40.35           a |  | b       b |  | a 
-##  56 M198             40.47           a |  | b       a |  | b 
-##  58 M202             40.71           a |  | b       a |  | a 
-##  62 M207             41.48           b |  | a       a |  | a 
-##  59 M203             41.63           b |  | a       a |  | a 
-##  60 M205             41.78           b |  | a       a |  | b 
-##  61 M206             41.78           b |  | a       b |  | a 
-##  63 M211             42.71           a |  | b       a |  | b 
-##  64 M214             43.43           b |  | a       a |  | a 
-##  65 M218             44.50           b |  | a       a |  | a 
-##  66 M220             45.14           b |  | a       b |  | a 
-##  69 M227             46.47           b |  | a       a |  | a 
-##  70 M231             46.96           b |  | a       a |  | a 
-##  71 M234             48.39           a |  | b       a |  | b 
-##  72 M237             49.04           b |  | a       b |  | a 
-##  76 M248             51.41           b |  | a       a |  | a 
-##  74 M245             51.41           a |  | b       a |  | a 
-##  75 M246             51.55           a |  | b       a |  | a 
-##  77 M249             51.69           b |  | a       a |  | a 
-##  78 M253             52.40           b |  | a       b |  | a 
-##  79 M254             52.94           b |  | a       a |  | a 
-##  80 M255             53.22           a |  | b       b |  | a 
-##  82 M263             53.97           a |  | b       a |  | a 
-##  83 M271             55.22           b |  | a       a |  | a 
-##  84 M274             56.05           b |  | a       a |  | b 
-##  85 M277             56.13           a |  | b       b |  | a 
-##  86 M279             56.34           b |  | a       a |  | a 
-##  87 M280             56.77           b |  | a       b |  | a 
-##  88 M285             57.42           b |  | a       a |  | a 
-##  89 M290             58.84           b |  | a       a |  | a 
-##  93 M309             60.83           b |  | a       a |  | a 
-##  94 M312             61.30           b |  | a       a |  | a 
-##  97 M324             63.76           b |  | a       a |  | b 
-## 100 M335             64.77           b |  | a       b |  | a 
-## 102 M338             66.33           b |  | a       b |  | a 
-## 103 M351             69.51           a |  | b       a |  | a 
-## 104 M355             69.68           a |  | b       a |  | a 
-## 106 M360             71.41           b |  | a       a |  | a 
-## 111 M376             73.57           b |  | a       b |  | a 
-## 112 M377             73.68           a |  | b       a |  | b 
-## 121 M391             76.18           b |  | a       a |  | a 
-## 117 M385             77.35           b |  | a       b |  | a 
-## 114 M380             77.93           a |  | b       a |  | a 
-## 125 M398             80.37           b |  | a       a |  | b 
-## 126 M406             82.27           b |  | a       a |  | a 
-## 129 M419             84.14           b |  | a       b |  | a 
-## 130 M425             84.48           a |  | b       a |  | a 
-## 131 M431             85.59           a |  | b       a |  | a 
-## 132 M435             86.21           b |  | a       b |  | a 
-## 133 M449             88.79           a |  | b       a |  | a 
-## 136 M466             89.80           a |  | b       b |  | a 
-## 134 M459             89.93           b |  | a       a |  | a 
-## 137 M484             95.23           a |  | b       a |  | a 
-## 139 M493             96.50           b |  | a       a |  | b 
-## 143 M498             97.01           a |  | b       b |  | a 
-## 141 M495             97.01           a |  | b       b |  | a 
-## 142 M497             97.01           b |  | a       a |  | b 
+## 414 M1494              0.00           a |  | b       a |  | b 
+## 413 M1492              0.14           a |  | b       a |  | b 
+## 412 M1488              0.33           b |  | a       a |  | a 
+## 411 M1486              0.49           b |  | a       a |  | a 
+## 410 M1480              0.72           a |  | b       a |  | a 
+## 409 M1478              0.95           b |  | a       a |  | a 
+## 407 M1470              1.40           b |  | a       a |  | a 
+## 408 M1475              1.40           a |  | b       a |  | a 
+## 404 M1461              2.21           b |  | a       b |  | a 
+## 405 M1463              2.29           a |  | b       a |  | a 
+## 399 M1449              3.10           a |  | b       a |  | a 
+## 398 M1444              3.47           b |  | a       a |  | a 
+## 394 M1420              4.94           b |  | a       a |  | a 
+## 396 M1426              4.94           b |  | a       a |  | b 
+## 395 M1421              5.08           a |  | b       a |  | a 
+## 392 M1413              5.64           b |  | a       a |  | a 
+## 391 M1410              5.92           a |  | b       b |  | a 
+## 390 M1409              5.92           b |  | a       a |  | a 
+## 389 M1408              6.11           a |  | b       a |  | a 
+## 388 M1407              6.28           a |  | b       a |  | a 
+## 387 M1399              6.39           b |  | a       a |  | a 
+## 386 M1396              6.55           b |  | a       a |  | a 
+## 385 M1371              8.36           a |  | b       a |  | a 
+## 384 M1368              8.51           b |  | a       a |  | a 
+## 381 M1365              8.63           b |  | a       a |  | a 
+## 378 M1359              8.86           b |  | a       a |  | b 
+## 377 M1355              9.38           b |  | a       a |  | b 
+## 376 M1354              9.59           b |  | a       a |  | a 
+## 374 M1341             10.03           b |  | a       a |  | b 
+## 375 M1349             10.03           b |  | a       a |  | a 
+## 369 M1333             11.00           a |  | b       a |  | b 
+## 371 M1336             11.06           b |  | a       b |  | a 
+## 372 M1337             11.08           b |  | a       a |  | b 
+## 373 M1339             11.33           a |  | b       b |  | a 
+## 368 M1328             11.63           a |  | b       a |  | a 
+## 364 M1314             12.98           b |  | a       b |  | a 
+## 363 M1306             13.96           b |  | a       a |  | b 
+## 362 M1304             14.11           b |  | a       a |  | a 
+## 361 M1302             14.16           a |  | b       a |  | a 
+## 360 M1298             14.30           b |  | a       b |  | a 
+## 359 M1295             14.61           a |  | b       a |  | a 
+## 357 M1285             14.79           b |  | a       a |  | a 
+## 356 M1284             14.79           a |  | b       b |  | a 
+## 354 M1278             15.00           b |  | a       a |  | b 
+## 353 M1276             15.09           a |  | b       b |  | a 
+## 351 M1271             15.26           a |  | b       b |  | a 
+## 352 M1273             15.26           b |  | a       a |  | b 
+## 349 M1267             15.61           a |  | b       b |  | a 
+## 350 M1268             15.61           b |  | a       a |  | b 
+## 348 M1263             15.93           a |  | b       a |  | a 
+## 346 M1260             16.30           a |  | b       a |  | b 
+## 347 M1261             16.30           a |  | b       a |  | b 
+## 343 M1242             16.69           b |  | a       a |  | a 
+## 341 M1235             16.92           a |  | b       a |  | a 
+## 339 M1210             18.88           a |  | b       a |  | a 
+## 336 M1200             19.33           b |  | a       b |  | a 
+## 338 M1206             19.64           a |  | b       a |  | b 
+## 337 M1205             19.64           b |  | a       b |  | a 
+## 335 M1199             19.86           b |  | a       a |  | a 
+## 334 M1189             20.20           a |  | b       a |  | a 
+## 333 M1186             20.59           b |  | a       b |  | a 
+## 331 M1174             21.75           b |  | a       a |  | a 
+## 328 M1148             22.62           b |  | a       a |  | a 
+## 327 M1146             22.62           b |  | a       a |  | a 
+## 326 M1136             23.40           b |  | a       a |  | a 
+## 320 M1124             23.80           a |  | b       a |  | b 
+## 321 M1125             23.94           a |  | b       a |  | a 
+## 324 M1131             23.94           b |  | a       a |  | b 
+## 322 M1134             23.94           b |  | a       a |  | a 
+## 319 M1122             24.28           a |  | b       a |  | b 
+## 318 M1121             24.28           a |  | b       b |  | a 
+## 316 M1118             24.35           b |  | a       a |  | b 
+## 310 M1107             24.63           a |  | b       a |  | a 
+## 311 M1108             24.63           b |  | a       a |  | b 
+## 313 M1110             24.66           b |  | a       a |  | b 
+## 314 M1112             24.66           b |  | a       a |  | b 
+## 312 M1109             24.66           a |  | b       b |  | a 
+## 308 M1081             25.62           a |  | b       a |  | a 
+## 307 M1080             25.62           b |  | a       a |  | a 
+## 305 M1074             25.92           b |  | a       b |  | a 
+## 306 M1076             25.92           a |  | b       a |  | b 
+## 303 M1070             26.59           a |  | b       a |  | a 
+## 302 M1065             27.16           a |  | b       a |  | a 
+## 301 M1061             27.71           a |  | b       a |  | b 
+## 298 M1047             28.81           b |  | a       a |  | a 
+## 296 M1035             29.95           a |  | b       b |  | a 
+## 295 M1034             29.95           a |  | b       a |  | a 
+## 297 M1038             29.95           b |  | a       a |  | a 
+## 292 M1020             30.80           a |  | b       a |  | a 
+## 288 M1002             31.91           a |  | b       a |  | a 
+## 284 M988              32.34           a |  | b       a |  | a 
+## 282 M985              32.34           a |  | b       a |  | b 
+## 285 M989              32.42           a |  | b       a |  | b 
+## 278 M967              34.00           b |  | a       a |  | a 
+## 275 M963              34.25           a |  | b       a |  | b 
+## 276 M965              34.25           b |  | a       a |  | a 
+## 277 M966              34.43           b |  | a       b |  | a 
+## 266 M929              35.60           a |  | b       a |  | a 
+## 273 M955              36.02           a |  | b       a |  | a 
+## 270 M942              36.22           b |  | a       a |  | b 
+## 268 M933              36.46           a |  | b       a |  | a 
+## 271 M946              36.51           a |  | b       b |  | a 
+## 265 M926              37.02           a |  | b       a |  | a 
+## 264 M924              37.40           a |  | b       a |  | a 
+## 263 M920              37.68           b |  | a       b |  | a 
+## 261 M912              37.94           a |  | b       a |  | a 
+## 259 M904              38.58           a |  | b       a |  | a 
+## 257 M895              38.97           b |  | a       a |  | b 
+## 253 M889              39.31           a |  | b       a |  | a 
+## 254 M891              39.32           b |  | a       b |  | a 
+## 255 M892              39.32           b |  | a       a |  | a 
+## 250 M884              40.01           b |  | a       b |  | a 
+## 249 M882              40.01           a |  | b       a |  | b 
+## 248 M876              40.30           b |  | a       b |  | a 
+## 247 M873              40.45           a |  | b       a |  | b 
+## 245 M865              40.76           a |  | b       a |  | b 
+## 244 M855              41.04           a |  | b       a |  | a 
+## 241 M846              42.16           b |  | a       a |  | a 
+## 242 M848              42.16           b |  | a       b |  | a 
+## 235 M827              43.80           a |  | b       a |  | a 
+## 238 M832              43.80           b |  | a       a |  | a 
+## 234 M825              43.80           a |  | b       b |  | a 
+## 232 M819              44.18           b |  | a       a |  | a 
+## 231 M817              44.45           b |  | a       a |  | b 
+## 229 M815              44.81           a |  | b       a |  | a 
+## 227 M808              45.03           a |  | b       a |  | a 
+## 224 M794              45.61           b |  | a       a |  | a 
+## 223 M790              45.79           b |  | a       a |  | a 
+## 220 M780              47.13           b |  | a       a |  | a 
+## 218 M772              47.67           b |  | a       a |  | b 
+## 216 M768              47.76           a |  | b       a |  | b 
+## 214 M764              47.89           a |  | b       a |  | b 
+## 215 M765              47.89           a |  | b       a |  | a 
+## 217 M770              47.89           a |  | b       b |  | a 
+## 212 M745              48.65           b |  | a       a |  | a 
+## 213 M758              48.66           a |  | b       b |  | a 
+## 210 M740              49.01           a |  | b       a |  | a 
+## 209 M739              49.01           a |  | b       a |  | b 
+## 208 M738              49.38           b |  | a       a |  | a 
+## 206 M733              49.56           a |  | b       a |  | a 
+## 205 M731              49.70           a |  | b       b |  | a 
+## 203 M719              50.18           a |  | b       a |  | a 
+## 199 M710              50.47           a |  | b       a |  | b 
+## 198 M709              50.47           a |  | b       a |  | a 
+## 201 M712              50.47           b |  | a       b |  | a 
+## 197 M702              50.63           a |  | b       a |  | a 
+## 196 M697              51.08           b |  | a       a |  | a 
+## 194 M694              51.29           a |  | b       a |  | b 
+## 189 M683              51.96           a |  | b       a |  | b 
+## 192 M688              51.98           a |  | b       a |  | a 
+## 188 M682              52.04           a |  | b       b |  | a 
+## 187 M678              52.29           b |  | a       a |  | a 
+## 190 M684              52.29           a |  | b       a |  | a 
+## 186 M677              52.83           b |  | a       a |  | a 
+## 185 M674              52.83           a |  | b       a |  | a 
+## 182 M654              54.01           a |  | b       a |  | a 
+## 183 M657              54.01           a |  | b       b |  | a 
+## 181 M640              54.43           a |  | b       a |  | a 
+## 180 M641              54.43           b |  | a       a |  | a 
+## 177 M616              55.59           a |  | b       a |  | a 
+## 178 M622              55.59           a |  | b       a |  | b 
+## 174 M610              56.02           b |  | a       a |  | a 
+## 172 M606              56.16           a |  | b       a |  | b 
+## 173 M608              56.16           b |  | a       b |  | a 
+## 175 M612              56.28           a |  | b       b |  | a 
+## 168 M592              57.39           b |  | a       a |  | a 
+## 169 M593              57.39           a |  | b       a |  | a 
+## 163 M565              58.74           a |  | b       b |  | a 
+## 165 M576              59.51           b |  | a       b |  | a 
+## 164 M566              60.45           b |  | a       a |  | b 
+## 158 M530              62.58           a |  | b       b |  | a 
+## 157 M528              62.66           b |  | a       a |  | b 
+## 155 M525              62.99           b |  | a       a |  | a 
+## 154 M522              63.24           a |  | b       b |  | a 
+## 153 M521              63.24           b |  | a       b |  | a 
+## 152 M520              63.24           b |  | a       a |  | a 
+## 151 M518              63.33           a |  | b       b |  | a 
+## 149 M515              64.42           b |  | a       a |  | a 
+## 147 M512              64.77           b |  | a       a |  | b 
+## 146 M510              65.00           a |  | b       a |  | a 
+## 145 M501              65.68           b |  | a       a |  | b 
+## 143 M494              66.08           a |  | b       b |  | a 
+## 144 M497              66.23           a |  | b       a |  | b 
+## 141 M483              67.41           a |  | b       a |  | a 
+## 140 M477              67.60           b |  | a       b |  | a 
+## 138 M462              68.31           a |  | b       a |  | b 
+## 139 M464              68.43           a |  | b       b |  | a 
+## 136 M458              68.43           b |  | a       a |  | a 
+## 134 M450              69.05           b |  | a       b |  | a 
+## 129 M419              70.85           b |  | a       a |  | a 
+## 131 M426              70.85           b |  | a       b |  | a 
+## 128 M416              71.09           a |  | b       a |  | b 
+## 133 M447              72.40           b |  | a       a |  | b 
+## 109 M321              79.39           a |  | b       a |  | a 
+## 110 M322              79.39           a |  | b       b |  | a 
+## 111 M323              79.39           b |  | a       a |  | b 
+## 113 M329              79.64           a |  | b       b |  | a 
+## 114 M331              79.64           b |  | a       a |  | b 
+## 106 M310              80.58           b |  | a       a |  | a 
+## 103 M301              81.78           a |  | b       a |  | a 
+## 104 M302              81.89           a |  | b       a |  | a 
+## 100 M288              82.96           a |  | b       a |  | b 
+## 102 M297              82.96           a |  | b       a |  | a 
+##  99 M287              83.13           b |  | a       b |  | a 
+##  98 M282              83.32           b |  | a       b |  | a 
+##  96 M277              83.53           a |  | b       a |  | b 
+##  97 M279              83.53           b |  | a       b |  | a 
+##  95 M276              83.97           b |  | a       b |  | a 
+##  92 M263              84.15           b |  | a       b |  | a 
+##  94 M271              84.39           a |  | b       b |  | a 
+##  93 M270              84.39           b |  | a       a |  | b 
+##  90 M256              85.26           a |  | b       a |  | b 
+##  91 M260              85.31           a |  | b       a |  | a 
+##  89 M254              85.47           b |  | a       a |  | a 
+##  87 M250              85.88           a |  | b       a |  | b 
+##  86 M249              85.88           b |  | a       a |  | a 
+##  80 M235              87.01           b |  | a       b |  | a 
+##  82 M238              87.01           a |  | b       a |  | a 
+##  83 M240              87.01           a |  | b       a |  | a 
+##  78 M231              87.32           a |  | b       a |  | a 
+##  77 M229              87.53           b |  | a       a |  | a 
+##  76 M222              87.53           a |  | b       a |  | a 
+##  74 M212              87.82           a |  | b       a |  | a 
+##  75 M214              87.82           b |  | a       a |  | a 
+##  71 M202              88.27           a |  | b       a |  | a 
+##  72 M203              88.31           a |  | b       a |  | a 
+##  73 M210              88.31           b |  | a       a |  | a 
+##  70 M201              88.52           b |  | a       a |  | b 
+##  67 M186              89.70           b |  | a       a |  | a 
+##  66 M180              90.53           a |  | b       a |  | a 
+##  65 M171              90.93           b |  | a       a |  | a 
+##  63 M159              91.68           a |  | b       a |  | a 
+##  61 M153              92.19           a |  | b       b |  | a 
+##  62 M155              92.30           a |  | b       a |  | a 
+##  59 M151              92.34           a |  | b       b |  | a 
+##  57 M144              92.79           a |  | b       a |  | b 
+##  53 M136              93.74           b |  | a       a |  | b 
+##  50 M130              93.91           b |  | a       a |  | a 
+##  51 M132              93.98           b |  | a       a |  | a 
+##  48 M124              94.40           a |  | b       a |  | a 
+##  46 M106              96.10           a |  | b       b |  | a 
+##  45 M101              96.42           b |  | a       a |  | a 
+##  40 M89               97.17           b |  | a       b |  | a 
+##  41 M90               97.24           b |  | a       a |  | a 
+##  42 M92               97.29           b |  | a       a |  | b 
+##  43 M94               97.46           b |  | a       a |  | a 
+##  33 M67               98.91           b |  | a       a |  | b 
+##  35 M70               98.91           b |  | a       b |  | a 
+##  34 M68               98.91           a |  | b       b |  | a 
+##  38 M80               99.13           a |  | b       a |  | a 
+##  36 M72               99.27           a |  | b       a |  | b 
+##  31 M58               99.88           a |  | b       a |  | a 
+##  25 M50              100.15           a |  | b       a |  | b 
+##  28 M54              100.21           b |  | a       b |  | a 
+##  27 M52              100.21           a |  | b       a |  | b 
+##  32 M61              100.21           b |  | a       a |  | a 
+##  29 M55              100.21           a |  | b       a |  | b 
+##  30 M57              100.21           a |  | b       a |  | a 
+##  24 M46              100.60           b |  | a       b |  | a 
+##  22 M42              100.75           a |  | b       a |  | b 
+##  21 M40              100.91           b |  | a       a |  | b 
+##  20 M39              101.13           b |  | a       a |  | a 
+##  16 M32              101.46           a |  | b       a |  | a 
+##  15 M31              101.46           b |  | a       a |  | a 
+##  19 M37              101.60           a |  | b       a |  | b 
+##  17 M34              101.61           b |  | a       b |  | a 
+##  18 M36              101.61           a |  | b       a |  | b 
+##  13 M25              102.38           b |  | a       a |  | a 
+##  14 M27              102.38           b |  | a       a |  | b 
+##  12 M23              102.62           b |  | a       a |  | a 
+##  11 M21              102.70           b |  | a       a |  | b 
+##  10 M19              102.70           a |  | b       a |  | a 
+##   9 M18              102.97           a |  | b       b |  | a 
+##   7 M15              103.26           a |  | b       a |  | a 
+##   6 M13              103.26           b |  | a       a |  | a 
+##   4 M8               103.41           b |  | a       b |  | a 
+##   5 M9               103.41           a |  | b       a |  | a 
 ## 
-## 94 markers            log-likelihood: -7969.371</code></pre>
+## 277 markers            log-likelihood: -10128.59</code></pre>
 <p>The maps were simulated to be 100cM, which we come very close to. However, the markers in the simulated map are also ordered by their name, so M1 -&gt; M2 -&gt; M3 et cetera. We can spot some errors in the results, which can be improved in the next section.</p>
 </div>
 <div id="batchmap-with-ripple-to-improve-order" class="section level2">
@@ -349,16 +527,17 @@ batch_size_LG1_d2<span class="fl">.15</span> &lt;-<span class="st"> </span><span
 <p>How many cores will I need?</p>
 <p>Depending on the rule set and window size that <code>ripple.ord()</code> uses, the number of comparisons can be calculated. Let the <span class="math inline">\(w\)</span> be the window size:</p>
 <ul>
-<li>“one”: <span class="math inline">\(\frac{w * (w + 1)}{2}\)</span></li>
+<li>“one”: <span class="math inline">\(\frac{ (w - 1) * (w - 2)}{2}\)</span></li>
 <li>“all”: <span class="math inline">\(\frac{w!}{2}\)</span></li>
 </ul>
-<p>The rule set “random” can be supplied with the number of desired alternative orders. Let’s consider a window size of 4 for our dataset. We will need to test <span class="math inline">\(\frac{4 * 5}{2} = 10\)</span> alternative order per window. On a machine with 16 threads available, a good combination would be <code>phase.cores=3</code> and <code>ripple.cores=5</code>, as often no more than two phases are plausible and even considered in the model. I am writing this vignette on a laptop with four cores available, which I will all use for <code>ripple.cores</code>, setting <code>phase.cores</code> to one. The rule set used by <code>ripple.ord()</code> is controlled by the <code>method</code> argument, the window size by the <code>ws</code> argument. Even with only about 100 markers, this function can take some time, it is advised you don’t run it here.:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rip_LG1_d1<span class="fl">.10</span> &lt;-<span class="st"> </span><span class="kw">map.overlapping.batches</span>(<span class="dt">input.seq =</span> LG1_d1<span class="fl">.10</span>,
+<p>The rule set “random” can be supplied with the number of desired alternative orders. Let’s consider a window size of 4 for our dataset. We will need to test <span class="math inline">\(\frac{3 * 2}{2} = 6\)</span> alternative order per window. On a machine with 16 threads available, a good combination would be <code>phase.cores=3</code> and <code>ripple.cores=6</code>. This comes to a maximum of 18 threads, but on average less are going to be used as often no more than two phases are plausible and even considered in the model. I am writing this vignette on a laptop with four cores available, which I will all use for <code>ripple.cores</code>, setting <code>phase.cores</code> to one. The rule set used by <code>ripple.ord()</code> is controlled by the <code>method</code> argument, the window size by the <code>ws</code> argument. Even with only about 100 markers, this function can take some time, it is advised you don’t run it here.:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The result of this function is cached</span>
+rip_LG1_d1<span class="fl">.10</span> &lt;-<span class="st"> </span><span class="kw">map.overlapping.batches</span>(<span class="dt">input.seq =</span> LG1_d1<span class="fl">.10</span>,
                                          <span class="dt">size =</span> batch_size_LG1_d1<span class="fl">.10</span>,
-                                         <span class="dt">phase.cores =</span> <span class="dv">1</span>,
+                                         <span class="dt">phase.cores =</span> <span class="dv">4</span>,
                                          <span class="dt">overlap =</span> <span class="dv">30</span>,
                                          <span class="dt">fun.order =</span> ripple.ord,
-                                         <span class="dt">ripple.cores =</span> <span class="dv">4</span>,
+                                         <span class="dt">ripple.cores =</span> <span class="dv">10</span>,
                                          <span class="dt">method =</span> <span class="st">&quot;one&quot;</span>,
                                          <span class="dt">min.tries =</span> <span class="dv">1</span>,
                                          <span class="dt">ws =</span> <span class="dv">4</span>)</code></pre></div>
@@ -376,7 +555,8 @@ batch_size_LG1_d2<span class="fl">.15</span> &lt;-<span class="st"> </span><span
 
 <span class="kw">c</span>(<span class="st">&quot;BatchMap&quot;</span> =<span class="st"> </span><span class="kw">err_rate</span>(map_LG1_d1<span class="fl">.10</span>$Map),
   <span class="st">&quot;RippleBatchMap&quot;</span> =<span class="st"> </span><span class="kw">err_rate</span>(rip_LG1_d1<span class="fl">.10</span>$Map))</code></pre></div>
-<pre><code>## [1] 0.3723404 0.2234043</code></pre>
+<pre><code>##       BatchMap RippleBatchMap 
+##      0.4765343      0.3898917</code></pre>
 </div>
 
 
