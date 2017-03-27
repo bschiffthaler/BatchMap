@@ -2,6 +2,9 @@
 \alias{acum}
 \alias{adjust.rf.ril}
 \alias{avoid.reverse}
+\alias{BatchMap_CCOUNT}
+\alias{BatchMap_GET_RF_MAT_NO_LOD}
+\alias{BatchMap_READ_OUTCROSS}
 \alias{CCOUNT}
 \alias{check.linkage}
 \alias{codif.data}
@@ -11,12 +14,15 @@
 \alias{Cindex}
 \alias{diplo}
 \alias{est_rf_out}
+\alias{est_rf_out_wrap}
+\alias{est_hmm_out}
 \alias{flip_phases}
 \alias{generate_all}
 \alias{generate_one}
 \alias{generate.overlapping.batches}
 \alias{generate_rand}
 \alias{get.bins}
+\alias{get_bins}
 \alias{get_mat_rf_in}
 \alias{get_vec_rf_in}
 \alias{get_mat_rf_out}
