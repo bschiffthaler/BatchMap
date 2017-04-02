@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <cstdlib> //strstoul
 #include <map>
 #include "progressBar.h"
 
@@ -128,9 +129,9 @@ SEXP READ_OUTCROSS(SEXP file)
 
   std::string x;
 
-  ifs >> x; n_ind = std::stoul(x);
-  ifs >> x; n_mar = std::stoul(x);
-  ifs >> x; n_phe = std::stoul(x);
+  ifs >> x; n_ind = strtoul(x.c_str(), NULL, 0);
+  ifs >> x; n_mar = strtoul(x.c_str(), NULL, 0);
+  ifs >> x; n_phe = strtoul(x.c_str(), NULL, 0);
   Rcpp::Rcout << "Reading data...\n";
   progressBar prog_bar(40, n_mar);
 

@@ -1,10 +1,10 @@
 Package: BatchMap
 Title: Software for the Creation of High Density 
     Linkage Maps in Outcrossing Species
-Version: 1.0.0.0
-Description: Algorithms that build on the OneMap package to create linkage
-    maps from high density data in outcrossing species in reasonable timeframes.
-Date: 2017-03-07
+Version: 1.0.1.0
+Description: Algorithms that build on the 'OneMap' package to create linkage
+    maps from high density data in outcrossing species in reasonable time frames.
+Date: 2017-03-30
 Authors@R: c(person("Bastian", "Schiffthaler", role = c("aut","cre"), 
     email = "bastian.schiffthaler@umu.se"), 
     person("Gabriel", "Margarido", role = "aut", email =
