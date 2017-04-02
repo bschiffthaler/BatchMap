@@ -20,10 +20,20 @@ The twopoint table of recombination fractions and likelihoods will take `4 * 8 *
 ## Installation
 ### Install from GitHub
 
+This will install the current development version, which is newest, but might include unstable code. If you're in doubt, install from CRAN.
+
 ```R
 install.packages("devtools")
 library(devtools)
 install_github("bschiffthaler/BatchMap")
+```
+
+### Install from CRAN
+
+This installs the latest stable version.
+
+```R
+install.packages("BatchMap")
 ```
 
 ## Note for Windows users
