@@ -1,0 +1,7 @@
+Patch update: 1.0.1.0
+  This is a patch release that addresses build errors on Windows (R-oldrelease)
+  and Solaris (all versions).
+  Changes:
+    - Changed identifiers in C++ sources to not start with an underscore and a
+    - Changed std::stoul() to strtoul() from <cstdlib> as the C++11 compiler did
+    not support std::stoul()
