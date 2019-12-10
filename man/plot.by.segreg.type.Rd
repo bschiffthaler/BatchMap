@@ -31,6 +31,5 @@ plot.by.segreg.type(example.out, subcateg=FALSE)
 # For details, see the help of ggplot2's function ggsave()
 data(example.out) #Outcrossing data
 g <- plot.by.segreg.type(example.out)
-ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 
 }

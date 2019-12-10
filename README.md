@@ -30,11 +30,9 @@ install_github("bschiffthaler/BatchMap")
 
 ### Install from CRAN
 
-This installs the latest stable version.
+~This installs the latest stable version.~
 
-```R
-install.packages("BatchMap")
-```
+The package on CRAN is deprectaed. Please install from GitHub or use the Docker container.
 
 ## Note for Windows users
 

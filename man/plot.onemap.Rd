@@ -38,6 +38,5 @@ plot(example.out, all=FALSE) # This will show you the graph splitted for marker 
 # You can store the graphic in an object, then save it.
 # For details, see the help of ggplot2's function ggsave()
 g <- plot(example.out, all=FALSE)
-ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
 
 }

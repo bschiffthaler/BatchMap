@@ -33,6 +33,5 @@ plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the orde
 # You can store the graphic in an object, then save it.
 # For details, see the help of ggplot2's function ggsave()
 g <- plot(Out.seg)
-ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
 
 }
