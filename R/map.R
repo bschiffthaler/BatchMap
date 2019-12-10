@@ -100,7 +100,7 @@ map <- function(input.seq,tol=10E-5, verbosity=FALSE, phase.cores = 1)
   if(length(seq.num) < 2) stop("The sequence must have at least 2 markers")
   ##For F2, BC and rils
 
-  if((seq.phases == -1) && (seq.rf == -1) && is.null(seq.like)) {
+  if(all(seq.phases == -1) && all(seq.rf == -1) && is.null(seq.like)) {
     ## if only the marker order is provided, without predefined linkage phases,
     ## a search for the best combination of phases is performed and recombination
     ## fractions are estimated

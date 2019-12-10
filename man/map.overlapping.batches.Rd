@@ -4,10 +4,23 @@
 \alias{map.overlapping.batches}
 \title{Mapping overlapping batches}
 \usage{
-map.overlapping.batches(input.seq, size = 50, overlap = 15,
-  fun.order = NULL, phase.cores = 1, ripple.cores = 1, verbosity = NULL,
-  max.dist = Inf, ws = 4, increase.every = 4, max.tries = 10,
-  min.tries = 0, seeds = NULL, optimize = "likelihood", ...)
+map.overlapping.batches(
+  input.seq,
+  size = 50,
+  overlap = 15,
+  fun.order = NULL,
+  phase.cores = 1,
+  ripple.cores = 1,
+  verbosity = NULL,
+  max.dist = Inf,
+  ws = 4,
+  increase.every = 4,
+  max.tries = 10,
+  min.tries = 0,
+  seeds = NULL,
+  optimize = "likelihood",
+  ...
+)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}

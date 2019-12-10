@@ -77,7 +77,7 @@
 ##'
 ripple.seq<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
     ## checking for correct objects
-    if(!any(class(input.seq)=="sequence")) {
+    if(! "sequence" %in% class(input.seq)) {
       stop(deparse(substitute(input.seq)),
            " is not an object of class 'sequence'")
     }
@@ -158,7 +158,7 @@ ripple.seq<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
 	LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
         cat("\n  Alternative orders:\n")
         for(j in which.LOD) {
-            if(any(class(get(input.seq$data.name, pos=1))=="outcross"))
+            if( "outcross" %in% class(get(input.seq$data.name, pos=1)))
                 cat("  ",all.ord[j,1:(ws+1)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"( linkage phases:",best.ord.phase[j,1:ws],ifelse(len > (ws+1),"... )\n",")\n"))
             else
                 cat("  ",all.ord[j,1:(ws+1)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"\n")
@@ -224,7 +224,7 @@ ripple.seq<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
                 LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
                 cat("\n  Alternative orders:\n")
                 for(j in which.LOD) {
-                    if(any(class(get(input.seq$data.name, pos=1))=="outcross"))
+                    if("outcross" %in% class(get(input.seq$data.name, pos=1)))
                         cat(ifelse(p>2,"  ...","  "),all.ord[j,(p-1):(p+ws)],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"( linkage phases:",ifelse(p>2,"...","\b"),best.ord.phase[j,(p-1):(p+ws-1)],ifelse((p+ws)<len,"... )\n",")\n"))
                     else
                         cat(ifelse(p>2,"  ...","  "),all.ord[j,(p-1):(p+ws)],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"\n")
@@ -289,7 +289,7 @@ ripple.seq<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
         cat("\n  Alternative orders:\n")
 
         for(j in which.LOD) {
-            if(any(class(get(input.seq$data.name, pos=1))=="outcross"))
+            if("outcross" %in% class(get(input.seq$data.name, pos=1)))
                 cat(ifelse(len > (ws+1),"  ...","  "),all.ord[j,(len-ws):len],": ",LOD.print[j],"( linkage phases:",ifelse(len > (ws+1),"...","\b"),best.ord.phase[j,(len-ws):(len-1)],")\n")
             else
                 cat(ifelse(len > (ws+1),"  ...","  "),all.ord[j,(len-ws):len],": ",LOD.print[j],"\n")

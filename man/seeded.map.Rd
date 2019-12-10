@@ -4,8 +4,7 @@
 \alias{seeded.map}
 \title{Construct the linkage map for a sequence of markers after seeding phases}
 \usage{
-seeded.map(input.seq, tol = 1e-04, phase.cores = 1, seeds,
-  verbosity = NULL)
+seeded.map(input.seq, tol = 1e-04, phase.cores = 1, seeds, verbosity = NULL)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}

@@ -4,10 +4,21 @@
 \alias{ripple.ord}
 \title{Update linkage map with alternative orders at all positions}
 \usage{
-ripple.ord(input.seq, ws = 4, tol = 0.001, phase.cores = 1,
-  ripple.cores = 1, method = "one", n = NULL, pref = "neutral",
-  start = 1, verbosity = NULL, batches = NULL, no_reverse = TRUE,
-  optimize = "likelihood")
+ripple.ord(
+  input.seq,
+  ws = 4,
+  tol = 0.001,
+  phase.cores = 1,
+  ripple.cores = 1,
+  method = "one",
+  n = NULL,
+  pref = "neutral",
+  start = 1,
+  verbosity = NULL,
+  batches = NULL,
+  no_reverse = TRUE,
+  optimize = "likelihood"
+)
 }
 \arguments{
 \item{input.seq}{An object of class \code{sequence}.}

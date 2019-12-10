@@ -2,9 +2,9 @@
 \alias{acum}
 \alias{adjust.rf.ril}
 \alias{avoid.reverse}
-\alias{BatchMap_CCOUNT}
-\alias{BatchMap_GET_RF_MAT_NO_LOD}
-\alias{BatchMap_READ_OUTCROSS}
+\alias{_BatchMap_CCOUNT}
+\alias{_BatchMap_GET_RF_MAT_NO_LOD}
+\alias{_BatchMap_READ_OUTCROSS}
 \alias{CCOUNT}
 \alias{check.linkage}
 \alias{codif.data}

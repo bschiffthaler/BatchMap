@@ -18,7 +18,7 @@ load(system.file("example/cached.results.RData",package = "BatchMap"))
 
 In general, the reader is encouraged to go through the excellent documentation
 of the original OneMap package before going through this vignette. An 
-up-to-date version can be found [here](https://github.com/augusto-garcia/onemap/raw/master/inst/doc/Tutorial_Onemap_reduced_version.pdf). The majority of the pipeline still works the same or very similar to the implementations in OneMap (also internally). For those already familiar with the original or those looking for a quick summary, feel free to go on.
+up-to-date version can be found [here](https://github.com/augusto-garcia/onemap/#tutorials). The majority of the pipeline still works the same or very similar to the implementations in OneMap (also internally). For those already familiar with the original or those looking for a quick summary, feel free to go on.
 
 NOTE: BatchMap has been written specifically for use in outcrossing species. All OneMap functionality pertaining to back-crosses, f2, ril etc. has been removed for the sake of easier code maintenance. If your use case is not an outcrossing F1 population, turn back now (and use OneMap instead).
 

@@ -15,7 +15,7 @@
 #######################################################################
 
 ##'   Creates a new sequence by adding markers.
-##' 
+##'
 ##'   Creates a new sequence by adding markers from a predetermined
 ##'   one. The markers are added in the end of the sequence.
 ##'
@@ -23,7 +23,7 @@
 ##'
 ##' @param mrks a vector containing the markers to be added from the
 ##'     \code{sequence}.
-##' 
+##'
 ##' @return An object of class \code{sequence}, which is a list
 ##'     containing the following components:
 ##'
@@ -48,7 +48,7 @@
 ##'  @author Marcelo Mollinari, \email{mmollina@@usp.br}
 ##'
 ##' @seealso \code{\link[BatchMap]{drop.marker}}
-##' 
+##'
 ##' @examples
 ##' data(example.out)
 ##' twopt <- rf.2pts(example.out)
@@ -56,11 +56,11 @@
 ##' groups <- group(all.mark)
 ##' (LG1 <- make.seq(groups,1))
 ##' (LG.aug<-add.marker(LG1, c(4,7)))
-##' 
+##'
 ##' @export
 add.marker<-function(input.seq, mrks)
   {
-    if (!any(class(input.seq) == "sequence")) 
+    if (! "sequence" %in% class(input.seq))
       stop(sQuote(deparse(substitute(input.seq))), " is not an object of class 'sequence'")
     seq.num<-c(input.seq$seq.num,mrks)
     return(make.seq(get(input.seq$twopt),seq.num, twopt=input.seq$twopt))

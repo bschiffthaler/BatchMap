@@ -1,5 +1,5 @@
 useDynLib(BatchMap, .registration = TRUE)
-
+importFrom("Rcpp", "evalCpp")
 ## Import all packages listed as Imports or Depends
 import(ggplot2)
 import(parallel)

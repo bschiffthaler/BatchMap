@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // GET_RF_MAT_NO_LOD
 SEXP GET_RF_MAT_NO_LOD(SEXP seqnum, SEXP nmrk, SEXP CC, SEXP CR, SEXP RC, SEXP RR, SEXP minLOD, SEXP maxRF);
-RcppExport SEXP BatchMap_GET_RF_MAT_NO_LOD(SEXP seqnumSEXP, SEXP nmrkSEXP, SEXP CCSEXP, SEXP CRSEXP, SEXP RCSEXP, SEXP RRSEXP, SEXP minLODSEXP, SEXP maxRFSEXP) {
+RcppExport SEXP _BatchMap_GET_RF_MAT_NO_LOD(SEXP seqnumSEXP, SEXP nmrkSEXP, SEXP CCSEXP, SEXP CRSEXP, SEXP RCSEXP, SEXP RRSEXP, SEXP minLODSEXP, SEXP maxRFSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -26,7 +26,7 @@ END_RCPP
 }
 // READ_OUTCROSS
 SEXP READ_OUTCROSS(SEXP file);
-RcppExport SEXP BatchMap_READ_OUTCROSS(SEXP fileSEXP) {
+RcppExport SEXP _BatchMap_READ_OUTCROSS(SEXP fileSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -37,7 +37,7 @@ END_RCPP
 }
 // CCOUNT
 SEXP CCOUNT(SEXP X, SEXP sequence);
-RcppExport SEXP BatchMap_CCOUNT(SEXP XSEXP, SEXP sequenceSEXP) {
+RcppExport SEXP _BatchMap_CCOUNT(SEXP XSEXP, SEXP sequenceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -46,4 +46,23 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(CCOUNT(X, sequence));
     return rcpp_result_gen;
 END_RCPP
+}
+
+RcppExport SEXP est_hmm_out(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+RcppExport SEXP est_rf_out_wrap(SEXP, SEXP, SEXP, SEXP, SEXP);
+RcppExport SEXP get_bins(SEXP, SEXP, SEXP);
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_BatchMap_GET_RF_MAT_NO_LOD", (DL_FUNC) &_BatchMap_GET_RF_MAT_NO_LOD, 8},
+    {"_BatchMap_READ_OUTCROSS", (DL_FUNC) &_BatchMap_READ_OUTCROSS, 1},
+    {"_BatchMap_CCOUNT", (DL_FUNC) &_BatchMap_CCOUNT, 2},
+    {"est_hmm_out",     (DL_FUNC) &est_hmm_out,     6},
+    {"est_rf_out_wrap", (DL_FUNC) &est_rf_out_wrap, 5},
+    {"get_bins",        (DL_FUNC) &get_bins,        3},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_BatchMap(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

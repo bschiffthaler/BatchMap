@@ -26,7 +26,7 @@ twopts
 }
 \author{Gabriel R A Margarido, \email{gramarga@gmail.com}}
 \seealso{
-  \code{\link[onemap]{read.outcross}} for details about objects of class
+  \code{\link{read.outcross2}} for details about objects of class
   \code{outcross}.
 }
 \keyword{datasets}

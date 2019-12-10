@@ -17,7 +17,7 @@ haldane <-
 function(rcmb) {
   # rcmb must be a number between 0 and 0.5
   if (is.numeric(rcmb)) {
-    if (rcmb >= 0 && rcmb <= 0.5)
+    if (all(rcmb >= 0) && all(rcmb <= 0.5))
       return(100*-(1/2)*log(1-2*rcmb))  # haldane mapping fuction
     else stop("the recombination fraction must be between 0 and 0.5")
   }
@@ -29,7 +29,7 @@ kosambi <-
 function(rcmb) {
   # rcmb must be a number between 0 and 0.5
   if (is.numeric(rcmb)) {
-    if (rcmb >= 0 && rcmb <= 0.5)
+    if (all(rcmb >= 0) && all(rcmb <= 0.5))
       return(100/4*log(abs((1+2*rcmb)/(1-2*rcmb))))  # kosambi mapping fuction
     else stop("the recombination fraction must be between 0 and 0.5")
   }

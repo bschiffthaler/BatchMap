@@ -41,10 +41,10 @@
 create.data.bins <- function(input.obj, bins)
 {
   ## checking for correct object
-  if(class(input.obj)[1] != "outcross")
+  if(! "outcross" %in% class(input.obj))
     stop(deparse(substitute(input.obj))," is not an object of class 'outcross'")
 
-  if(is.na(match("onemap.bin", class(bins))))
+  if(! "onemap.bin" %in% class(bins))
     stop(deparse(substitute(bins))," is not an object of class 'onemap.bin'")
 
   if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
@@ -54,7 +54,7 @@ create.data.bins <- function(input.obj, bins)
   names(dat.temp)<-nm
   wrk<-match(names(bins$bins), colnames(input.obj$geno))
   dat.temp$geno<-input.obj$geno[,wrk]
-  if(class(input.obj)[1] != "outcross"){
+  if(! "outcross" %in% class(input.obj)){
     dat.temp$geno.mmk<-list(geno=dat.temp$geno, type=gsub("\\..*","",class(input.obj)[2]))
     dat.temp$geno.mmk$geno[dat.temp$geno.mmk$geno==0]<-NA
   }

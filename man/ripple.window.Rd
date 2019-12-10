@@ -4,9 +4,20 @@
 \alias{ripple.window}
 \title{Update linkage map with alternative orders at a given position}
 \usage{
-ripple.window(input.seq, ws = 4, tol = 0.001, phase.cores = 1,
-  ripple.cores = 1, start = 1, verbosity = NULL, type = "one",
-  n = NULL, pref = NULL, no_reverse = TRUE, optimize = "likelihood")
+ripple.window(
+  input.seq,
+  ws = 4,
+  tol = 0.001,
+  phase.cores = 1,
+  ripple.cores = 1,
+  start = 1,
+  verbosity = NULL,
+  type = "one",
+  n = NULL,
+  pref = NULL,
+  no_reverse = TRUE,
+  optimize = "likelihood"
+)
 }
 \arguments{
 \item{input.seq}{An object of class \code{sequence}.}

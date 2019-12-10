@@ -4,8 +4,15 @@
 \alias{record.parallel}
 \title{Recombination Counting and Ordering}
 \usage{
-record.parallel(input.seq, times = 10, cores = 1, LOD = 0, max.rf = 0.5,
-  tol = 1e-04, useC = TRUE)
+record.parallel(
+  input.seq,
+  times = 10,
+  cores = 1,
+  LOD = 0,
+  max.rf = 0.5,
+  tol = 1e-04,
+  useC = TRUE
+)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}

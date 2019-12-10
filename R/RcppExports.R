@@ -2,14 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 GET_RF_MAT_NO_LOD <- function(seqnum, nmrk, CC, CR, RC, RR, minLOD, maxRF) {
-    .Call('BatchMap_GET_RF_MAT_NO_LOD', PACKAGE = 'BatchMap', seqnum, nmrk, CC, CR, RC, RR, minLOD, maxRF)
+    .Call(`_BatchMap_GET_RF_MAT_NO_LOD`, seqnum, nmrk, CC, CR, RC, RR, minLOD, maxRF)
 }
 
 READ_OUTCROSS <- function(file) {
-    .Call('BatchMap_READ_OUTCROSS', PACKAGE = 'BatchMap', file)
+    .Call(`_BatchMap_READ_OUTCROSS`, file)
 }
 
 CCOUNT <- function(X, sequence) {
-    .Call('BatchMap_CCOUNT', PACKAGE = 'BatchMap', X, sequence)
+    .Call(`_BatchMap_CCOUNT`, X, sequence)
 }
 
